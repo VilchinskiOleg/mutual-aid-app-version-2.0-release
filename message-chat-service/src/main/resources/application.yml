@@ -1,0 +1,5 @@
+spring:
+  data:
+    mongodb:
+      database: mutual-aid-app
+      uri: mongodb://localhost:27017/mutual-aid-app
