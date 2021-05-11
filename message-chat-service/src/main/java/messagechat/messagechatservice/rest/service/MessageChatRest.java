@@ -3,6 +3,9 @@ package messagechat.messagechatservice.rest.service;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import messagechat.messagechatservice.domain.model.page.PageMessages;
 import messagechat.messagechatservice.domain.service.HateoasService;
 import messagechat.messagechatservice.domain.service.MessageChatService;
@@ -17,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 
-
 @RestController
 @RequestMapping(path = "/api/massages-chat-service")
 public class MessageChatRest {
@@ -29,7 +31,8 @@ public class MessageChatRest {
     @Resource
     private Mapper mapper;
 
-
+    @ApiOperation(value = "${message-chat.operation.create-message}",
+                  nickname = "createMessage")
     @PostMapping(path = "/create-massage/{dialog-id}")
     @ResponseStatus(CREATED)
     public EntityModel<Message> createMassage(@RequestBody MessageRequest messageRequest,
@@ -39,6 +42,12 @@ public class MessageChatRest {
         return hateoasService.wrapMessage(addedMessage);
     }
 
+    @ApiOperation(value = "${message-chat.operation.get-message}",
+                  nickname = "getMessage")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "dialog-id", dataType = "string", paramType = "path", defaultValue = "123"),
+            @ApiImplicitParam(name = "massage-id", dataType = "string", paramType = "path", defaultValue = "12345")
+    })
     @GetMapping(path = "/get-massage/{dialog-id}/{massage-id}")
     @ResponseStatus(OK)
     public EntityModel<Message> getMassageById(@PathVariable("dialog-id") String dialogId,
@@ -47,12 +56,14 @@ public class MessageChatRest {
         return hateoasService.wrapMessage(message);
     }
 
-    @GetMapping(path = "/get-pack-messages/{dialog-id}")
+    @ApiOperation(value = "${message-chat.operation.get-page-messages}",
+                  nickname = "getPageMessages")
+    @GetMapping(path = "/get-page-messages/{dialog-id}")
     @ResponseStatus(OK)
-    public ResultMessagesResponse getPackMassagesFromDialog(@PathVariable("dialog-id") String dialogId,
-                                                            @RequestParam("page") Integer page,
+    public ResultMessagesResponse getPageMassagesFromDialog(@PathVariable("dialog-id") String dialogId,
+                                                            @RequestParam("pageNumber") Integer pageNumber,
                                                             @RequestParam("size") Integer size) {
-        PageMessages pageMessages = messageChatService.getNextPackMessageFromDialog(page, size, dialogId);
+        PageMessages pageMessages = messageChatService.getPageMessagesFromDialog(pageNumber, size, dialogId);
         var messages = hateoasService.wrapAllMessages(mapper.map(pageMessages.getMessages(), new ArrayList<>(), ShirtMessage.class));
         return ResultMessagesResponse.builder()
                                      .shirtMessages(messages)
@@ -62,6 +73,9 @@ public class MessageChatRest {
                                      .build();
     }
 
+    @ApiOperation(value = "${message-chat.operation.get-dialog}",
+                  nickname = "getDialog")
+    @ApiImplicitParam(name = "dialog-id", dataType = "string", paramType = "path", defaultValue = "123")
     @GetMapping(path = "/get-dialog/{dialog-id}")
     @ResponseStatus(OK)
     public Dialog getDialog(@PathVariable("dialog-id") String dialogId) {

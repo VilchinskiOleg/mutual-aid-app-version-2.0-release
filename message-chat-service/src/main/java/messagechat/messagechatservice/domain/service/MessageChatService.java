@@ -8,6 +8,6 @@ public interface MessageChatService {
 
     Message addMessage(Message massage, String dialogId);
     Message getMessageById(String dialogId, String massageId);
-    PageMessages getNextPackMessageFromDialog(Integer page, Integer size, String dialogId);
+    PageMessages getPageMessagesFromDialog(Integer pageNumber, Integer size, String dialogId);
     Dialog getDialogById(String dialogId);
 }
