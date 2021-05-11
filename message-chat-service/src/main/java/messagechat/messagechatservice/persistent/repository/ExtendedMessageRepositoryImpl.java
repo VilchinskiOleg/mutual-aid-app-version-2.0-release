@@ -1,5 +1,6 @@
 package messagechat.messagechatservice.persistent.repository;
 
+import static messagechat.messagechatservice.util.Constant.Service.MESSAGE_DIALOG_ID;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.support.PageableExecutionUtils.getPage;
 
@@ -18,7 +19,7 @@ public class ExtendedMessageRepositoryImpl implements ExtendedMessageRepository 
     @Override
     public Page<Message> findAllByDialogId(PageRequest pageRequest, String dialogId) {
         Query query = new Query();
-        query.addCriteria(where("dialogId").is(dialogId));
+        query.addCriteria(where(MESSAGE_DIALOG_ID).is(dialogId));
         query.with(pageRequest);
         var messages = template.find(query, Message.class);
         return getPage(messages,

@@ -46,8 +46,8 @@ public class MessageChatServiceImpl implements MessageChatService {
                           Message.class);
     }
 
-    public PageMessages getNextPackMessageFromDialog(Integer page, Integer size, String dialogId) {
-        PageRequest pageRequest = of(page, size);
+    public PageMessages getPageMessagesFromDialog(Integer pageNumber, Integer size, String dialogId) {
+        PageRequest pageRequest = of(pageNumber, size);
         var allByDialogId = massageRepository.findAllByDialogId(pageRequest, dialogId);
         return PageMessages.builder()
                            .messages(mapper.map(allByDialogId.getContent(), new ArrayList<>(), Message.class))
@@ -63,7 +63,7 @@ public class MessageChatServiceImpl implements MessageChatService {
      * @return dialog by id or empty dialog if such dialog doesn't exist.
      */
     public Dialog getDialogById(String dialogId) {
-        var dialog = dialogRepository.findById(dialogId);
+        var dialog = dialogRepository.findByInternalId(dialogId);
         if (dialog.isEmpty()) {
             Dialog emptyDialog = new Dialog();
             return emptyDialog;
