@@ -3,6 +3,7 @@ package order.orderservice.rest.service;
 import static org.springframework.http.HttpStatus.OK;
 
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import order.orderservice.domain.service.OrderService;
 import order.orderservice.rest.message.OrdersResponse;
 import order.orderservice.rest.message.SearchOrderDetails;
@@ -21,6 +22,7 @@ public class WorkerRest {
     @Resource
     private OrderService orderService;
 
+    @ApiOperation(value = "${order.operation.get-executor-candidate-orders}")
     @ApiImplicitParam(name = "member-id", dataType = "string", paramType = "query", defaultValue = "123")
     @GetMapping
     @ResponseStatus(OK)
@@ -29,6 +31,7 @@ public class WorkerRest {
         return null;
     }
 
+    @ApiOperation(value = "${order.operation.get-order-by-id}")
     @ApiImplicitParam(name = "order-id", dataType = "string", paramType = "path", defaultValue = "123")
     @GetMapping(path = "/{order-id}")
     @ResponseStatus(OK)
@@ -37,6 +40,7 @@ public class WorkerRest {
         return mapper.map(result, Order.class);
     }
 
+    @ApiOperation(value = "${order.operation.search-by-part-title}")
     @GetMapping(path = "/title-fragment/{line}")
     @ResponseStatus(OK)
     public OrdersResponse getAllOrdersByPartOfTitle(@PathVariable("line") String line) {
@@ -44,6 +48,7 @@ public class WorkerRest {
         return null;
     }
 
+    @ApiOperation(value = "${order.operation.search-by-filters}")
     @PostMapping(path = "/search-by-filters")
     @ResponseStatus(OK)
     public OrdersResponse getAllOrdersByFilters(@Valid @RequestBody SearchOrderDetails searchDetails) {
@@ -52,6 +57,7 @@ public class WorkerRest {
         return mapper.map(result, OrdersResponse.class);
     }
 
+    @ApiOperation(value = "${order.operation.choose-order}")
     @PutMapping(path = "/choose/{order-id}")
     @ResponseStatus(OK)
     public Order chooseOrder(@PathVariable("order-id") String orderId) {
