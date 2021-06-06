@@ -46,7 +46,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<Order> findByFilters(SearchOrderDetails searchOrderDetails) {
         var result = orderRepository.searchByFilters(searchOrderDetails);
-        return Page.<Order>builder()
+        return Page
+                .<Order>builder()
                 .payload(mapper.map(result.getContent(), new ArrayList<>(), Order.class))
                 .allPages(result.getTotalPages())
                 .currentPage(result.getNumber())

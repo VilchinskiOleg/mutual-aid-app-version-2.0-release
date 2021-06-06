@@ -4,8 +4,9 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static order.orderservice.domain.model.Order.Type.PAID;
 import static order.orderservice.domain.model.Order.Type.UNPAID;
-import static order.orderservice.domain.model.Order.Priority.valueOf;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 
+import lombok.extern.slf4j.Slf4j;
 import order.orderservice.rest.model.Order;
 import order.orderservice.util.validation.annotation.ValidOrder;
 import javax.validation.ConstraintValidator;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
+@Slf4j
 public class OrderValidator implements ConstraintValidator<ValidOrder, Order> {
 
     private Map<String, Predicate<Order>> predicates;
@@ -31,10 +33,8 @@ public class OrderValidator implements ConstraintValidator<ValidOrder, Order> {
         if (nonNull(order.getPrice())) {
             isValid = false;
         }
-        try {
-            valueOf(order.getPriority());
-        } catch (IllegalArgumentException ex) {
-            isValid = false;
+        if (isNull(order.getPriority())) {
+            isValid= false;
         }
         return isValid;
     };
@@ -47,8 +47,17 @@ public class OrderValidator implements ConstraintValidator<ValidOrder, Order> {
     }
 
     @Override
-    public boolean isValid(Order order, ConstraintValidatorContext constraintValidatorContext) {
-        var rule = predicates.get(order.getType());
+    public boolean isValid(Order order, ConstraintValidatorContext context) {
+        var orderType = order.getType();
+        if (isBlank(orderType)) {
+            log.error("Unexpected error: order type cannot be 'null'");
+            return false;
+        }
+        var rule = predicates.get(orderType);
+        if (isNull(rule)) {
+            log.error("Unexpected error: have not validation rule for order type '{}'", orderType);
+            return false;
+        }
         return rule.test(order);
     }
 }

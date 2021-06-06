@@ -7,7 +7,7 @@ public class Constant {
         public static final String ORDER_RULE_BY_TYPE = "validation.order.rule.by.type";
         public static final String ORDER_TITLE_REQUIRED = "validation.order.title.required";
         public static final String ORDER_LOCATION_REQUIRED = "validation.order.location.required";
-        public static final String ORDER_TYPE_RULE = "validation.order.type.rule";
+        public static final String ORDER_PRIORITY_RULE = "validation.order.priority.rule";
         public static final String ORDER_OWNER_REQUIRED = "validation.order.owner.required";
 
         public static final String SEARCH_ORDER_DETAILS_PAGING_RULE = "search.order.details.paging.rule";

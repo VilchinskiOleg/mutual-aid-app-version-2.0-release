@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import order.orderservice.domain.service.OrderService;
 import order.orderservice.rest.model.Order;
 import org.mapper.autoconfiguration.mapper.Mapper;
-import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -61,7 +61,7 @@ public class CustomerRest {
     @ApiOperation(value = "${order.operation.approve-order}")
     @PutMapping(path = "/approve-order/")
     @ResponseStatus(OK)
-    @PreAuthorize("hasRole('OWNER')") // TODO: how to permit this action for only owner of order ?
+    //@PreAuthorize("hasRole('OWNER')")     // TODO: how to permit this action for only owner of order ?
     public Order approveOrder() {
 
         return null;
@@ -70,7 +70,7 @@ public class CustomerRest {
     @ApiOperation(value = "${order.operation.close-order}")
     @PutMapping(path = "/close-order/")
     @ResponseStatus(OK)
-    @PreAuthorize("hasRole('OWNER')") // TODO: how to permit this action for only owner of order ?
+    //@PreAuthorize("hasRole('OWNER')")     // TODO: how to permit this action for only owner of order ?
     public Order closeOrder() {
 
         return null;

@@ -2,12 +2,13 @@ package order.orderservice.rest.model;
 
 import static order.orderservice.util.Constant.Errors.*;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import order.orderservice.util.validation.annotation.ValidOrder;
+import order.orderservice.util.validation.annotation.ValidOrderPriority;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -25,12 +26,14 @@ public class Order {
     private Location location;
     private BigDecimal price;
 
-    @Pattern(regexp = "^PAID$", message = ORDER_TYPE_RULE)
     private String type;
     private String status;
+    @ValidOrderPriority(pattern = "^(CRITICAL|NOT_CRITICAL)$", message = ORDER_PRIORITY_RULE)
     private String priority;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifyAt;
 
     @NotNull(message = ORDER_OWNER_REQUIRED)

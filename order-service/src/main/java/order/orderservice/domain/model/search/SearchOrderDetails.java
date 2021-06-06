@@ -11,7 +11,8 @@ public class SearchOrderDetails {
     private Integer numberOfPage;
     private Integer sizeOfPage;
 
-    private BigDecimal price;
+    private BigDecimal priceFrom;
+    private BigDecimal priceTo;
     private String type;
     private String priority;
 

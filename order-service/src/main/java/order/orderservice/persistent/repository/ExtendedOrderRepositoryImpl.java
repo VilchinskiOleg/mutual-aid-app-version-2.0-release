@@ -10,8 +10,12 @@ import order.orderservice.domain.model.search.SearchOrderDetails;
 import order.orderservice.persistent.entity.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExtendedOrderRepositoryImpl implements ExtendedOrderRepository {
 
@@ -30,8 +34,11 @@ public class ExtendedOrderRepositoryImpl implements ExtendedOrderRepository {
 
     private Query buildSearchQuery(SearchOrderDetails details) {
         Query query = new Query();
-        if (nonNull(details.getPrice())) {
-            query.addCriteria(where(PRICE).is(details.getPrice()));
+        if (nonNull(details.getPriceFrom()) || nonNull(details.getPriceTo())) {
+            query.addCriteria(
+                    new Criteria()
+                            .andOperator(createPriceCriterias(details.getPriceFrom(), details.getPriceTo()).toArray(new Criteria[]{}))
+            );
         }
         if (nonNull(details.getType())) {
             query.addCriteria(where(TYPE).is(details.getType()));
@@ -52,5 +59,16 @@ public class ExtendedOrderRepositoryImpl implements ExtendedOrderRepository {
             query.addCriteria(where(LOCATION_HOME).is(details.getLocationHome()));
         }
         return query;
+    }
+
+    private List<Criteria> createPriceCriterias(BigDecimal priceFrom, BigDecimal priceTo) {
+        List<Criteria> criterias = new ArrayList<>();
+        if (nonNull(priceFrom)) {
+            criterias.add(where(PRICE).gte(priceFrom));
+        }
+        if (nonNull(priceTo)) {
+            criterias.add(where(PRICE).lte(priceTo));
+        }
+        return criterias;
     }
 }
