@@ -12,6 +12,8 @@ import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "api/order-service/worker")
@@ -26,9 +28,9 @@ public class WorkerRest {
     @ApiImplicitParam(name = "member-id", dataType = "string", paramType = "query", defaultValue = "123")
     @GetMapping
     @ResponseStatus(OK)
-    public OrdersResponse getAllOrdersByExecutorOrCandidateIds(@RequestParam("member-id") String memberId) {
-
-        return null;
+    public List<Order> getAllOrdersByExecutorOrCandidateIds(@RequestParam("member-id") String memberId) {
+        var result = orderService.findByExecutorOrCandidateIds(memberId);
+        return mapper.map(result, new ArrayList<>(), Order.class);
     }
 
     @ApiOperation(value = "${order.operation.get-order-by-id}")
@@ -41,11 +43,13 @@ public class WorkerRest {
     }
 
     @ApiOperation(value = "${order.operation.search-by-part-title}")
-    @GetMapping(path = "/title-fragment/{line}")
+    @GetMapping(path = "/title-fragment/{subTitle}")
     @ResponseStatus(OK)
-    public OrdersResponse getAllOrdersByPartOfTitle(@PathVariable("line") String line) {
-
-        return null;
+    public OrdersResponse getAllOrdersByPartOfTitle(@PathVariable("subTitle") String subTitle,
+                                                    @RequestParam("pageNumber") Integer pageNumber,
+                                                    @RequestParam("size") Integer size) {
+        var result = orderService.findByPartOfTitle(subTitle, pageNumber, size);
+        return mapper.map(result, OrdersResponse.class);
     }
 
     @ApiOperation(value = "${order.operation.search-by-filters}")
@@ -57,11 +61,13 @@ public class WorkerRest {
         return mapper.map(result, OrdersResponse.class);
     }
 
+    //TODO: add spring security for methods ->:
     @ApiOperation(value = "${order.operation.choose-order}")
-    @PutMapping(path = "/choose/{order-id}")
+    @PutMapping(path = "/choose/{order-id}/{member-id}")
     @ResponseStatus(OK)
-    public Order chooseOrder(@PathVariable("order-id") String orderId) {
-
-        return null;
+    public Order chooseOrder(@PathVariable("order-id") String orderId,
+                             @PathVariable("member-id") String memberId) {
+        var updatedOrder = orderService.chooseOrder(orderId, memberId);
+        return mapper.map(updatedOrder, Order.class);
     }
 }

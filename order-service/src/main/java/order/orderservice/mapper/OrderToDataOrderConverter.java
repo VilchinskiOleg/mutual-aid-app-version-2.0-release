@@ -19,6 +19,7 @@ public class OrderToDataOrderConverter extends BaseConverter<Order, order.orders
 
     @Override
     public void convert(Order source, order.orderservice.persistent.entity.Order destination) {
+        destination.setId(source.getId());
         destination.setOrderId(source.getOrderId());
         destination.setTitle(source.getTitle());
         destination.setDescription(source.getDescription());
