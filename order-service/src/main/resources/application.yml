@@ -1,0 +1,15 @@
+spring:
+  data:
+    mongodb:
+      database: mutual-aid-app
+      uri: mongodb://localhost:27017/mutual-aid-app
+
+application:
+  api-info:
+    version: 2.0
+    title: ORDERS
+    description: Order SERVICE
+    contact:
+      name: OLEG
+      url: https://mail.google.com
+      email: vilchinskioleg@gmail.com

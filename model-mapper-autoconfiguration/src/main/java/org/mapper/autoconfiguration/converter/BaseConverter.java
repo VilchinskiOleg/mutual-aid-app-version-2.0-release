@@ -1,5 +1,7 @@
 package org.mapper.autoconfiguration.converter;
 
+import static java.util.Objects.isNull;
+
 import org.mapper.autoconfiguration.mapper.Mapper;
 import lombok.Setter;
 import org.modelmapper.Converter;
@@ -13,7 +15,10 @@ public abstract class BaseConverter<S, D> implements Converter<S, D> {
     @Override
     public D convert(MappingContext<S, D> mappingContext) {
         S source = mappingContext.getSource();
-        D destination = getDestination();
+        D destination = mappingContext.getDestination();
+        if (isNull(destination)) {
+            destination = getDestination();
+        }
         convert(source, destination);
         return destination;
     }
