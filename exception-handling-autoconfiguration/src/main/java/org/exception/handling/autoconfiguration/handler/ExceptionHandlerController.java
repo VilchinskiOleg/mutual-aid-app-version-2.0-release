@@ -19,7 +19,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @Slf4j
 @ControllerAdvice
 public class ExceptionHandlerController {
@@ -28,18 +27,18 @@ public class ExceptionHandlerController {
 
     @PostConstruct
     private void initLocalisationErrorsMessagesConfig() {
-        URL url = ClassLoader.getPlatformClassLoader()
-                             .getResource("errors.properties");
-        if (isNull(url)) {
-            throw new RuntimeException("Error on starting app: cannot build URL for resource 'errors.properties'");
-        }
-        String path = url.getPath();
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
-            bufferedReader.lines()
-                          .forEach(this::processErrorMessagesPropertiesLine);
-        } catch (IOException ex) {
-            throw new RuntimeException("Error on staring app: cannot read 'errors.properties' file", ex);
-        }
+//        URL url = ClassLoader.getPlatformClassLoader()
+//                             .getResource("errors.properties");
+//        if (isNull(url)) {
+//            throw new RuntimeException("Error on starting app: cannot build URL for resource 'errors.properties'");
+//        }
+//        String path = url.getPath();
+//        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
+//            bufferedReader.lines()
+//                          .forEach(this::processErrorMessagesPropertiesLine);
+//        } catch (IOException ex) {
+//            throw new RuntimeException("Error on staring app: cannot read 'errors.properties' file", ex);
+//        }
     }
 
     @ExceptionHandler(value = ConflictException.class)

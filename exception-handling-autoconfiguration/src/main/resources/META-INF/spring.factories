@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=package org.exception.handling.autoconfiguration.ExceptionHandlingConfig
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.exception.handling.autoconfiguration.ExceptionHandlingConfig
