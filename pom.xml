@@ -21,8 +21,9 @@
     </properties>
 
     <modules>
-        <module>message-chat-service</module>
         <module>model-mapper-autoconfiguration</module>
+        <module>exception-handling-autoconfiguration</module>
+        <module>message-chat-service</module>
         <module>order-service</module>
     </modules>
 

@@ -1,0 +1,48 @@
+{
+    "internal.service.error": {
+        "code": "internal.service.error",
+        "messages": {
+            "en": "Service temporary is not available. Call app later.",
+            "ru": "Сервис временно не доступен. Вызовите приложение позже."
+        }
+    },
+
+
+
+    "validation.exception": {
+        "code": "validation.exception",
+        "messages": {
+            "en": "Validation exception. Check input parameters.",
+            "ru": "Ошибка валидации. Проверте вводимые параметры."
+        }
+    },
+    "validation.order.rule.by.type": {
+        "code": "validation.order.rule.by.type",
+        "messages": {
+            "en": "Order with current type cannot created for such input parameters.",
+            "ru": "Заказ указанного типа не может быть создан для таких входных параметров."
+        }
+    },
+    "validation.order.priority.rule": {
+        "code": "validation.order.priority.rule",
+        "messages": {
+            "en": "Priority mast be only CRITICAL or NOT_CRITICAL.",
+            "ru": "Приоритет может быть только CRITICAL или NOT_CRITICAL."
+        }
+    },
+    "validation.search.order.details.paging.rule": {},
+    "validation.order.title.required": {},
+    "validation.order.location.required": {},
+    "validation.order.owner.required": {},
+
+
+
+    "order.not.found": {
+        "code": "order.not.found",
+        "messages": {
+            "en": "Such order doesn't exists.",
+            "ru": "Такого заквза не существует."
+        }
+    },
+    "cannot.add.new.candidate": {}
+}
