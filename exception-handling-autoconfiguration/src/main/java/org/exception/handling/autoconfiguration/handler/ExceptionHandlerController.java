@@ -1,59 +1,34 @@
 package org.exception.handling.autoconfiguration.handler;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static org.exception.handling.autoconfiguration.utils.Constant.*;
 import static org.springframework.util.CollectionUtils.isEmpty;
-
 import lombok.extern.slf4j.Slf4j;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.exception.handling.autoconfiguration.model.Error;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Slf4j
 @ControllerAdvice
 public class ExceptionHandlerController {
 
-    private final Map<String, String> localisationErrorMessagesConfig = new HashMap<>();
-
-    @PostConstruct
-    private void initLocalisationErrorsMessagesConfig() {
-//        URL url = ClassLoader.getPlatformClassLoader()
-//                             .getResource("errors.properties");
-//        if (isNull(url)) {
-//            throw new RuntimeException("Error on starting app: cannot build URL for resource 'errors.properties'");
-//        }
-//        String path = url.getPath();
-//        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
-//            bufferedReader.lines()
-//                          .forEach(this::processErrorMessagesPropertiesLine);
-//        } catch (IOException ex) {
-//            throw new RuntimeException("Error on staring app: cannot read 'errors.properties' file", ex);
-//        }
-    }
+    //TODO: language for common-http keep in Locale.class, for example: Locale locale = new Locale("en");
+    @Resource
+    private ErrorMessagesManager errorMessagesManager;
 
     @ExceptionHandler(value = ConflictException.class)
     public ResponseEntity<Error> ConflictExceptionHandler(ServletRequest request, ConflictException ex) {
         Error error= Error.builder()
                 .code(ex.getMessage())
-                .message(localisationErrorMessagesConfig.get(ex.getMessage()))
+                .message(errorMessagesManager.getLocalizedErrorMessage(ex.getMessage(), extractLang(request)))
                 .build();
         return ResponseEntity.status(ex.getCode())
                 .body(error);
@@ -61,12 +36,13 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<Error> ValidationExceptionHandler(ServletRequest request, MethodArgumentNotValidException ex) {
+        String lang = extractLang(request);
         List<ObjectError> validationErrorsData = ex.getAllErrors();
         List<Error> validationErrors = isEmpty(validationErrorsData) ?
-                null : convertValidationErrorsDataToValidationErrors(validationErrorsData);
+                null : convertValidationErrorsDataToValidationErrors(validationErrorsData, lang);
         Error error= Error.builder()
                 .code(VALIDATION_EXCEPTION_MESSAGE_CODE)
-                .message(localisationErrorMessagesConfig.get(VALIDATION_EXCEPTION_MESSAGE_CODE))
+                .message(errorMessagesManager.getLocalizedErrorMessage(VALIDATION_EXCEPTION_MESSAGE_CODE, lang))
                 .nestedErrors(validationErrors)
                 .build();
         return ResponseEntity.status(VALIDATION_EXCEPTION_STATUS_CODE)
@@ -78,7 +54,7 @@ public class ExceptionHandlerController {
         log.error("Unexpected error: cannot process this case.", ex);
         Error error= Error.builder()
                 .code(COMMON_EXCEPTION_MESSAGE_CODE)
-                .message(localisationErrorMessagesConfig.get(COMMON_EXCEPTION_MESSAGE_CODE))
+                .message(errorMessagesManager.getLocalizedErrorMessage(COMMON_EXCEPTION_MESSAGE_CODE, extractLang(request)))
                 .build();
         return ResponseEntity.status(COMMON_EXCEPTION_STATUS_CODE)
                 .body(error);
@@ -86,21 +62,12 @@ public class ExceptionHandlerController {
 
 
 
-    private void processErrorMessagesPropertiesLine(String line) {
-        String[] result = line.split(EQUAL);
-        if (result.length != 2) {
-            log.error("Unexpected error: cannot process property: {}", line);
-            return;
-        }
-        localisationErrorMessagesConfig.put(result[0].strip(), result[1].strip());
-    }
-
-    private List<Error> convertValidationErrorsDataToValidationErrors(List<ObjectError> validationErrorsData) {
+    private List<Error> convertValidationErrorsDataToValidationErrors(List<ObjectError> validationErrorsData, String lang) {
         return validationErrorsData
                 .stream()
                 .map(errorData -> {
                     String errorMessageCode = errorData.getDefaultMessage();
-                    String localizedErrorMessage = localisationErrorMessagesConfig.get(errorMessageCode);
+                    String localizedErrorMessage = errorMessagesManager.getLocalizedErrorMessage(errorMessageCode, lang);
                     return Error
                             .builder()
                             .code(errorMessageCode)
@@ -108,5 +75,13 @@ public class ExceptionHandlerController {
                             .build();
                 })
                 .collect(toList());
+    }
+
+    private String extractLang(ServletRequest request) {
+        Object lang = request.getAttribute(LANG_HEADER);
+        if (isNull(lang)) {
+            return DEFAULT_LANG;
+        }
+        return lang.toString();
     }
 }

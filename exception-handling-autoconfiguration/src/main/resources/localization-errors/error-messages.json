@@ -1,0 +1,26 @@
+{
+    "internal.service.error": {
+        "code": "internal.service.error",
+        "messages": {
+            "en": "Service temporary is not available. Call app later.",
+            "ru": "Сервис временно не доступен. Вызовите приложение позже."
+        }
+    },
+
+    "validation.exception": {
+        "code": "validation.exception",
+        "messages": {
+            "en": "Validation exception. Check input parameters.",
+            "ru": "Ошибка валидации. Проверте вводимые параметры."
+        }
+    },
+    "validation.order.rule.by.type": {},
+    "validation.order.priority.rule": {},
+    "validation.search.order.details.paging.rule": {},
+    "validation.order.title.required": {},
+    "validation.order.location.required": {},
+    "validation.order.owner.required": {},
+
+    "order.not.found": {},
+    "cannot.add.new.candidate": {}
+}
