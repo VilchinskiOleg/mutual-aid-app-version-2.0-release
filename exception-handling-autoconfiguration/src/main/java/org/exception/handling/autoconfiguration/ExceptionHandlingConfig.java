@@ -8,7 +8,6 @@ import org.exception.handling.autoconfiguration.model.LocalizedErrorMessages;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.Nullable;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
@@ -19,7 +18,6 @@ import java.util.Map;
 public class ExceptionHandlingConfig {
 
     @Bean
-    @Nullable
     public Map<String, LocalizedErrorMessages> localizedErrorMessagesConfig() {
         URL url = ClassLoader.getSystemClassLoader()
                 .getResource("localization-errors/error-messages.json");
