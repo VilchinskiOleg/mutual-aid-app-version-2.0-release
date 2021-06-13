@@ -4,7 +4,6 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import messagechat.messagechatservice.domain.model.page.PageMessages;
 import messagechat.messagechatservice.domain.service.HateoasService;
@@ -38,21 +37,17 @@ public class MessageChatRest {
     public EntityModel<Message> createMassage(@RequestBody MessageRequest messageRequest,
                                               @PathVariable("dialog-id") String dialogId) {
         var massage = mapper.map(messageRequest, messagechat.messagechatservice.domain.model.Message.class);
-        Message addedMessage = mapper.map(messageChatService.addMessage(massage, dialogId), Message.class);
+        Message addedMessage = mapper.map(messageChatService.addMessageToDialog(massage, dialogId), Message.class);
         return hateoasService.wrapMessage(addedMessage);
     }
 
     @ApiOperation(value = "${message-chat.operation.get-message}",
                   nickname = "getMessage")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "dialog-id", dataType = "string", paramType = "path", defaultValue = "123"),
-            @ApiImplicitParam(name = "massage-id", dataType = "string", paramType = "path", defaultValue = "12345")
-    })
-    @GetMapping(path = "/get-massage/{dialog-id}/{massage-id}")
+    @ApiImplicitParam(name = "massage-id", dataType = "string", paramType = "path", defaultValue = "12345")
+    @GetMapping(path = "/get-massage/{massage-id}")
     @ResponseStatus(OK)
-    public EntityModel<Message> getMassageById(@PathVariable("dialog-id") String dialogId,
-                                               @PathVariable("massage-id") String messageId) {
-        Message message = mapper.map(messageChatService.getMessageById(dialogId, messageId), Message.class);
+    public EntityModel<Message> getMassageById(@PathVariable("massage-id") String messageId) {
+        Message message = mapper.map(messageChatService.getMessageById(messageId), Message.class);
         return hateoasService.wrapMessage(message);
     }
 

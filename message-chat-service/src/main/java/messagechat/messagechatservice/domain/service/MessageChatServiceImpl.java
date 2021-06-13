@@ -2,6 +2,7 @@ package messagechat.messagechatservice.domain.service;
 
 import static java.time.LocalDateTime.now;
 import static messagechat.messagechatservice.domain.model.Dialog.Status.OPEN;
+import static messagechat.messagechatservice.util.Constant.Errors.MESSAGE_NOT_FOUND;
 import static org.springframework.data.domain.PageRequest.of;
 
 import messagechat.messagechatservice.domain.model.Dialog;
@@ -10,6 +11,7 @@ import messagechat.messagechatservice.domain.model.Message;
 import messagechat.messagechatservice.domain.model.page.PageMessages;
 import messagechat.messagechatservice.persistent.repository.DialogRepository;
 import messagechat.messagechatservice.persistent.repository.MessageRepository;
+import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,7 @@ public class MessageChatServiceImpl implements MessageChatService {
     @Resource
     private Mapper mapper;
 
-    public Message addMessage(Message messageData, String dialogId) {
+    public Message addMessageToDialog(Message messageData, String dialogId) {
         Message currentMessage = populateMetaDataToMessage(messageData);
         dialogId = createDialogIfNeed(dialogId);
         addMemberToDialogIfNeed(messageData.getAuthor(), dialogId);
@@ -35,25 +37,20 @@ public class MessageChatServiceImpl implements MessageChatService {
         return mapper.map(savedMessage, Message.class);
     }
 
-    /**
-     * Get message by message id and dialog id.
-     * @param dialogId
-     * @param massageId
-     * @return message by id or empty message if such message doesn't exist.
-     */
-    public Message getMessageById(String dialogId, String massageId) {
-        return mapper.map(massageRepository.findById(massageId).orElse(new messagechat.messagechatservice.persistent.entity.Message()),
+    public Message getMessageById(String massageId) {
+        return mapper.map(massageRepository.findById(massageId)
+                                           .orElseThrow(() -> new ConflictException(MESSAGE_NOT_FOUND)),
                           Message.class);
     }
 
     public PageMessages getPageMessagesFromDialog(Integer pageNumber, Integer size, String dialogId) {
         PageRequest pageRequest = of(pageNumber, size);
-        var allByDialogId = massageRepository.findAllByDialogId(pageRequest, dialogId);
+        var messagesPageData = massageRepository.findAllByDialogId(dialogId, pageRequest);
         return PageMessages.builder()
-                           .messages(mapper.map(allByDialogId.getContent(), new ArrayList<>(), Message.class))
-                           .allPages(allByDialogId.getTotalPages())
-                           .currentPage(allByDialogId.getNumber())
-                           .sizeOfPage(allByDialogId.getSize())
+                           .messages(mapper.map(messagesPageData.getContent(), new ArrayList<>(), Message.class))
+                           .allPages(messagesPageData.getTotalPages())
+                           .currentPage(messagesPageData.getNumber())
+                           .sizeOfPage(messagesPageData.getSize())
                            .build();
     }
 
@@ -63,12 +60,11 @@ public class MessageChatServiceImpl implements MessageChatService {
      * @return dialog by id or empty dialog if such dialog doesn't exist.
      */
     public Dialog getDialogById(String dialogId) {
-        var dialog = dialogRepository.findByInternalId(dialogId);
-        if (dialog.isEmpty()) {
-            Dialog emptyDialog = new Dialog();
-            return emptyDialog;
+        var dialogData = dialogRepository.findByInternalId(dialogId);
+        if (dialogData.isEmpty()) {
+            return new Dialog();
         }
-        return mapper.map(dialog.get(), Dialog.class);
+        return mapper.map(dialogData.get(), Dialog.class);
     }
 
 
