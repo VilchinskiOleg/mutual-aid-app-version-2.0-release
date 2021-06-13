@@ -25,13 +25,21 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-hateoas</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.mapper.autoconfiguration</groupId>
             <artifactId>model-mapper-autoconfiguration</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.exception.handling.autoconfiguration</groupId>
+            <artifactId>exception-handling-autoconfiguration</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

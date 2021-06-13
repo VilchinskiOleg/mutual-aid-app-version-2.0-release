@@ -4,6 +4,10 @@ public class Constant {
 
     public static class Service {
 
-        public static final String MESSAGE_DIALOG_ID = "dialogId";
+    }
+
+    public static class Errors {
+
+        public static final String MESSAGE_NOT_FOUND = "message.not.found";
     }
 }

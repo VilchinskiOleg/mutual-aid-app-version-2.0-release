@@ -25,7 +25,7 @@ public class HateoasServiceImpl implements HateoasService {
     public CollectionModel<EntityModel<ShirtMessage>> wrapAllMessages(List<ShirtMessage> messages) {
         var wrappageMessages = messages.stream()
                             .map(shirtMessage -> {
-                                Link selfLink = linkTo(methodOn(MessageChatRest.class).getMassageById(shirtMessage.getDialogId(), shirtMessage.getId())).withSelfRel();
+                                Link selfLink = linkTo(methodOn(MessageChatRest.class).getMassageById(shirtMessage.getId())).withSelfRel();
                                 return of(shirtMessage, selfLink);
                             })
                             .collect(toList());

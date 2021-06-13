@@ -30,10 +30,34 @@
             "ru": "Приоритет может быть только CRITICAL или NOT_CRITICAL."
         }
     },
-    "validation.search.order.details.paging.rule": {},
-    "validation.order.title.required": {},
-    "validation.order.location.required": {},
-    "validation.order.owner.required": {},
+    "validation.search.order.details.paging.rule": {
+        "code": "validation.search.order.details.paging.rule",
+        "messages": {
+            "en": "Parameters of paging are required.",
+            "ru": "Парамеиры пагинации обязательны."
+        }
+    },
+    "validation.order.title.required": {
+        "code": "validation.order.title.required",
+        "messages": {
+            "en": "Title is required.",
+            "ru": "Заглавие - обязательное поле."
+        }
+    },
+    "validation.order.location.required": {
+        "code": "validation.order.location.required",
+        "messages": {
+            "en": "Location is required.",
+            "ru": "Локация - обязательное поле."
+        }
+    },
+    "validation.order.owner.required": {
+        "code": "validation.order.owner.required",
+        "messages": {
+            "en": "Owner is required.",
+            "ru": "Владелец (заказа) - обязательное поле."
+        }
+    },
 
 
 
@@ -44,5 +68,12 @@
             "ru": "Такого заквза не существует."
         }
     },
-    "cannot.add.new.candidate": {}
+    "cannot.add.new.candidate": {},
+    "message.not.found": {
+        "code": "message.not.found",
+        "messages": {
+            "en": "Such message doesn't exists.",
+            "ru": "Такого сообщения не существует."
+        }
+    }
 }
