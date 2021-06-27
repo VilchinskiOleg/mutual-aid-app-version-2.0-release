@@ -13,11 +13,14 @@ import order.orderservice.domain.model.Order;
 import order.orderservice.domain.model.page.Page;
 import order.orderservice.domain.model.search.SearchOrderDetails;
 import order.orderservice.persistent.repository.OrderRepository;
+import org.common.http.autoconfiguration.model.CommonData;
+import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @Component
@@ -27,6 +30,8 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
     @Resource
     private Mapper mapper;
+    @Resource
+    private CommonData commonData;
 
     @Override
     public Order createOrder(Order orderDetails) {
@@ -40,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
     public Order findByOrderId(String orderId) {
         var orderData = orderRepository.findByOrderId(orderId);
         if (orderData.isEmpty()) {
-            throw new RuntimeException(ORDER_NOT_FUND); //TODO: return custom ConflictException.
+            throw new ConflictException(ORDER_NOT_FUND);
         }
         return mapper.map(orderData.get(), Order.class);
     }
@@ -59,6 +64,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findByExecutorOrCandidateIds(String memberId) { //TODO: get memberId from spring security context ?
+        commonData.setLocale(new Locale("ru"));
         var result = orderRepository.searchByExecutorOrCandidateIds(memberId);
         if (isEmpty(result)) {
             log.info("Such 'worker' hasn't processing orders");
@@ -109,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
     private void checkAddingCandidatesOpportunity(Order order) {
         var currentStatus = order.getStatus();
         if (currentStatus == IN_WORK || currentStatus == CLOSED) {
-            throw new RuntimeException(CANNOT_ADD_NEW_CANDIDATE); //TODO: return custom ConflictException.
+            throw new ConflictException(CANNOT_ADD_NEW_CANDIDATE);
         }
     }
 }

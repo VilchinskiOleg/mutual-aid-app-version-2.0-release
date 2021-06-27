@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import order.orderservice.domain.service.OrderService;
 import order.orderservice.rest.model.Order;
+import org.common.http.autoconfiguration.annotation.Api;
 import org.mapper.autoconfiguration.mapper.Mapper;
 //import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ public class CustomerRest {
     @Resource
     private OrderService orderService;
 
+    @Api
     @ApiOperation(value = "${order.operation.get-owner-orders}")
     @ApiImplicitParam(name = "member-id", dataType = "string", paramType = "query", defaultValue = "123")
     @GetMapping
@@ -32,6 +34,7 @@ public class CustomerRest {
         return null;
     }
 
+    @Api
     @ApiOperation(value = "${order.operation.get-order-by-id}")
     @ApiImplicitParam(name = "order-id", dataType = "string", paramType = "path", defaultValue = "123")
     @GetMapping(path = "/{order-id}")
@@ -41,6 +44,7 @@ public class CustomerRest {
         return mapper.map(result, Order.class);
     }
 
+    @Api
     @ApiOperation(value = "${order.operation.create-order}")
     @PostMapping
     @ResponseStatus(CREATED)
@@ -50,6 +54,7 @@ public class CustomerRest {
         return mapper.map(createdOrder, Order.class);
     }
 
+    @Api
     @ApiOperation(value = "${order.operation.update-order}")
     @PutMapping
     @ResponseStatus(OK)
@@ -58,6 +63,7 @@ public class CustomerRest {
         return null;
     }
 
+    @Api
     @ApiOperation(value = "${order.operation.approve-order}")
     @PutMapping(path = "/approve-order/")
     @ResponseStatus(OK)
@@ -67,6 +73,7 @@ public class CustomerRest {
         return null;
     }
 
+    @Api
     @ApiOperation(value = "${order.operation.close-order}")
     @PutMapping(path = "/close-order/")
     @ResponseStatus(OK)
