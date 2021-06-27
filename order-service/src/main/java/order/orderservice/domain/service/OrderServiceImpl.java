@@ -1,10 +1,12 @@
 package order.orderservice.domain.service;
 
+import static java.lang.Thread.currentThread;
+import static java.lang.Thread.sleep;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
 import static order.orderservice.domain.model.Order.Status.*;
-import static order.orderservice.util.Constant.Errors.CANNOT_ADD_NEW_CANDIDATE;
-import static order.orderservice.util.Constant.Errors.ORDER_NOT_FUND;
+import static order.orderservice.util.Constant.Errors.*;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +15,9 @@ import order.orderservice.domain.model.Order;
 import order.orderservice.domain.model.page.Page;
 import order.orderservice.domain.model.search.SearchOrderDetails;
 import order.orderservice.persistent.repository.OrderRepository;
+import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.mapper.autoconfiguration.mapper.Mapper;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -27,6 +31,8 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
     @Resource
     private Mapper mapper;
+    @Resource
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     @Override
     public Order createOrder(Order orderDetails) {
@@ -37,10 +43,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order findByOrderId(String orderId) {
+    public Order findByOrderIdRequired(String orderId) {
         var orderData = orderRepository.findByOrderId(orderId);
         if (orderData.isEmpty()) {
-            throw new RuntimeException(ORDER_NOT_FUND); //TODO: return custom ConflictException.
+            throw new ConflictException(ORDER_NOT_FUND);
         }
         return mapper.map(orderData.get(), Order.class);
     }
@@ -69,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order chooseOrder(String orderId, String memberId) { //TODO: get memberId from spring security context ?
-        Order currentOrder = findByOrderId(orderId);
+        Order currentOrder = findByOrderIdRequired(orderId);
         checkAddingCandidatesOpportunity(currentOrder);
         currentOrder.addCandidate(new Member(memberId, null, null,null)); //TODO: get and extract candidate from profile-rest.
         currentOrder.setModifyAt(now());
@@ -78,6 +84,48 @@ public class OrderServiceImpl implements OrderService {
         }
         var updatedOrder = orderRepository.save(mapper.map(currentOrder, order.orderservice.persistent.entity.Order.class));
         return mapper.map(updatedOrder, Order.class);
+    }
+
+    @Override
+    public Order approveOrder(String orderId, String executorId) {
+        Order currentOrder = findByOrderIdRequired(orderId);
+        checkApprovingExecutionOpportunity(currentOrder);
+        currentOrder.setExecutor(new Member(executorId, null, null,null)); //TODO: get and extract candidate from profile-rest.
+        currentOrder.setStatus(IN_WORK);
+        currentOrder.setModifyAt(now());
+        var updatedOrder = orderRepository.save(mapper.map(currentOrder, order.orderservice.persistent.entity.Order.class));
+        return mapper.map(updatedOrder, Order.class);
+    }
+
+    @Override
+    public Order closeOrder(String orderId) {
+        Order currentOrder = findByOrderIdRequired(orderId);
+        checkClosingOrderOpportunity(currentOrder);
+        currentOrder.setStatus(CLOSED);
+        currentOrder.setModifyAt(now());
+        var updatedOrder = orderRepository.save(mapper.map(currentOrder, order.orderservice.persistent.entity.Order.class));
+        return mapper.map(updatedOrder, Order.class);
+    }
+
+    @Override
+    public Integer removeOrdersAsync(List<Order> orders) {
+        if (isEmpty(orders)) {
+            return INTEGER_ZERO;
+        }
+        orders.forEach(order -> threadPoolTaskExecutor.execute(() -> {
+            log.info("{} - start!", currentThread().getName());
+            //TODO: check async work.
+//            try {
+//                sleep(3000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+            //TODO: some other logics yet.
+            var orderData = mapper.map(order, order.orderservice.persistent.entity.Order.class);
+            orderRepository.delete(orderData);
+            log.info("{} - finished!", currentThread().getName());
+        }));
+        return orders.size();
     }
 
     private Order createNewOrder() {
@@ -91,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
 
     private String generateId() {
         //todo
-        return "123456";
+        return "1234567";
     }
 
     private Page<Order> buildPageOrders(org.springframework.data.domain.Page<order.orderservice.persistent.entity.Order> pageOrdersDetails) {
@@ -109,7 +157,21 @@ public class OrderServiceImpl implements OrderService {
     private void checkAddingCandidatesOpportunity(Order order) {
         var currentStatus = order.getStatus();
         if (currentStatus == IN_WORK || currentStatus == CLOSED) {
-            throw new RuntimeException(CANNOT_ADD_NEW_CANDIDATE); //TODO: return custom ConflictException.
+            throw new ConflictException(CANNOT_ADD_NEW_CANDIDATE);
+        }
+    }
+
+    private void checkApprovingExecutionOpportunity(Order order) {
+        var currentStatus = order.getStatus();
+        if (currentStatus != AWAITING_APPROVAL) {
+            throw new ConflictException(CANNOT_APPROVE_EXECUTION);
+        }
+    }
+
+    private void checkClosingOrderOpportunity(Order order) {
+        var currentStatus = order.getStatus();
+        if (currentStatus != IN_WORK) {
+            throw new ConflictException(CANNOT_CLOSE_ORDER);
         }
     }
 }
