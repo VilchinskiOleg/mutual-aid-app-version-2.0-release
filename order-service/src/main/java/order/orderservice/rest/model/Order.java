@@ -3,6 +3,8 @@ package order.orderservice.rest.model;
 import static order.orderservice.util.Constant.Errors.*;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 import order.orderservice.util.validation.annotation.ValidOrder;

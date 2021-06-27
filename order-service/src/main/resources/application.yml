@@ -13,3 +13,9 @@ application:
       name: OLEG
       url: https://mail.google.com
       email: vilchinskioleg@gmail.com
+
+scheduler:
+  remove-closed-orders-job:
+    cron: 0 40 14 * * ?
+    closed-order-live-hours: 72
+    page-size: 10

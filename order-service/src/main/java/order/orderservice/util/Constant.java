@@ -14,6 +14,8 @@ public class Constant {
 
         public static final String ORDER_NOT_FUND = "order.not.found";
         public static final String CANNOT_ADD_NEW_CANDIDATE = "cannot.add.new.candidate";
+        public static final String CANNOT_CLOSE_ORDER = "cannot.close.order";
+        public static final String CANNOT_APPROVE_EXECUTION = "cannot.approve.execution";
     }
 
     public static class MongoDb {
