@@ -5,7 +5,7 @@ import static order.orderservice.util.Constant.Errors.SEARCH_ORDER_DETAILS_PAGIN
 
 import lombok.Getter;
 import lombok.Setter;
-import order.orderservice.util.validation.annotation.ValidOrderPriority;
+import order.orderservice.rest.validation.annotation.ValidOrderPriority;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 

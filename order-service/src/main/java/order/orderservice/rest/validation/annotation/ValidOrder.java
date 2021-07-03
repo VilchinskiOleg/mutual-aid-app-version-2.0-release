@@ -1,6 +1,6 @@
-package order.orderservice.util.validation.annotation;
+package order.orderservice.rest.validation.annotation;
 
-import order.orderservice.util.validation.validator.OrderValidator;
+import order.orderservice.rest.validation.validator.OrderValidator;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
