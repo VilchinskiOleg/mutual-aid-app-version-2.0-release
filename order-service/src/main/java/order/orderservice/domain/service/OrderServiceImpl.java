@@ -6,6 +6,8 @@ import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
 import static order.orderservice.domain.model.Order.Status.*;
 import static order.orderservice.util.Constant.Errors.*;
+import static order.orderservice.util.Constant.ModelMapper.CREATE;
+import static order.orderservice.util.Constant.ModelMapper.UPDATE;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
@@ -30,6 +32,8 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private OrderRepository orderRepository;
     @Resource
+    private ProfileService profileService;
+    @Resource
     private Mapper mapper;
     @Resource
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
@@ -37,9 +41,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order createOrder(Order orderDetails) {
         var order = createNewOrder();
-        mapper.map(orderDetails, order);
-        var orderData = mapper.map(order, order.orderservice.persistent.entity.Order.class);
-        return mapper.map(orderRepository.save(orderData), Order.class);
+        mapper.map(orderDetails, order, CREATE);
+        return saveOrder(order);
+    }
+
+    @Override
+    public Order updateOrder(Order orderDetails, String orderId) {
+        var order = findByOrderIdRequired(orderId);
+        mapper.map(orderDetails, order, UPDATE);
+        order.setModifyAt(now());
+        return saveOrder(order);
     }
 
     @Override
@@ -77,24 +88,22 @@ public class OrderServiceImpl implements OrderService {
     public Order chooseOrder(String orderId, String memberId) { //TODO: get memberId from spring security context ?
         Order currentOrder = findByOrderIdRequired(orderId);
         checkAddingCandidatesOpportunity(currentOrder);
-        currentOrder.addCandidate(new Member(memberId, null, null,null)); //TODO: get and extract candidate from profile-rest.
+        profileService.populateOrderExecutionCandidate(currentOrder, memberId);
         currentOrder.setModifyAt(now());
         if (currentOrder.getStatus() == ACTIVE) {
             currentOrder.setStatus(AWAITING_APPROVAL);
         }
-        var updatedOrder = orderRepository.save(mapper.map(currentOrder, order.orderservice.persistent.entity.Order.class));
-        return mapper.map(updatedOrder, Order.class);
+        return saveOrder(currentOrder);
     }
 
     @Override
     public Order approveOrder(String orderId, String executorId) {
         Order currentOrder = findByOrderIdRequired(orderId);
         checkApprovingExecutionOpportunity(currentOrder);
-        currentOrder.setExecutor(new Member(executorId, null, null,null)); //TODO: get and extract candidate from profile-rest.
+        profileService.populateOrderExecutor(currentOrder, executorId);
         currentOrder.setStatus(IN_WORK);
         currentOrder.setModifyAt(now());
-        var updatedOrder = orderRepository.save(mapper.map(currentOrder, order.orderservice.persistent.entity.Order.class));
-        return mapper.map(updatedOrder, Order.class);
+        return saveOrder(currentOrder);
     }
 
     @Override
@@ -103,8 +112,7 @@ public class OrderServiceImpl implements OrderService {
         checkClosingOrderOpportunity(currentOrder);
         currentOrder.setStatus(CLOSED);
         currentOrder.setModifyAt(now());
-        var updatedOrder = orderRepository.save(mapper.map(currentOrder, order.orderservice.persistent.entity.Order.class));
-        return mapper.map(updatedOrder, Order.class);
+        return saveOrder(currentOrder);
     }
 
     @Override
@@ -173,5 +181,11 @@ public class OrderServiceImpl implements OrderService {
         if (currentStatus != IN_WORK) {
             throw new ConflictException(CANNOT_CLOSE_ORDER);
         }
+    }
+
+    private Order saveOrder(Order order) {
+        var orderData = mapper.map(order, order.orderservice.persistent.entity.Order.class);
+        var savedOrderData = orderRepository.save(orderData);
+        return mapper.map(savedOrderData, Order.class);
     }
 }

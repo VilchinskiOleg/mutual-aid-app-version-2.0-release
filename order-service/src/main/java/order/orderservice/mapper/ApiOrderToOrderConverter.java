@@ -20,6 +20,7 @@ public class ApiOrderToOrderConverter extends BaseConverter<Order, order.orderse
 
     @Override
     public void convert(Order source, order.orderservice.domain.model.Order destination) {
+        destination.setOrderId(source.getOrderId());
         destination.setTitle(source.getTitle());
         destination.setDescription(source.getDescription());
         destination.setLocation(mapper.map(source.getLocation(), Location.class));
@@ -31,5 +32,8 @@ public class ApiOrderToOrderConverter extends BaseConverter<Order, order.orderse
             destination.setPriority(mapper.map(source.getPriority(), Priority.class));
         }
         destination.setOwner(mapper.map(source.getOwner(), Member.class));
+        if (nonNull(source.getExecutor())) {
+            destination.setExecutor(mapper.map(source.getExecutor(), Member.class));
+        }
     }
 }

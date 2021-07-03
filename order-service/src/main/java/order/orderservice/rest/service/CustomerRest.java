@@ -51,11 +51,14 @@ public class CustomerRest {
     }
 
     @ApiOperation(value = "${order.operation.update-order}")
-    @PutMapping
+    @PutMapping(path = "/update-order/{order-id}")
     @ResponseStatus(OK)
-    public Order updateOrder(@Valid @RequestBody Order updatedOrderRequest) {
-
-        return null;
+    //@PreAuthorize("hasRole('OWNER')")     // TODO: how to permit this action for only owner of order ?
+    public Order updateOrder(@Valid @RequestBody Order updatedOrderRequest,
+                             @PathVariable("order-id") String orderId) {
+        var orderDetails = mapper.map(updatedOrderRequest, order.orderservice.domain.model.Order.class);
+        var updatedOrder = orderService.updateOrder(orderDetails, orderId);
+        return mapper.map(updatedOrder, Order.class);
     }
 
     @ApiOperation(value = "${order.operation.approve-order}")

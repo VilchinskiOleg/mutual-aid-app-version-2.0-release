@@ -10,6 +10,8 @@ public interface OrderService {
 
     Order createOrder(Order orderDetails);
 
+    Order updateOrder(Order orderDetails, String orderId);
+
     Order findByOrderIdRequired(String orderId);
 
     Page<Order> findByFilters(SearchOrderDetails searchOrderDetails);
