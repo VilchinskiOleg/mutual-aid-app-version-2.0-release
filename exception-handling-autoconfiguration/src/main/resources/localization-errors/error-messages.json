@@ -68,12 +68,39 @@
             "ru": "Такого заквза не существует."
         }
     },
-    "cannot.add.new.candidate": {},
     "message.not.found": {
         "code": "message.not.found",
         "messages": {
             "en": "Such message doesn't exists.",
             "ru": "Такого сообщения не существует."
+        }
+    },
+    "cannot.add.new.candidate": {
+        "code": "cannot.add.new.candidate",
+        "messages": {
+            "en": "For adding new candidate order status should be ACTIVE or AWAITING_APPROVAL.",
+            "ru": "Для того чтобы добавить нового кандидата статус заказа должен быть ACTIVE или AWAITING_APPROVAL."
+        }
+    },
+    "cannot.approve.execution": {
+        "code": "cannot.approve.execution",
+        "messages": {
+            "en": "For approving execution of order it should have status AWAITING_APPROVAL.",
+            "ru": "Чтобы подтвердить выполнение заказа он должен иметь статус AWAITING_APPROVAL."
+        }
+    },
+    "cannot.close.order": {
+        "code": "cannot.close.order",
+        "messages": {
+            "en": "For closing order it should have status IN_WORK",
+            "ru": "Чтобы закрыть заказ он должен иметь статус IN_WORK"
+        }
+    },
+    "executor.should.be.from.candidates": {
+        "code": "executor.should.be.from.candidates",
+        "messages": {
+            "en": "Executor should be from candidates list only.",
+            "ru": "Исполнитель должен быть только из ряда кандидатов."
         }
     }
 }

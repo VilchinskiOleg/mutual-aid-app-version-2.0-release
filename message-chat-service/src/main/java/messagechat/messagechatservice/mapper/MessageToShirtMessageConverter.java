@@ -1,4 +1,4 @@
-package messagechat.messagechatservice.domain.mapper;
+package messagechat.messagechatservice.mapper;
 
 import static java.util.Objects.nonNull;
 

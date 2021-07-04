@@ -1,4 +1,4 @@
-package messagechat.messagechatservice.domain.mapper;
+package messagechat.messagechatservice.mapper;
 
 import messagechat.messagechatservice.domain.model.Message;
 import messagechat.messagechatservice.persistent.entity.Member;

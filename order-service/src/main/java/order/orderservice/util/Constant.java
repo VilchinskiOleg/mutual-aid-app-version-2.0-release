@@ -1,5 +1,7 @@
 package order.orderservice.util;
 
+import java.time.LocalDateTime;
+
 public class Constant {
 
     public static class Errors {
@@ -16,7 +18,7 @@ public class Constant {
         public static final String CANNOT_ADD_NEW_CANDIDATE = "cannot.add.new.candidate";
         public static final String CANNOT_CLOSE_ORDER = "cannot.close.order";
         public static final String CANNOT_APPROVE_EXECUTION = "cannot.approve.execution";
-        public static final String CANNOT_CHANGE_ORDER_EXECUTOR = "cannot.change.order.executor";
+        public static final String EXECUTOR_SHOULD_BE_FROM_CANDIDATES = "executor.should.be.from.candidates";
     }
 
     public static class MongoDb {
@@ -44,5 +46,9 @@ public class Constant {
     public static class Service {
 
         public static final String SUB_TITLE_REGEXP_PART = ".*";
+
+        public static final Long GENERATE_ID_U_64_TICKS_MASK = 0x3FFFFFFFFFFFFFFFL;
+        public static final Long GENERATE_ID_U_64_LOCAL_MASK = 0x8000000000000000L;
+        public static final LocalDateTime GLOBAL_MARK_START_COUNT_TIME_BY_GREGORIAN = LocalDateTime.of(1582, 10, 15, 0, 0, 0);
     }
 }

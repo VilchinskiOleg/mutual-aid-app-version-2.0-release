@@ -1,4 +1,4 @@
-package messagechat.messagechatservice.domain.mapper;
+package messagechat.messagechatservice.mapper;
 
 import static org.springframework.util.CollectionUtils.isEmpty;
 
