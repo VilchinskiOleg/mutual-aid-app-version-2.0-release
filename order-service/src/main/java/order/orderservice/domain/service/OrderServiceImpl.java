@@ -4,6 +4,7 @@ import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
 import static order.orderservice.domain.model.Order.Status.*;
 import static order.orderservice.util.Constant.Errors.*;
 import static order.orderservice.util.Constant.ModelMapper.CREATE;
@@ -52,6 +53,9 @@ public class OrderServiceImpl implements OrderService {
     public Order updateOrder(Order orderDetails, String orderId) {
         var order = findByOrderIdRequired(orderId);
         mapper.map(orderDetails, order, UPDATE);
+        if (nonNull(orderDetails.getExecutor())) {
+            profileService.changeOrderExecutor(order, orderDetails.getExecutor());
+        }
         order.setModifyAt(now());
         return saveOrder(order);
     }
