@@ -23,9 +23,6 @@ public class RequestCommonDataInterceptor implements HandlerInterceptor {
         commonData.setLocale(new Locale(extractLang(request)));
         commonData.setHttpSession(request.getSession());
         commonData.setHeaders(extractHeaders(request));
-
-        //TODO: for my experiment (remove before PROD).
-        commonData.setThreadName(Thread.currentThread().getName());
         return true;
     }
 

@@ -64,7 +64,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findByExecutorOrCandidateIds(String memberId) { //TODO: get memberId from spring security context ?
+        Locale locale = commonData.getLocale();
         commonData.setLocale(new Locale("ru"));
+        String lang = commonData.getLocale().getLanguage();
         var result = orderRepository.searchByExecutorOrCandidateIds(memberId);
         if (isEmpty(result)) {
             log.info("Such 'worker' hasn't processing orders");
