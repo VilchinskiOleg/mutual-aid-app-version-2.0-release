@@ -19,14 +19,12 @@ import order.orderservice.domain.model.search.SearchOrderDetails;
 import order.orderservice.persistent.repository.OrderRepository;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.common.http.autoconfiguration.model.CommonData;
-import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @Slf4j
 @Component
