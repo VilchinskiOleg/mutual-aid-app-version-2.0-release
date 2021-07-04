@@ -1,6 +1,6 @@
 package order.orderservice.domain.service;
 
-import static order.orderservice.util.Constant.Errors.CANNOT_CHANGE_ORDER_EXECUTOR;
+import static order.orderservice.util.Constant.Errors.EXECUTOR_SHOULD_BE_FROM_CANDIDATES;
 
 import order.orderservice.domain.model.Member;
 import order.orderservice.domain.model.Order;
@@ -43,7 +43,7 @@ public class ProfileService {
                 .filter(candidate -> candidate.equals(executor))
                 .findFirst();
         if (newExecutor.isEmpty()) {
-            throw new ConflictException(CANNOT_CHANGE_ORDER_EXECUTOR);
+            throw new ConflictException(EXECUTOR_SHOULD_BE_FROM_CANDIDATES);
         }
         return newExecutor.get();
     }

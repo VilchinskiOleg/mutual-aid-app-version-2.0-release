@@ -36,6 +36,8 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private ProfileService profileService;
     @Resource
+    private IdGeneratorService idGeneratorService;
+    @Resource
     private Mapper mapper;
     @Resource
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
@@ -129,13 +131,13 @@ public class OrderServiceImpl implements OrderService {
         }
         orders.forEach(order -> threadPoolTaskExecutor.execute(() -> {
             log.info("{} - start!", currentThread().getName());
-            //TODO: check async work.
+
 //            try {
 //                sleep(3000);
 //            } catch (InterruptedException e) {
 //                e.printStackTrace();
 //            }
-            //TODO: some other logics yet.
+
             var orderData = mapper.map(order, order.orderservice.persistent.entity.Order.class);
             orderRepository.delete(orderData);
             log.info("{} - finished!", currentThread().getName());
@@ -145,16 +147,11 @@ public class OrderServiceImpl implements OrderService {
 
     private Order createNewOrder() {
         var order = new Order();
-        order.setOrderId(generateId());
+        order.setOrderId(idGeneratorService.generate());
         order.setStatus(ACTIVE);
         order.setCreateAt(now());
         order.setOwner(getOwnerBySecurityContext());
         return order;
-    }
-
-    private String generateId() {
-        //todo
-        return "1234567";
     }
 
     private Page<Order> buildPageOrders(org.springframework.data.domain.Page<order.orderservice.persistent.entity.Order> pageOrdersDetails) {

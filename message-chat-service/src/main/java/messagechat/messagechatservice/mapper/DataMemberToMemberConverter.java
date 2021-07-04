@@ -1,11 +1,11 @@
-package messagechat.messagechatservice.domain.mapper;
+package messagechat.messagechatservice.mapper;
 
-import messagechat.messagechatservice.rest.model.Member;
+import messagechat.messagechatservice.persistent.entity.Member;
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ApiMemberToMemberConverter extends BaseConverter<Member, messagechat.messagechatservice.domain.model.Member> {
+public class DataMemberToMemberConverter extends BaseConverter<Member, messagechat.messagechatservice.domain.model.Member> {
 
     @Override
     protected messagechat.messagechatservice.domain.model.Member getDestination() {

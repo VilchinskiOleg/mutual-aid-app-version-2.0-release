@@ -26,6 +26,8 @@ public class MessageChatServiceImpl implements MessageChatService {
     @Resource
     private DialogRepository dialogRepository;
     @Resource
+    private IdGeneratorService idGeneratorService;
+    @Resource
     private Mapper mapper;
 
     public Message addMessageToDialog(Message messageData, String dialogId) {
@@ -96,7 +98,7 @@ public class MessageChatServiceImpl implements MessageChatService {
     }
 
     private Dialog populateMetaDataToDialog(Dialog dialog){
-        dialog.setDialogId(generateId());
+        dialog.setDialogId(idGeneratorService.generate());
         dialog.setCreateAt(now());
         dialog.setStatus(OPEN);
         //todo
@@ -104,14 +106,9 @@ public class MessageChatServiceImpl implements MessageChatService {
     }
 
     private Message populateMetaDataToMessage(Message message) {
-        message.setId(generateId());
+        message.setId(idGeneratorService.generate());
         message.setCreateAt(now());
         //todo
         return message;
-    }
-
-    private String generateId() {
-        //todo
-        return "123456";
     }
 }

@@ -17,8 +17,8 @@ import java.util.Map;
 @ComponentScan(basePackages = "org.exception.handling.autoconfiguration.handler")
 public class ExceptionHandlingConfig {
 
-    @Bean
-    public Map<String, LocalizedErrorMessages> localizedErrorMessagesConfig() {
+    @Bean(name = "localizedErrorMessagesConfig")
+    public Map<String, LocalizedErrorMessages> localizedErrorMessagesConfigInitialization() {
         URL url = ClassLoader.getSystemClassLoader()
                 .getResource("localization-errors/error-messages.json");
         if (isNull(url)) {
@@ -27,7 +27,7 @@ public class ExceptionHandlingConfig {
         Map<String, LocalizedErrorMessages> localizedErrorMessages;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            TypeReference<Map<String, LocalizedErrorMessages>> type = new TypeReference<Map<String, LocalizedErrorMessages>>() {};
+            TypeReference<Map<String, LocalizedErrorMessages>> type = new TypeReference<>() {};
             localizedErrorMessages = objectMapper.readValue(new FileReader(url.getPath()), type);
         } catch (IOException ex) {
             throw new RuntimeException("Error on starting app: cannot read error messages JSON file");
