@@ -1,11 +1,11 @@
 package order.orderservice.rest.message;
 
-import static order.orderservice.util.Constant.Errors.ORDER_PRIORITY_RULE;
-import static order.orderservice.util.Constant.Errors.SEARCH_ORDER_DETAILS_PAGING_RULE;
+import static order.orderservice.util.Constant.Errors.*;
 
 import lombok.Getter;
 import lombok.Setter;
 import order.orderservice.rest.validation.annotation.ValidOrderPriority;
+import order.orderservice.rest.validation.annotation.ValidOrderType;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
@@ -20,6 +20,7 @@ public class SearchOrderDetails {
 
     private BigDecimal priceFrom;
     private BigDecimal priceTo;
+    @ValidOrderType(pattern = "^(PAID|UNPAID)$", message = ORDER_TYPE_RULE)
     private String type;
     @ValidOrderPriority(pattern = "^(CRITICAL|NOT_CRITICAL)$", message = ORDER_PRIORITY_RULE)
     private String priority;

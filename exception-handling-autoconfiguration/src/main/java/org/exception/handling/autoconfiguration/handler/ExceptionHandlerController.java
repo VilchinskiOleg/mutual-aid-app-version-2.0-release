@@ -4,6 +4,7 @@ import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 import static org.exception.handling.autoconfiguration.utils.Constant.*;
 import static org.springframework.util.CollectionUtils.isEmpty;
+
 import lombok.extern.slf4j.Slf4j;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.exception.handling.autoconfiguration.model.Error;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import javax.annotation.Resource;
-import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Slf4j
@@ -25,7 +26,7 @@ public class ExceptionHandlerController {
     private ErrorMessagesManager errorMessagesManager;
 
     @ExceptionHandler(value = ConflictException.class)
-    public ResponseEntity<Error> ConflictExceptionHandler(ServletRequest request, ConflictException ex) {
+    public ResponseEntity<Error> ConflictExceptionHandler(HttpServletRequest request, ConflictException ex) {
         Error error= Error.builder()
                 .code(ex.getMessage())
                 .message(errorMessagesManager.getLocalizedErrorMessage(ex.getMessage(), extractLang(request)))
@@ -35,7 +36,7 @@ public class ExceptionHandlerController {
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<Error> ValidationExceptionHandler(ServletRequest request, MethodArgumentNotValidException ex) {
+    public ResponseEntity<Error> ValidationExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException ex) {
         String lang = extractLang(request);
         List<ObjectError> validationErrorsData = ex.getAllErrors();
         List<Error> validationErrors = isEmpty(validationErrorsData) ?
@@ -50,7 +51,7 @@ public class ExceptionHandlerController {
     }
 
     @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<Error> CommonExceptionHandler(ServletRequest request, Exception ex) {
+    public ResponseEntity<Error> CommonExceptionHandler(HttpServletRequest request, Exception ex) {
         log.error("Unexpected error: cannot process this case.", ex);
         Error error= Error.builder()
                 .code(COMMON_EXCEPTION_MESSAGE_CODE)
@@ -77,8 +78,8 @@ public class ExceptionHandlerController {
                 .collect(toList());
     }
 
-    private String extractLang(ServletRequest request) {
-        Object lang = request.getAttribute(LANG_HEADER);
+    private String extractLang(HttpServletRequest request) {
+        Object lang = request.getHeader(LANG_HEADER);
         if (isNull(lang)) {
             return DEFAULT_LANG;
         }

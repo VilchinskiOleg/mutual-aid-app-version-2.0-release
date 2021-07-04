@@ -23,6 +23,13 @@
             "ru": "Заказ указанного типа не может быть создан для таких входных параметров."
         }
     },
+    "validation.order.type.rule": {
+        "code": "validation.order.type.rule",
+        "messages": {
+            "en": "Type mast be only PAID or UNPAID.",
+            "ru": "Тип может быть только PAID или UNPAID."
+        }
+    },
     "validation.order.priority.rule": {
         "code": "validation.order.priority.rule",
         "messages": {
