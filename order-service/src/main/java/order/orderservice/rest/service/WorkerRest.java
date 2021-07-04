@@ -41,7 +41,7 @@ public class WorkerRest {
     @GetMapping(path = "/{order-id}")
     @ResponseStatus(OK)
     public Order getOrderByOrderId(@PathVariable("order-id") String orderId) {
-        var result = orderService.findByOrderId(orderId);
+        var result = orderService.findByOrderIdRequired(orderId);
         return mapper.map(result, Order.class);
     }
 

@@ -64,6 +64,12 @@
                 <version>6.1.2.Final</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.9</version>
+            </dependency>
+
 <!--        SWAGGER: ..................-->
             <dependency>
                 <groupId>io.springfox</groupId>

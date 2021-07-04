@@ -14,6 +14,9 @@ public class Constant {
 
         public static final String ORDER_NOT_FUND = "order.not.found";
         public static final String CANNOT_ADD_NEW_CANDIDATE = "cannot.add.new.candidate";
+        public static final String CANNOT_CLOSE_ORDER = "cannot.close.order";
+        public static final String CANNOT_APPROVE_EXECUTION = "cannot.approve.execution";
+        public static final String CANNOT_CHANGE_ORDER_EXECUTOR = "cannot.change.order.executor";
     }
 
     public static class MongoDb {
@@ -30,6 +33,12 @@ public class Constant {
 
         public static final String CANDIDATES = "candidates";
         public static final String MEMBER_ID = "memberId";
+    }
+
+    public static class ModelMapper {
+
+        public static final String CREATE = "create";
+        public static final String UPDATE = "update";
     }
 
     public static class Service {

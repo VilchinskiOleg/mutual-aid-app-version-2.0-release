@@ -40,7 +40,7 @@ public class CustomerRest {
     @GetMapping(path = "/{order-id}")
     @ResponseStatus(OK)
     public Order getOrderByOrderId(@PathVariable("order-id") String orderId) {
-        var result = orderService.findByOrderId(orderId);
+        var result = orderService.findByOrderIdRequired(orderId);
         return mapper.map(result, Order.class);
     }
 
@@ -56,32 +56,34 @@ public class CustomerRest {
 
     @Api
     @ApiOperation(value = "${order.operation.update-order}")
-    @PutMapping
+    @PutMapping(path = "/update-order/{order-id}")
     @ResponseStatus(OK)
-    public Order updateOrder(@Valid @RequestBody Order updatedOrderRequest) {
-
-        return null;
+    //@PreAuthorize("hasRole('OWNER')")     // TODO: how to permit this action for only owner of order ?
+    public Order updateOrder(@Valid @RequestBody Order updatedOrderRequest,
+                             @PathVariable("order-id") String orderId) {
+        var orderDetails = mapper.map(updatedOrderRequest, order.orderservice.domain.model.Order.class);
+        var updatedOrder = orderService.updateOrder(orderDetails, orderId);
+        return mapper.map(updatedOrder, Order.class);
     }
 
     @Api
     @ApiOperation(value = "${order.operation.approve-order}")
-    @PutMapping(path = "/approve-order/")
+    @PutMapping(path = "/approve-order/{order-id}")
     @ResponseStatus(OK)
     //@PreAuthorize("hasRole('OWNER')")     // TODO: how to permit this action for only owner of order ?
-    public Order approveOrder() {
-
-        return null;
+    public Order approveOrder(@PathVariable("order-id") String orderId,
+                              @RequestParam("executor-id") String executorId) {
+        var order = orderService.approveOrder(orderId, executorId);
+        return mapper.map(order, Order.class);
     }
 
     @Api
     @ApiOperation(value = "${order.operation.close-order}")
-    @PutMapping(path = "/close-order/")
+    @PutMapping(path = "/close-order/{order-id}")
     @ResponseStatus(OK)
     //@PreAuthorize("hasRole('OWNER')")     // TODO: how to permit this action for only owner of order ?
-    public Order closeOrder() {
-
-        return null;
+    public Order closeOrder(@PathVariable("order-id") String orderId) {
+        var order = orderService.closeOrder(orderId);
+        return mapper.map(order, Order.class);
     }
-
-    //TODO: remove closed orders by [sheduling/job] after some time (after closing)
 }

@@ -1,9 +1,9 @@
-package order.orderservice.util.validation.validator;
+package order.orderservice.rest.validation.validator;
 
 import static java.util.Objects.isNull;
 import static java.util.regex.Pattern.compile;
 
-import order.orderservice.util.validation.annotation.ValidOrderPriority;
+import order.orderservice.rest.validation.annotation.ValidOrderPriority;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.regex.Matcher;

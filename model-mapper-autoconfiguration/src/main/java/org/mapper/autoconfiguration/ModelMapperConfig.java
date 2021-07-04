@@ -2,6 +2,7 @@ package org.mapper.autoconfiguration;
 
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.mapper.autoconfiguration.mapper.Mapper;
+import org.mapper.autoconfiguration.processor.AnnotationContextProcessor;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +19,7 @@ public class ModelMapperConfig {
     @ConditionalOnMissingBean
     @Bean(name = "mapper")
     public Mapper configurerModelMapper() {
-        Mapper mapper = new Mapper();
+        Mapper mapper = new Mapper(new AnnotationContextProcessor());
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         converters.forEach(converter -> {
             converter.setMapper(mapper);
