@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import order.orderservice.rest.validation.annotation.ValidOrder;
 import order.orderservice.rest.validation.annotation.ValidOrderPriority;
+import order.orderservice.rest.validation.annotation.ValidOrderType;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -26,6 +28,7 @@ public class Order {
     private Location location;
     private BigDecimal price;
 
+    @ValidOrderType(pattern = "^(PAID|UNPAID)$", message = ORDER_TYPE_RULE)
     private String type;
     private String status;
     @ValidOrderPriority(pattern = "^(CRITICAL|NOT_CRITICAL)$", message = ORDER_PRIORITY_RULE)

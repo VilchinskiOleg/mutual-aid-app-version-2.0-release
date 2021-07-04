@@ -27,7 +27,7 @@ public class RequestCommonDataInterceptor implements HandlerInterceptor {
     }
 
     private String extractLang(HttpServletRequest request) {
-        Object lang = request.getAttribute(LANG_HEADER);
+        Object lang = request.getHeader(LANG_HEADER);
         if (isNull(lang)) {
             return DEFAULT_LANG;
         }
