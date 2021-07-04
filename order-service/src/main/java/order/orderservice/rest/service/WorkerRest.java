@@ -8,6 +8,7 @@ import order.orderservice.domain.service.OrderService;
 import order.orderservice.rest.message.OrdersResponse;
 import order.orderservice.rest.message.SearchOrderDetails;
 import order.orderservice.rest.model.Order;
+import org.common.http.autoconfiguration.annotation.Api;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
@@ -24,6 +25,7 @@ public class WorkerRest {
     @Resource
     private OrderService orderService;
 
+    @Api
     @ApiOperation(value = "${order.operation.get-executor-candidate-orders}")
     @ApiImplicitParam(name = "member-id", dataType = "string", paramType = "query", defaultValue = "123")
     @GetMapping
@@ -33,6 +35,7 @@ public class WorkerRest {
         return mapper.map(result, new ArrayList<>(), Order.class);
     }
 
+    @Api
     @ApiOperation(value = "${order.operation.get-order-by-id}")
     @ApiImplicitParam(name = "order-id", dataType = "string", paramType = "path", defaultValue = "123")
     @GetMapping(path = "/{order-id}")
@@ -42,6 +45,7 @@ public class WorkerRest {
         return mapper.map(result, Order.class);
     }
 
+    @Api
     @ApiOperation(value = "${order.operation.search-by-part-title}")
     @GetMapping(path = "/title-fragment/{subTitle}")
     @ResponseStatus(OK)
@@ -52,6 +56,7 @@ public class WorkerRest {
         return mapper.map(result, OrdersResponse.class);
     }
 
+    @Api
     @ApiOperation(value = "${order.operation.search-by-filters}")
     @PostMapping(path = "/search-by-filters")
     @ResponseStatus(OK)
@@ -62,6 +67,7 @@ public class WorkerRest {
     }
 
     //TODO: add spring security for methods ->:
+    @Api
     @ApiOperation(value = "${order.operation.choose-order}")
     @PutMapping(path = "/choose/{order-id}/{member-id}")
     @ResponseStatus(OK)

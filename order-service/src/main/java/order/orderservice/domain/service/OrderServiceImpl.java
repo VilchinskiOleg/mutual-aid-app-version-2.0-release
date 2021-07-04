@@ -18,6 +18,7 @@ import order.orderservice.domain.model.page.Page;
 import order.orderservice.domain.model.search.SearchOrderDetails;
 import order.orderservice.persistent.repository.OrderRepository;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
+import org.common.http.autoconfiguration.model.CommonData;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
@@ -37,6 +38,8 @@ public class OrderServiceImpl implements OrderService {
     private Mapper mapper;
     @Resource
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Resource
+    private CommonData commonData;
 
     @Override
     public Order createOrder(Order orderDetails) {

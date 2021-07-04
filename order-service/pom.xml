@@ -37,6 +37,12 @@
 			<artifactId>exception-handling-autoconfiguration</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.common.http.autoconfiguration</groupId>
+			<artifactId>common-http-autoconfiguration</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
