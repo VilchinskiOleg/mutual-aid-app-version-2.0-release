@@ -37,6 +37,8 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private Mapper mapper;
     @Resource
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Resource
     private CommonData commonData;
 
     @Override
