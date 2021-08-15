@@ -109,5 +109,12 @@
             "en": "Executor should be from candidates list only.",
             "ru": "Исполнитель должен быть только из ряда кандидатов."
         }
+    },
+    "event.incorrect.order.id": {
+        "code": "event.incorrect.order.id",
+        "messages": {
+            "en": "Order id incorrect",
+            "ru": "Id - не корректен"
+        }
     }
 }

@@ -23,9 +23,11 @@
     <modules>
         <module>model-mapper-autoconfiguration</module>
         <module>exception-handling-autoconfiguration</module>
+        <module>common-http-autoconfiguration</module>
+
         <module>message-chat-service</module>
         <module>order-service</module>
-        <module>common-http-autoconfiguration</module>
+        <module>event-storage-service</module>
     </modules>
 
         <dependencies>
@@ -125,6 +127,7 @@
                         </exclude>
                     </excludes>
                 </configuration>
+                <version>2.5.3</version>
             </plugin>
         </plugins>
     </build>
