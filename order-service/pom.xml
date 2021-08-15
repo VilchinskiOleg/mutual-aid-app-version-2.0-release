@@ -27,6 +27,14 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+			<version>2.7.2</version>
+		</dependency>
+
+
+
+		<dependency>
 			<groupId>org.mapper.autoconfiguration</groupId>
 			<artifactId>model-mapper-autoconfiguration</artifactId>
 			<version>0.0.1-SNAPSHOT</version>

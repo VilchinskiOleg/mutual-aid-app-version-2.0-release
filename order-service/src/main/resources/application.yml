@@ -1,8 +1,14 @@
+server:
+  port: 8100
+
 spring:
   data:
     mongodb:
       database: mutual-aid-app
       uri: mongodb://localhost:27017/mutual-aid-app
+  kafka:
+    admin:
+      client-id:
 
 application:
   api-info:
@@ -19,3 +25,6 @@ scheduler:
     cron: 0 40 14 * * ?
     closed-order-live-hours: 72
     page-size: 10
+
+kafka:
+  bootstrapServers: localhost:9092

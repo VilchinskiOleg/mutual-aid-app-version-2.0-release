@@ -17,6 +17,7 @@ import order.orderservice.domain.model.Member;
 import order.orderservice.domain.model.Order;
 import order.orderservice.domain.model.page.Page;
 import order.orderservice.domain.model.search.SearchOrderDetails;
+import order.orderservice.domain.service.kafka.producer.CreateOrderEventProducer;
 import order.orderservice.domain.service.processor.IdGeneratorService;
 import order.orderservice.domain.service.processor.ProfileService;
 import order.orderservice.persistent.repository.OrderRepository;
@@ -40,17 +41,21 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private IdGeneratorService idGeneratorService;
     @Resource
-    private Mapper mapper;
-    @Resource
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Resource
+    private CreateOrderEventProducer createOrderEventProducer;
+    @Resource
     private CommonData commonData;
+    @Resource
+    private Mapper mapper;
 
     @Override
     public Order createOrder(Order orderDetails) {
         var order = createNewOrder();
         mapper.map(orderDetails, order, CREATE);
-        return saveOrder(order);
+        Order savedOrder = saveOrder(order);
+        createOrderEventProducer.sendMessage(savedOrder.getOrderId());
+        return savedOrder;
     }
 
     @Override
