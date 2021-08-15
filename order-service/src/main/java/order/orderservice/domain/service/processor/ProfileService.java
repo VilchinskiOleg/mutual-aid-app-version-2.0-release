@@ -1,4 +1,4 @@
-package order.orderservice.domain.service;
+package order.orderservice.domain.service.processor;
 
 import static order.orderservice.util.Constant.Errors.EXECUTOR_SHOULD_BE_FROM_CANDIDATES;
 

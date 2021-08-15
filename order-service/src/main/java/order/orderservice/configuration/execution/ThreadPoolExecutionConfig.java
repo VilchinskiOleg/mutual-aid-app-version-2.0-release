@@ -16,16 +16,22 @@ import java.util.concurrent.Executors;
 //@EnableAsync(mode = AdviceMode.ASPECTJ)
 public class ThreadPoolExecutionConfig {
 
+    /**
+     * for b) case.
+     */
     @Resource
     private CallableTaskDecorator asyncContextDataDecorator;
 
+    /**
+     * a) Use if you need simple thread pool executor.
+     */
     @Bean(name = "executorService")
     public ExecutorService getExecutor(){
         return Executors.newFixedThreadPool(10);
     }
 
     /**
-     * Use if you wont decorate some action before run thread.
+     * b) Use if you wont decorate some action before run thread.
      */
     @Bean(name = "threadPoolTaskExecutor")
     public ThreadPoolTaskExecutor getExecutorService() {

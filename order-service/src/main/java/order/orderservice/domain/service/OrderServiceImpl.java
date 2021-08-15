@@ -17,6 +17,8 @@ import order.orderservice.domain.model.Member;
 import order.orderservice.domain.model.Order;
 import order.orderservice.domain.model.page.Page;
 import order.orderservice.domain.model.search.SearchOrderDetails;
+import order.orderservice.domain.service.processor.IdGeneratorService;
+import order.orderservice.domain.service.processor.ProfileService;
 import order.orderservice.persistent.repository.OrderRepository;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.common.http.autoconfiguration.model.CommonData;
