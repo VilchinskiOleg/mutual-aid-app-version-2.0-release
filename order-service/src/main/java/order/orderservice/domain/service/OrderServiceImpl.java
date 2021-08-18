@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
         var order = createNewOrder();
         mapper.map(orderDetails, order, CREATE);
         Order savedOrder = saveOrder(order);
-        createOrderEventProducer.sendMessage(savedOrder.getOrderId());
+        createOrderEventProducer.sendMessage(savedOrder);
         return savedOrder;
     }
 

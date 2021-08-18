@@ -1,5 +1,6 @@
 package event.event_storage_service.domain.service.kafka.consumer;
 
+import event.event_storage_service.configuration.kafka.message.KafkaOrderEvent;
 import event.event_storage_service.domain.service.EventStorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.KafkaException;
@@ -15,9 +16,9 @@ public class OrderEventListener {
     private EventStorageService eventStorageService;
 
     @KafkaListener(topics = "${kafka.listenTopics}")
-    public void saveCreateOrderEvent(String orderId) {
+    public void saveCreateOrderEvent(KafkaOrderEvent kafkaOrderEvent) {
         try {
-            System.out.println(orderId);
+            System.out.println(kafkaOrderEvent);
         } catch (KafkaException ex) {
             log.error("Something goes wrong!", ex);
         }
