@@ -20,6 +20,8 @@ public class Constant {
         public static final String CANNOT_CLOSE_ORDER = "cannot.close.order";
         public static final String CANNOT_APPROVE_EXECUTION = "cannot.approve.execution";
         public static final String EXECUTOR_SHOULD_BE_FROM_CANDIDATES = "executor.should.be.from.candidates";
+
+        public static final String KAFKA_PRODUCER_NOT_FUND = "kafka.producer.not.fund";
     }
 
     public static class MongoDb {
@@ -56,5 +58,6 @@ public class Constant {
     public static class Kafka {
 
         public static final String ORDER_TOPIC = "mutual-aid-order-topic";
+        public static final String ORDER_CLIENT_NAME = "order-service";
     }
 }

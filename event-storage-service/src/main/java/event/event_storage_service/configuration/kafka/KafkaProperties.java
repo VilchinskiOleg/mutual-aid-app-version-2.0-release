@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 public class KafkaProperties {
 
     private String bootstrapServers;
-    private String listenTopics;
     private String groupId;
+
+    //Not used
+    private String listenTopics;
 }
