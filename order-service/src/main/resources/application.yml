@@ -1,3 +1,6 @@
+server:
+  port: 8100
+
 spring:
   data:
     mongodb:
@@ -19,3 +22,6 @@ scheduler:
     cron: 0 40 14 * * ?
     closed-order-live-hours: 72
     page-size: 10
+
+kafka:
+  bootstrapServers: localhost:9092

@@ -2,7 +2,7 @@ package order.orderservice.domain.service.processor;
 
 import static java.time.Duration.between;
 import static order.orderservice.util.Constant.Service.*;
-import static java.time.LocalTime.now;
+import static java.time.LocalDateTime.now;
 
 import org.springframework.stereotype.Component;
 import java.time.Duration;

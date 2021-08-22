@@ -13,10 +13,12 @@ import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 import lombok.extern.slf4j.Slf4j;
+import order.orderservice.configuration.kafka.message.KafkaOrderEvent.OperationType;
 import order.orderservice.domain.model.Member;
 import order.orderservice.domain.model.Order;
 import order.orderservice.domain.model.page.Page;
 import order.orderservice.domain.model.search.SearchOrderDetails;
+import order.orderservice.domain.service.processor.EventManagerService;
 import order.orderservice.domain.service.processor.IdGeneratorService;
 import order.orderservice.domain.service.processor.ProfileService;
 import order.orderservice.persistent.repository.OrderRepository;
@@ -40,17 +42,21 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private IdGeneratorService idGeneratorService;
     @Resource
-    private Mapper mapper;
-    @Resource
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Resource
+    private EventManagerService eventManagerService;
+    @Resource
     private CommonData commonData;
+    @Resource
+    private Mapper mapper;
 
     @Override
     public Order createOrder(Order orderDetails) {
         var order = createNewOrder();
         mapper.map(orderDetails, order, CREATE);
-        return saveOrder(order);
+        Order savedOrder = saveOrder(order);
+        eventManagerService.sendEvent(OperationType.CREATE, savedOrder);
+        return savedOrder;
     }
 
     @Override
@@ -61,7 +67,9 @@ public class OrderServiceImpl implements OrderService {
             profileService.changeOrderExecutor(order, orderDetails.getExecutor());
         }
         order.setModifyAt(now());
-        return saveOrder(order);
+        Order savedOrder = saveOrder(order);
+        eventManagerService.sendEvent(OperationType.UPDATE, savedOrder);
+        return savedOrder;
     }
 
     @Override
@@ -104,7 +112,9 @@ public class OrderServiceImpl implements OrderService {
         if (currentOrder.getStatus() == ACTIVE) {
             currentOrder.setStatus(AWAITING_APPROVAL);
         }
-        return saveOrder(currentOrder);
+        Order savedOrder = saveOrder(currentOrder);
+        eventManagerService.sendEvent(OperationType.UPDATE, savedOrder);
+        return savedOrder;
     }
 
     @Override
@@ -114,7 +124,9 @@ public class OrderServiceImpl implements OrderService {
         profileService.populateOrderExecutor(currentOrder, executorId);
         currentOrder.setStatus(IN_WORK);
         currentOrder.setModifyAt(now());
-        return saveOrder(currentOrder);
+        Order savedOrder = saveOrder(currentOrder);
+        eventManagerService.sendEvent(OperationType.UPDATE, savedOrder);
+        return savedOrder;
     }
 
     @Override
@@ -123,7 +135,9 @@ public class OrderServiceImpl implements OrderService {
         checkClosingOrderOpportunity(currentOrder);
         currentOrder.setStatus(CLOSED);
         currentOrder.setModifyAt(now());
-        return saveOrder(currentOrder);
+        Order savedOrder = saveOrder(currentOrder);
+        eventManagerService.sendEvent(OperationType.UPDATE, savedOrder);
+        return savedOrder;
     }
 
     @Override
@@ -132,7 +146,7 @@ public class OrderServiceImpl implements OrderService {
             return INTEGER_ZERO;
         }
         orders.forEach(order -> threadPoolTaskExecutor.execute(() -> {
-            log.info("{} - start!", currentThread().getName());
+//            log.info("{} - start!", currentThread().getName());
 
 //            try {
 //                sleep(3000);
@@ -142,7 +156,9 @@ public class OrderServiceImpl implements OrderService {
 
             var orderData = mapper.map(order, order.orderservice.persistent.entity.Order.class);
             orderRepository.delete(orderData);
-            log.info("{} - finished!", currentThread().getName());
+            eventManagerService.sendEvent(OperationType.DELETE, order);
+
+//            log.info("{} - finished!", currentThread().getName());
         }));
         return orders.size();
     }

@@ -1,3 +1,7 @@
+server:
+  port: 8200
+  #  address: localhost:8200
+
 spring:
   data:
     mongodb:
@@ -13,3 +17,8 @@ application:
       name: OLEG
       url: https://mail.google.com
       email: vilchinskioleg@gmail.com
+
+kafka:
+  bootstrapServers: localhost:9092
+  listenTopics: mutual-aid-order-topic
+  groupId: event-storage-service
