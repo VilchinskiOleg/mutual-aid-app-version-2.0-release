@@ -5,8 +5,8 @@ server:
 spring:
   data:
     mongodb:
-    database: mutual-aid-app
-    uri: mongodb://localhost:27017/mutual-aid-app
+      database: mutual-aid-app
+      uri: mongodb://localhost:27017/mutual-aid-app
 
 application:
   api-info:
