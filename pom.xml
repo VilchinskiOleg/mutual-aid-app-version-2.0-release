@@ -28,6 +28,7 @@
         <module>message-chat-service</module>
         <module>order-service</module>
         <module>event-storage-service</module>
+        <module>profile-service-parent</module>
     </modules>
 
         <dependencies>
