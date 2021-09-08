@@ -65,6 +65,55 @@
             "ru": "Владелец (заказа) - обязательное поле."
         }
     },
+    "validation.profile.contacts.rule": {
+        "code": "validation.profile.contacts.rule",
+        "messages": {
+            "en": "Profile must have some contact",
+            "ru": "Профиль должен содержать как минимум один контакт"
+        }
+    },
+    "validation.profile.gender.rule": {
+        "code": "validation.profile.gender.rule",
+        "messages": {
+            "en": "Gender must be MALE, male, FEMALE or female",
+            "ru": "Пол должен быть MALE, male, FEMALE или female"
+        }
+    },
+    "validation.profile.birthday.rule": {
+        "code": "validation.profile.birthday.rule",
+        "messages": {
+            "en": "Birthday cannot be null or earlier then now date",
+            "ru": "Дата рождения не может null либо превышать текущую дату"
+        }
+    },
+    "validation.profile.contact.type.rule": {
+        "code": "validation.profile.contact.type.rule",
+        "messages": {
+            "en": "Contact type must be EMAIL, email, PHONE or phone",
+            "ru": "Тип контакта должен быть EMAIL, email, PHONE или phone"
+        }
+    },
+    "validation.profile.gender.required": {
+        "code": "validation.profile.gender.required",
+        "messages": {
+            "en": "Gender require",
+            "ru": "Пол обязателен"
+        }
+    },
+    "validation.profile.name.locale.rule": {
+        "code": "validation.profile.name.locale.rule",
+        "messages": {
+            "en": "Locale must have two latin symbol",
+            "ru": "Локаль должна состоять из двух латинских символов"
+        }
+    },
+    "validation.profile.names.rule": {
+        "code": "validation.profile.names.rule",
+        "messages": {
+            "en": "List of names must have english locale",
+            "ru": "Список имен обязательно должен содержать английскую локализацию"
+        }
+    },
 
 
 
@@ -115,6 +164,13 @@
         "messages": {
             "en": "Order id incorrect",
             "ru": "Id - не корректен"
+        }
+    },
+    "profile.not.fund": {
+        "code": "profile.not.fund",
+        "messages": {
+            "en": "Such profile doesn't exists.",
+            "ru": "Такого профиля не существует."
         }
     }
 }
