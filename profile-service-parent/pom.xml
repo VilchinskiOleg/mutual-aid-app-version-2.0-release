@@ -21,6 +21,7 @@
 
     <modules>
         <module>profile-service-rest</module>
+        <module>profile-service-client</module>
     </modules>
 
 </project>
