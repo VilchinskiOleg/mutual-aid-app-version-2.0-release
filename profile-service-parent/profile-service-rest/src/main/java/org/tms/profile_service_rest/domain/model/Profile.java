@@ -3,6 +3,7 @@ package org.tms.profile_service_rest.domain.model;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -16,6 +17,8 @@ public class Profile {
     private List<Contact> contacts;
     private Gender gender;
     private LocalDate birthday;
+    private LocalDateTime createAt;
+    private LocalDateTime modifyAt;
 
     public enum Gender {
         MALE,
