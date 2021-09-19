@@ -6,7 +6,7 @@
         <groupId>org.tms</groupId>
         <artifactId>mutual-aid-app</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath>..</relativePath>
     </parent>
 
     <artifactId>profile-service-parent</artifactId>
@@ -22,14 +22,5 @@
     <modules>
         <module>profile-service-rest</module>
     </modules>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
