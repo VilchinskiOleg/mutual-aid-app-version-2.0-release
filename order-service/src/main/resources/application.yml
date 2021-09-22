@@ -25,3 +25,6 @@ scheduler:
 
 kafka:
   bootstrapServers: localhost:9092
+
+profile-rest:
+  url: http://localhost:8400/api/profile-service
