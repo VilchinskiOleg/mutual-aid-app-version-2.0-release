@@ -1,5 +1,6 @@
 package order.orderservice.configuration.client;
 
+import feign.Contract;
 import feign.Logger;
 import feign.okhttp.OkHttpClient;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +19,7 @@ public class ProfileFeignClientConfig {
     }
 
     @Bean
-    Logger.Level feignLoggerLevel() {
+    public Logger.Level feignLoggerLevel() {
         return Logger.Level.FULL;
     }
 }

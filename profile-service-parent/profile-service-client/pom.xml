@@ -19,6 +19,14 @@
         <java.version>11</java.version>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.tms.exception.handling</groupId>
+            <artifactId>exception-handling-autoconfiguration</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -37,6 +45,9 @@
                             <configOptions>
                                 <dateLibrary>java11</dateLibrary>
                             </configOptions>
+                            <typeMappings>
+                                <typeMapping>Error=org.exception.handling.autoconfiguration.model.Error</typeMapping>
+                            </typeMappings>
                             <importMappings>
                                 <importMappings>LocalTime=java.time.LocalTime</importMappings>
                                 <importMappings>LocalDate=java.time.LocalDate</importMappings>

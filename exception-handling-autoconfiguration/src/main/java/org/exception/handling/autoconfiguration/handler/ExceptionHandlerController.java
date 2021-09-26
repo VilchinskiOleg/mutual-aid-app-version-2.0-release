@@ -6,6 +6,7 @@ import static org.exception.handling.autoconfiguration.utils.Constant.*;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 import lombok.extern.slf4j.Slf4j;
+import org.exception.handling.autoconfiguration.model.BaseResponse;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.exception.handling.autoconfiguration.model.Error;
 import org.springframework.http.ResponseEntity;
@@ -26,17 +27,17 @@ public class ExceptionHandlerController {
     private ErrorMessagesManager errorMessagesManager;
 
     @ExceptionHandler(value = ConflictException.class)
-    public ResponseEntity<Error> ConflictExceptionHandler(HttpServletRequest request, ConflictException ex) {
+    public ResponseEntity<BaseResponse> ConflictExceptionHandler(HttpServletRequest request, ConflictException ex) {
         Error error= Error.builder()
                 .code(ex.getMessage())
                 .message(errorMessagesManager.getLocalizedErrorMessage(ex.getMessage(), extractLang(request)))
                 .build();
         return ResponseEntity.status(ex.getCode())
-                .body(error);
+                .body(new BaseResponse(error));
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<Error> ValidationExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException ex) {
+    public ResponseEntity<BaseResponse> ValidationExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException ex) {
         String lang = extractLang(request);
         List<ObjectError> validationErrorsData = ex.getAllErrors();
         List<Error> validationErrors = isEmpty(validationErrorsData) ?
@@ -47,18 +48,18 @@ public class ExceptionHandlerController {
                 .nestedErrors(validationErrors)
                 .build();
         return ResponseEntity.status(VALIDATION_EXCEPTION_STATUS_CODE)
-                .body(error);
+                .body(new BaseResponse(error));
     }
 
     @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<Error> CommonExceptionHandler(HttpServletRequest request, Exception ex) {
+    public ResponseEntity<BaseResponse> CommonExceptionHandler(HttpServletRequest request, Exception ex) {
         log.error("Unexpected error: cannot process this case.", ex);
         Error error= Error.builder()
                 .code(COMMON_EXCEPTION_MESSAGE_CODE)
                 .message(errorMessagesManager.getLocalizedErrorMessage(COMMON_EXCEPTION_MESSAGE_CODE, extractLang(request)))
                 .build();
         return ResponseEntity.status(COMMON_EXCEPTION_STATUS_CODE)
-                .body(error);
+                .body(new BaseResponse(error));
     }
 
 
