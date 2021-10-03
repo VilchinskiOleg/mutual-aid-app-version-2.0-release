@@ -22,6 +22,8 @@ public class Constant {
         public static final String EXECUTOR_SHOULD_BE_FROM_CANDIDATES = "executor.should.be.from.candidates";
 
         public static final String KAFKA_PRODUCER_NOT_FUND = "kafka.producer.not.fund";
+
+        public static final String MEMBER_NOT_FUND = "member.not.fund";
     }
 
     public static class MongoDb {

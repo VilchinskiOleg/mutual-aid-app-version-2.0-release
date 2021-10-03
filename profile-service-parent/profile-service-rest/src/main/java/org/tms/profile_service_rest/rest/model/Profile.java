@@ -32,11 +32,11 @@ public class Profile {
     @NotBlank(message = PROFILE_GENDER_REQUIRED)
     @Pattern(regexp = "^(MALE|male|FEMALE|female)$", message = PROFILE_GENDER_RULE)
     private String gender;
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @ValidDate(type = PAST, message = PROFILE_BIRTHDAY_RULE)
     private LocalDate birthday;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createAt;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifyAt;
 }

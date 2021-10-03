@@ -17,6 +17,19 @@ application:
       url: https://mail.google.com
       email: vilchinskioleg@gmail.com
 
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 50000
+        loggerLevel: full
+#        requestInterceptors:
+#          - com.example.FooRequestInterceptor
+#          - com.example.BarRequestInterceptor
+  httpclient:
+    enabled: true
+
 scheduler:
   remove-closed-orders-job:
     cron: 0 40 14 * * ?
