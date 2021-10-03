@@ -2,9 +2,11 @@ package order.orderservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-@SpringBootApplication
+@SpringBootApplication()
+@EnableFeignClients(basePackages = "order.orderservice.configuration.client")
 @EnableMongoRepositories(basePackages = "order.orderservice.persistent")
 public class OrderServiceApplication {
 

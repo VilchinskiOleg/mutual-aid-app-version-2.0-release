@@ -7,6 +7,7 @@ import org.common.http.autoconfiguration.annotation.Api;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.web.bind.annotation.*;
 import org.tms.profile_service_rest.domain.service.ProfileService;
+import org.tms.profile_service_rest.rest.message.ProfileResponse;
 import org.tms.profile_service_rest.rest.model.Profile;
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -24,18 +25,18 @@ public class ProfileRest {
     @ApiOperation(value = "${profile.operation.create-profile}")
     @PostMapping
     @ResponseStatus(CREATED)
-    public Profile createProfile(@RequestBody @Valid Profile profile) {
+    public ProfileResponse createProfile(@RequestBody @Valid Profile profile) {
         var profileDetails = mapper.map(profile, org.tms.profile_service_rest.domain.model.Profile.class);
         var result = profileService.create(profileDetails);
-        return mapper.map(result, Profile.class);
+        return new ProfileResponse(mapper.map(result, Profile.class));
     }
 
     @Api
     @ApiOperation(value = "${profile.operation.get-profile}")
     @GetMapping(path = "/{profile-id}")
     @ResponseStatus(OK)
-    public Profile getProfileById(@PathVariable("profile-id") String profileId) {
+    public ProfileResponse getProfileById(@PathVariable("profile-id") String profileId) {
         var result = profileService.findByProfileIdRequired(profileId);
-        return mapper.map(result, Profile.class);
+        return new ProfileResponse(mapper.map(result, Profile.class));
     }
 }

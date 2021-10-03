@@ -1,18 +1,27 @@
 package order.orderservice.domain.service.processor;
 
+import static java.util.Objects.isNull;
 import static order.orderservice.util.Constant.Errors.EXECUTOR_SHOULD_BE_FROM_CANDIDATES;
+import static order.orderservice.util.Constant.Errors.MEMBER_NOT_FUND;
 
 import order.orderservice.domain.model.Member;
 import order.orderservice.domain.model.Order;
+import order.orderservice.domain.service.client.ProfileClientService;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
+import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.stereotype.Component;
+import ort.tms.mutual_aid.profile_service.client.model.Profile;
+import javax.annotation.Resource;
 import java.util.Optional;
 import java.util.Set;
 
 @Component
 public class ProfileService {
 
-    //TODO: have api-client for profile service.
+    @Resource
+    private ProfileClientService profileClientService;
+    @Resource
+    private Mapper mapper;
     //TODO: have api-client for notification service;
 
     public void changeOrderExecutor(Order order, Member executor) {
@@ -49,7 +58,10 @@ public class ProfileService {
     }
 
     private Member retrieveMemberByIdRequired(String memberId) {
-        //TODO: get and extract member from profile-rest.
-        return new Member(memberId, null, null,null);
+        Profile profile = profileClientService.getProfileById(memberId);
+        if (isNull(profile)) {
+            throw new ConflictException(MEMBER_NOT_FUND);
+        }
+        return mapper.map(profile, Member.class);
     }
 }

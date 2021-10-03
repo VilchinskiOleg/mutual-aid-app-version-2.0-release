@@ -1,18 +1,17 @@
-package order.orderservice.rest.message;
+package org.tms.profile_service_rest.rest.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import order.orderservice.rest.model.Order;
 import org.exception.handling.autoconfiguration.model.BaseResponse;
-import java.util.List;
+import org.tms.profile_service_rest.rest.model.Profile;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrdersResponse extends BaseResponse {
+public class ProfileResponse extends BaseResponse {
 
-    private List<Order> orders;
+    private Profile profile;
 }
