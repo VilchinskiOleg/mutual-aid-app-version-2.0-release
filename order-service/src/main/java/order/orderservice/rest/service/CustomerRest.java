@@ -6,6 +6,8 @@ import static org.springframework.http.HttpStatus.OK;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import order.orderservice.domain.service.OrderService;
+import order.orderservice.rest.message.OrderResponse;
+import order.orderservice.rest.message.OrdersResponse;
 import order.orderservice.rest.model.Order;
 import org.common.http.autoconfiguration.annotation.Api;
 import org.mapper.autoconfiguration.mapper.Mapper;
@@ -13,7 +15,6 @@ import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "api/order-service/customer")
@@ -29,7 +30,7 @@ public class CustomerRest {
     @ApiImplicitParam(name = "member-id", dataType = "string", paramType = "query", defaultValue = "123")
     @GetMapping
     @ResponseStatus(OK)
-    public List<Order> getAllOrdersByOwnerId(@RequestParam("member-id") String memberId) {
+    public OrdersResponse getAllOrdersByOwnerId(@RequestParam("member-id") String memberId) {
 
         return null;
     }
@@ -39,19 +40,19 @@ public class CustomerRest {
     @ApiImplicitParam(name = "order-id", dataType = "string", paramType = "path", defaultValue = "123")
     @GetMapping(path = "/{order-id}")
     @ResponseStatus(OK)
-    public Order getOrderByOrderId(@PathVariable("order-id") String orderId) {
+    public OrderResponse getOrderByOrderId(@PathVariable("order-id") String orderId) {
         var result = orderService.findByOrderIdRequired(orderId);
-        return mapper.map(result, Order.class);
+        return new OrderResponse(mapper.map(result, Order.class));
     }
 
     @Api
     @ApiOperation(value = "${order.operation.create-order}")
     @PostMapping
     @ResponseStatus(CREATED)
-    public Order createOrder(@Valid @RequestBody Order newOrderRequest) {
+    public OrderResponse createOrder(@Valid @RequestBody Order newOrderRequest) {
         var orderDetails = mapper.map(newOrderRequest, order.orderservice.domain.model.Order.class);
         var createdOrder = orderService.createOrder(orderDetails);
-        return mapper.map(createdOrder, Order.class);
+        return new OrderResponse(mapper.map(createdOrder, Order.class));
     }
 
     @Api
@@ -59,11 +60,11 @@ public class CustomerRest {
     @PutMapping(path = "/update-order/{order-id}")
     @ResponseStatus(OK)
     //@PreAuthorize("hasRole('OWNER')")     // TODO: how to permit this action for only owner of order ?
-    public Order updateOrder(@Valid @RequestBody Order updatedOrderRequest,
+    public OrderResponse updateOrder(@Valid @RequestBody Order updatedOrderRequest,
                              @PathVariable("order-id") String orderId) {
         var orderDetails = mapper.map(updatedOrderRequest, order.orderservice.domain.model.Order.class);
         var updatedOrder = orderService.updateOrder(orderDetails, orderId);
-        return mapper.map(updatedOrder, Order.class);
+        return new OrderResponse(mapper.map(updatedOrder, Order.class));
     }
 
     @Api
@@ -71,10 +72,10 @@ public class CustomerRest {
     @PutMapping(path = "/approve-order/{order-id}")
     @ResponseStatus(OK)
     //@PreAuthorize("hasRole('OWNER')")     // TODO: how to permit this action for only owner of order ?
-    public Order approveOrder(@PathVariable("order-id") String orderId,
+    public OrderResponse approveOrder(@PathVariable("order-id") String orderId,
                               @RequestParam("executor-id") String executorId) {
         var order = orderService.approveOrder(orderId, executorId);
-        return mapper.map(order, Order.class);
+        return new OrderResponse(mapper.map(order, Order.class));
     }
 
     @Api
@@ -82,8 +83,8 @@ public class CustomerRest {
     @PutMapping(path = "/close-order/{order-id}")
     @ResponseStatus(OK)
     //@PreAuthorize("hasRole('OWNER')")     // TODO: how to permit this action for only owner of order ?
-    public Order closeOrder(@PathVariable("order-id") String orderId) {
+    public OrderResponse closeOrder(@PathVariable("order-id") String orderId) {
         var order = orderService.closeOrder(orderId);
-        return mapper.map(order, Order.class);
+        return new OrderResponse(mapper.map(order, Order.class));
     }
 }
