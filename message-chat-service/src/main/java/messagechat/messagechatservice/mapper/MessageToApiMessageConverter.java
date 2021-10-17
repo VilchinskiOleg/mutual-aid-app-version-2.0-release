@@ -1,7 +1,6 @@
 package messagechat.messagechatservice.mapper;
 
 import messagechat.messagechatservice.domain.model.Message;
-import messagechat.messagechatservice.rest.model.Member;
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
 
@@ -16,10 +15,15 @@ public class MessageToApiMessageConverter extends BaseConverter<Message, message
     @Override
     public void convert(Message source, messagechat.messagechatservice.rest.model.Message destination) {
         destination.setId(source.getId());
+
         destination.setDialogId(source.getDialogId());
-        destination.setAuthor(mapper.map(source.getAuthor(), Member.class));
         destination.setDescription(source.getDescription());
+
+        destination.setAuthorId(source.getAuthorId());
+        destination.setAuthorNickName(source.getAuthorNickName());
+
         destination.setCreateAt(source.getCreateAt());
         destination.setModifyAt(source.getModifyAt());
+        destination.setIsModified(source.isModified());
     }
 }

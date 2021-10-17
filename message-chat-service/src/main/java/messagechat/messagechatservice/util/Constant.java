@@ -26,7 +26,14 @@ public class Constant {
 
             public static final Pattern TEXT_DELIMITING_PATTERN = compile(" +");
         }
+
+        public static class Mongo {
+
+            public static final String MEMBERS = "members";
+            public static final String PROFILE_ID = "profileId";
+        }
     }
+
     public static class Errors {
 
         public static final String MESSAGE_NOT_FOUND = "message.not.found";

@@ -9,9 +9,14 @@ import java.time.LocalDateTime;
 public class Message {
 
     private String id;
+
     private String dialogId;
     private String description;
-    private Member author;
+
+    private String authorId;
+    private String authorNickName;
+
     private LocalDateTime createAt;
     private LocalDateTime modifyAt;
+    private Boolean isModified;
 }
