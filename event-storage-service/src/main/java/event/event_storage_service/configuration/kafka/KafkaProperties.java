@@ -13,7 +13,5 @@ public class KafkaProperties {
 
     private String bootstrapServers;
     private String groupId;
-
-    //Not used
     private String listenTopics;
 }

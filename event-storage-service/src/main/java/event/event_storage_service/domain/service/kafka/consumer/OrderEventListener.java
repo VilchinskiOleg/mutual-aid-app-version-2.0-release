@@ -1,9 +1,14 @@
 package event.event_storage_service.domain.service.kafka.consumer;
 
+import static event.event_storage_service.util.Constant.Kafka.ORDER_TOPIC;
+import static java.util.Objects.nonNull;
+
 import event.event_storage_service.configuration.kafka.message.KafkaOrderEvent;
 import event.event_storage_service.domain.model.OrderEvent;
 import event.event_storage_service.domain.service.EventStorageService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -18,13 +23,22 @@ public class OrderEventListener {
     @Resource
     private Mapper mapper;
 
-    @KafkaListener(topics = "${kafka.listenTopics}")
-    public void saveCreateOrderEvent(KafkaOrderEvent kafkaOrderEvent) {
+    @KafkaListener(topics = ORDER_TOPIC,
+                   containerFactory = "orderEventListenerContainerFactory")
+    public void saveOrderEvent(ConsumerRecord<String, KafkaOrderEvent> record, Consumer<String, KafkaOrderEvent> consumer) {
+        KafkaOrderEvent kafkaOrderEvent = record.value();
         try {
-            OrderEvent orderEvent = mapper.map(kafkaOrderEvent, OrderEvent.class);
-            eventStorageService.saveEvent(orderEvent);
+            log.info("Process record: topic={}, key={}, offset={}, value={}",
+                    record.topic(), record.key(), record.offset(), kafkaOrderEvent);
+            if (nonNull(kafkaOrderEvent)) {
+                OrderEvent orderEvent = mapper.map(kafkaOrderEvent, OrderEvent.class);
+                eventStorageService.saveEvent(orderEvent);
+            }
         } catch (Exception ex) {
-            log.error("Unexpected exception: cannot process event {}: ", kafkaOrderEvent, ex);
+            log.error("Unexpected error while processing record: topic={}, key={}, offset={}, value={}",
+                    record.topic(), record.key(), record.offset(), kafkaOrderEvent, ex);
+        } finally {
+            consumer.commitSync();
         }
     }
 }

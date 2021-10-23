@@ -18,7 +18,6 @@ public class DeleteOrderEventProducer extends OrderEventProducer {
     @Override
     public void sendMessage(Order order) {
         KafkaOrderEvent orderEvent = new KafkaOrderEvent(order.getOrderId());
-        populateOrderEvent(orderEvent);
-        kafkaTemplate.send(ORDER_TOPIC, orderEvent);
+        send(orderEvent);
     }
 }
