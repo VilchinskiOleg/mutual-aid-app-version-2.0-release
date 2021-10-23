@@ -1,5 +1,6 @@
 package event.event_storage_service.domain.service.kafka.consumer;
 
+import static event.event_storage_service.util.Constant.Kafka.ORDER_TOPIC;
 import static java.util.Objects.nonNull;
 
 import event.event_storage_service.configuration.kafka.message.KafkaOrderEvent;
@@ -22,7 +23,7 @@ public class OrderEventListener {
     @Resource
     private Mapper mapper;
 
-    @KafkaListener(topics = "${kafka.listenTopics}",
+    @KafkaListener(topics = ORDER_TOPIC,
                    containerFactory = "orderEventListenerContainerFactory")
     public void saveOrderEvent(ConsumerRecord<String, KafkaOrderEvent> record, Consumer<String, KafkaOrderEvent> consumer) {
         KafkaOrderEvent kafkaOrderEvent = record.value();

@@ -17,6 +17,7 @@ public class Constant {
         public static final String LATEST = "latest";
         public static final String EARLIEST = "earliest";
 
+        public static final String ORDER_TOPIC = "mutual-aid-order-topic";
         public static final String UPDATE_ORDER_EVENT = "update_order_event";
     }
 }
