@@ -1,0 +1,56 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://org.tms.profileservice/xml/profile"
+           targetNamespace="http://org.tms.profileservice/xml/profile" elementFormDefault="qualified">
+
+    <xs:element name="CreateProfileRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Profile" type="tns:Profile"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="GetProfileRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="profileId" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ProfileResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Profile" type="tns:Profile"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="Profile">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string" minOccurs="0"/>
+            <xs:element name="profileId" type="xs:string" minOccurs="0"/>
+            <xs:element name="names" type="tns:Name" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="contacts" type="tns:Contact" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="gender" type="xs:string"/>
+            <xs:element name="birthday" type="xs:date"/>
+            <xs:element name="createAt" type="xs:dateTime" minOccurs="0"/>
+            <xs:element name="modifyAt" type="xs:dateTime" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Name">
+        <xs:sequence>
+            <xs:element name="locale" type="xs:string"/>
+            <xs:element name="firstName" type="xs:string"/>
+            <xs:element name="lastName" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Contact">
+        <xs:sequence>
+            <xs:element name="type" type="xs:string"/>
+            <xs:element name="value" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>
