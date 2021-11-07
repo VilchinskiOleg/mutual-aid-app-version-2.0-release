@@ -24,7 +24,9 @@ public class Constant {
             public static final String TARGET_LANG_FORM_BODY_KEY = "&target=";
             public static final String TEXT_FORM_BODY_KEY = "q=";
 
-            public static final Pattern TEXT_DELIMITING_PATTERN = compile(" +");
+            public static final Pattern SPACES_DELIMITING_PATTERN = compile(" +");
+
+            public static final String MESSAGES_DELIMITER = "$";
         }
 
         public static class Mongo {

@@ -1,20 +1,23 @@
 package messagechat.messagechatservice.domain.service.proessor;
 
+import static java.util.stream.Collectors.toList;
 import static org.common.http.autoconfiguration.utils.Constant.DEFAULT_LANG;
 
+import java.util.Map;
 import messagechat.messagechatservice.domain.model.Message;
-import messagechat.messagechatservice.domain.service.client.GoogleTranslateClientService;
+import messagechat.messagechatservice.domain.service.client.TranslateClientService;
 import org.common.http.autoconfiguration.model.CommonData;
 import javax.annotation.Resource;
+import java.util.List;
 
 public abstract class TranslateMessageService {
 
-    @Resource
-    private GoogleTranslateClientService translateClientService;
+    @Resource(name = "rapidGoogleTranslateClientService")
+    private TranslateClientService translateClientService;
     @Resource
     private CommonData commonData;
 
-    public void translateMessageForSave(Message message) {
+    public void translateSavedMessage(Message message) {
         String sourceLang = commonData.getLocale().getLanguage();
         if (DEFAULT_LANG.equals(sourceLang)) {
             return;
@@ -22,11 +25,15 @@ public abstract class TranslateMessageService {
         message.setDescription(translateClientService.translateMessage(message.getDescription(), sourceLang, DEFAULT_LANG));
     }
 
-    public void translateMessageForReturn(Message message) {
+    public void translateReturnedMessages(List<Message> messages) {
         String targetLang = commonData.getLocale().getLanguage();
         if (DEFAULT_LANG.equals(targetLang)) {
             return;
         }
-        message.setDescription(translateClientService.translateMessage(message.getDescription(), DEFAULT_LANG, targetLang));
+        List<String> messageDescriptions = messages.stream()
+                                                   .map(Message::getDescription)
+                                                   .collect(toList());
+        Map<String, String> resultDetails = translateClientService.translateMessages(messageDescriptions, DEFAULT_LANG, targetLang);
+        messages.forEach(message -> message.setDescription(resultDetails.get(message.getDescription())));
     }
 }

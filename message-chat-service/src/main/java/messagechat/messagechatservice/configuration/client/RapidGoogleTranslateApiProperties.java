@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "google-translate-open-api")
-public class GoogleTranslateApiProperties {
+public class RapidGoogleTranslateApiProperties {
 
     private String url;
     private String host;

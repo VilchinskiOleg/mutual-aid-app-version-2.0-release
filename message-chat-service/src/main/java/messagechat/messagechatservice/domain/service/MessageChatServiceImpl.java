@@ -33,14 +33,14 @@ public class MessageChatServiceImpl implements MessageChatService {
     @Override
     public Message addMessageToDialog(Message message, String consumerId) {
         linkMessageToDialog(message, consumerId);
-        translateMessageService.translateMessageForSave(message);
+        translateMessageService.translateSavedMessage(message);
         return saveMessage(message);
     }
 
     @Override
     public Message updateMessage(Message message) {
         Message currentMessage = getMessageByIdRequired(message.getId());
-        translateMessageService.translateMessageForSave(message);
+        translateMessageService.translateSavedMessage(message);
         mapper.map(message, currentMessage);
         return saveMessage(currentMessage);
     }

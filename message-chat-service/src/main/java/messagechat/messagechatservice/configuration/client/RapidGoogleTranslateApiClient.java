@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(name = "googleTranslateApiClient", url = "${google-translate-open-api.url}")
-public interface GoogleTranslateApiClient {
+public interface RapidGoogleTranslateApiClient {
 
     @PostMapping(consumes = "application/x-www-form-urlencoded")
     Response translate(@RequestHeader(HOST_HEADER) String host,
