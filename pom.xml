@@ -29,6 +29,7 @@
         <module>order-service</module>
         <module>event-storage-service</module>
         <module>profile-service-parent</module>
+        <module>task-executor-service</module>
     </modules>
 
         <dependencies>
