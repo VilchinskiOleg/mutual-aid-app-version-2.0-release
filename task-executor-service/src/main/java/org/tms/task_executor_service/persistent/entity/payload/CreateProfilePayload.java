@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProfilePayload extends Payload {
+public class CreateProfilePayload extends Payload {
 
     private String name;
     private String lastName;

@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.tms.task_executor_service.persistent.entity.payload.Payload;
-import org.tms.task_executor_service.persistent.entity.payload.ProfilePayload;
 
 @Getter
 @Setter
