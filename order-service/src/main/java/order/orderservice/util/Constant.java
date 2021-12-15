@@ -60,6 +60,7 @@ public class Constant {
     public static class Kafka {
 
         public static final String ORDER_TOPIC = "mutual-aid-order-topic";
+        public static final String UPDATE_ORDER_EVENT = "update_order_event";
         public static final String ORDER_CLIENT_NAME = "order-service";
     }
 }
