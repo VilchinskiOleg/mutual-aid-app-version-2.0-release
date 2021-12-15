@@ -1,0 +1,31 @@
+changeSet:
+  id: createIndexes
+  author: liquibase-docs
+  changes:
+    - createIndex:
+        catalogName: cat
+        clustered: false
+        columns:
+          - column:
+              descending: true
+              name: orderId
+        indexName: index_orederId
+        schemaName: public
+        tableName: order-service.order
+#        tablespace: A String
+        unique: true
+    - createIndex:
+        catalogName: cat
+        clustered: false
+        columns:
+          - column:
+              descending: true
+              name: status
+          - column:
+              descending: true
+              name: modifyAt
+        indexName: index_status_modifyAt
+        schemaName: public
+        tableName: order-service.order
+#        tablespace: A String
+        unique: true
