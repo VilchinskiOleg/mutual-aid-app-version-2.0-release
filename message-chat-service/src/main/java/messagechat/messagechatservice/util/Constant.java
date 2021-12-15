@@ -40,5 +40,7 @@ public class Constant {
 
         public static final String MESSAGE_NOT_FOUND = "message.not.found";
         public static final String TRANSLATION_ERROR = "translation.error";
+
+        public static final String MEMBER_NOT_FUND = "member.not.fund";
     }
 }

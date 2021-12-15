@@ -1,4 +1,4 @@
-package messagechat.messagechatservice.configuration.client.message;
+package messagechat.messagechatservice.configuration.client.translate.message;
 
 import static java.util.Objects.isNull;
 

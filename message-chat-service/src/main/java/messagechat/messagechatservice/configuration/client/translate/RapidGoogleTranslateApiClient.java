@@ -1,4 +1,4 @@
-package messagechat.messagechatservice.configuration.client;
+package messagechat.messagechatservice.configuration.client.translate;
 
 import static messagechat.messagechatservice.util.Constant.Service.GoogleTranslateApi.*;
 

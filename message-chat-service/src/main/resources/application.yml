@@ -17,10 +17,18 @@ application:
 feign:
   client:
     config:
-      default:
+      profileRestClient:
         connectTimeout: 5000
-        readTimeout: 50000
+        readTimeout: 10000
         loggerLevel: full
+#        requestInterceptors:
+#          - com.example.FooRequestInterceptor
+      googleTranslateApiClient:
+        connectTimeout: 10000
+        readTimeout: 15000
+        loggerLevel: full
+#        requestInterceptors:
+#          - com.example.FooRequestInterceptor
   okhttp:
     enabled: true
 
@@ -29,6 +37,9 @@ google-translate-open-api:
   host: google-translate1.p.rapidapi.com
   token: xxx
   encoding: application/gzip
+
+profile-rest-client:
+  url: http://localhost:8400
 
 message-chat-properties:
   translation-message:

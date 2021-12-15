@@ -1,4 +1,4 @@
-package messagechat.messagechatservice.configuration.client.message;
+package messagechat.messagechatservice.configuration.client.translate.message;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.springframework.util.CollectionUtils.isEmpty;

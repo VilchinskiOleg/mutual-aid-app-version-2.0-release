@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class MessageChatServiceImpl implements MessageChatService {
@@ -49,7 +50,9 @@ public class MessageChatServiceImpl implements MessageChatService {
     public Page<Message> getPageMessagesFromDialog(Integer pageNumber, Integer size, String dialogId) {
         PageRequest pageRequest = of(pageNumber, size);
         var dataMessagesPage = messageRepository.findAllByDialogId(dialogId, pageRequest);
-        return dataMessagesPage.map(message -> mapper.map(message, Message.class));
+        var messagesPage = dataMessagesPage.map(message -> mapper.map(message, Message.class));
+        translateMessageService.translateReturnedMessages(messagesPage.getContent());
+        return messagesPage;
     }
 
     private void linkMessageToDialog(Message message, String consumerId) {

@@ -1,4 +1,4 @@
-package messagechat.messagechatservice.configuration.client;
+package messagechat.messagechatservice.configuration.client.translate;
 
 import lombok.Getter;
 import lombok.Setter;
