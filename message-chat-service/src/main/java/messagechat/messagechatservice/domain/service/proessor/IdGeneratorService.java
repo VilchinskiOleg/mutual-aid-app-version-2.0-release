@@ -1,7 +1,7 @@
-package messagechat.messagechatservice.domain.service;
+package messagechat.messagechatservice.domain.service.proessor;
 
 import static java.time.Duration.between;
-import static java.time.LocalTime.now;
+import static java.time.LocalDateTime.now;
 import static messagechat.messagechatservice.util.Constant.Service.*;
 
 import org.springframework.stereotype.Component;

@@ -1,13 +1,14 @@
 package messagechat.messagechatservice.domain.model;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.springframework.util.CollectionUtils.isEmpty;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,30 +16,51 @@ public class Dialog {
 
     private String id;
 
-    private String dialogId;
-    private List<Member> members;
+    private String internalId;
+    private Set<Member> members;
     private Status status;
+    private Type type;
     private LocalDateTime createAt;
     private LocalDateTime modifyAt;
+    private String createByMemberId;
+    private String modifyByMemberId;
 
-    public enum Status {
-        OPEN,
-        CLOSE
+    public Set<Member> getMembers() {
+        if (isNull(members)) {
+            members = new HashSet<>();
+        }
+        return members;
     }
 
-    public boolean hasMember(Member member) {
-        if (isEmpty(members)) {
-            return false;
-        }
-        return members.contains(member);
+    public boolean hasMember(String memberId) {
+        return getMembers().stream()
+                           .anyMatch(member -> member.getProfileId().equals(memberId));
+    }
+
+    public boolean hasNotMember(String memberId) {
+        return isFalse(hasMember(memberId));
     }
 
     public void addMember(Member member) {
-        if (isEmpty(members)) {
-            members = new ArrayList<>();
-        }
         if (nonNull(member)) {
-            members.add(member);
+            getMembers().add(member);
         }
+    }
+
+    public Member getMemberById(String memberId) {
+        return getMembers().stream()
+                           .filter(member -> member.getProfileId().equals(memberId))
+                           .findFirst()
+                           .orElse(null);
+    }
+
+    public enum Status {
+        ACTIVE,
+        NOT_ACTIVE
+    }
+
+    public enum Type {
+        CHANNEL,
+        FACE_TO_FACE_DIALOG
     }
 }

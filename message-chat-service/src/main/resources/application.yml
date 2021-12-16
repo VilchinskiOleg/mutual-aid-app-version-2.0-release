@@ -13,3 +13,34 @@ application:
       name: OLEG
       url: https://mail.google.com
       email: vilchinskioleg@gmail.com
+
+feign:
+  client:
+    config:
+      profileRestClient:
+        connectTimeout: 5000
+        readTimeout: 10000
+        loggerLevel: full
+#        requestInterceptors:
+#          - com.example.FooRequestInterceptor
+      googleTranslateApiClient:
+        connectTimeout: 10000
+        readTimeout: 15000
+        loggerLevel: full
+#        requestInterceptors:
+#          - com.example.FooRequestInterceptor
+  okhttp:
+    enabled: true
+
+google-translate-open-api:
+  url: https://google-translate1.p.rapidapi.com/language/translate/v2
+  host: google-translate1.p.rapidapi.com
+  token: xxx
+  encoding: application/gzip
+
+profile-rest-client:
+  url: http://localhost:8400
+
+message-chat-properties:
+  translation-message:
+    enabled: true
