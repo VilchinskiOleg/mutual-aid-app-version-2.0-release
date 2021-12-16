@@ -6,6 +6,5 @@ import org.springframework.stereotype.Component;
 public class TaskExecutionJob {
 
     public void execute() {
-
     }
 }

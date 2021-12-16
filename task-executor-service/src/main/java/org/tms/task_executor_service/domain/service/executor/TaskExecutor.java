@@ -6,6 +6,4 @@ import org.tms.task_executor_service.domain.model.payload.Payload;
 public interface TaskExecutor<T extends Payload> {
 
     void execute(T payload);
-
-    boolean support(T payload, Error error);
 }
