@@ -9,12 +9,12 @@ import feign.Response;
 import lombok.extern.slf4j.Slf4j;
 import messagechat.messagechatservice.configuration.client.profile.ProfileRestClient;
 import org.common.http.autoconfiguration.model.CommonData;
+import org.exception.handling.autoconfiguration.model.Error;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import ort.tms.mutual_aid.profile_service.client.model.Profile;
 import ort.tms.mutual_aid.profile_service.client.model.ProfileResponse;
-import ort.tms.mutual_aid.profile_service.client.model.Error;
 import java.io.IOException;
 
 @Slf4j
