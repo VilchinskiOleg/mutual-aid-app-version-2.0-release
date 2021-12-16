@@ -10,3 +10,4 @@ spring:
 task-execution-props:
   date:
   period: 1
+  lockTimeOut: 2

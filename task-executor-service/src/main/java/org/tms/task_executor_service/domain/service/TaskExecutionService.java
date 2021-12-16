@@ -1,33 +1,13 @@
 package org.tms.task_executor_service.domain.service;
 
-import java.util.List;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import javax.annotation.Resource;
-import org.springframework.stereotype.Component;
 import org.tms.task_executor_service.domain.model.Task;
-import org.tms.task_executor_service.persistent.repository.TaskRepository;
+import java.util.List;
 
-@Component
-public class TaskExecutionService {
+public interface TaskExecutionService {
 
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    @Resource
-    private TaskRepository taskRepository;
+    List<Task> executeTasks(Integer queueSize);
 
-    public void executeTasks(Integer queueSize) {
+    List<Task> executeTasks(List<String> taskIds);
 
-    }
-
-    public void executeTasks(List<String> taskIds) {
-
-    }
-
-    public void executeTask(String taskId) {
-
-    }
-
-    public List<Task> getTasks(Integer queueSize) {
-        return null;
-    }
+    List<Task> getTasks(Integer queueSize);
 }
