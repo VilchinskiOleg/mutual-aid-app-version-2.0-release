@@ -1,10 +1,14 @@
 package org.tms.task_executor_service.domain.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.exception.handling.autoconfiguration.model.Error;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import org.tms.task_executor_service.domain.model.payload.Payload;
 
+@Getter
+@Setter
 public class Task {
 
     private String id;
