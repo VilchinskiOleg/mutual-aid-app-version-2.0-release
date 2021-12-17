@@ -7,7 +7,22 @@ spring:
       database: mutual-aid-app
       uri: mongodb://localhost:27017/mutual-aid-app
 
+feign:
+  client:
+    config:
+      profileRestClient:
+        connectTimeout: 5000
+        readTimeout: 10000
+        loggerLevel: full
+#        requestInterceptors:
+#          - com.example.FooRequestInterceptor
+  httpclient:
+    enabled: true
+
 task-execution-props:
   date:
   period: 1
   lockTimeOut: 2
+
+profile-rest-client:
+  url: http://localhost:8400

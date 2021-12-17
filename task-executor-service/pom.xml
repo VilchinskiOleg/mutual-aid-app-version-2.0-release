@@ -12,17 +12,42 @@
   <artifactId>task-executor-service</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>task-executor-service</name>
-  <description>Demo project for Spring Boot</description>
+  <description>Task executor service</description>
   <packaging>jar</packaging>
 
   <properties>
     <java.version>11</java.version>
+    <feign.version>10.11</feign.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-mongodb</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-openfeign</artifactId>
+      <version>3.0.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.openfeign</groupId>
+      <artifactId>feign-okhttp</artifactId>
+      <version>${feign.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.openfeign</groupId>
+      <artifactId>feign-httpclient</artifactId>
+      <version>${feign.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.openfeign</groupId>
+      <artifactId>feign-slf4j</artifactId>
+      <version>${feign.version}</version>
     </dependency>
 
     <dependency>

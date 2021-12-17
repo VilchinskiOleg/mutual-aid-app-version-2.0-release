@@ -6,10 +6,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "profile-rest")
+@ConfigurationProperties(prefix = "profile-rest-client")
 @Getter
 @Setter
-public class ProfileFeignClientProperties {
+public class ProfileRestClientProperties {
 
     private String url;
 }

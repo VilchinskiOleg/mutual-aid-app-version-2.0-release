@@ -20,13 +20,12 @@ application:
 feign:
   client:
     config:
-      default:
+      profileRestClient:
         connectTimeout: 5000
-        readTimeout: 50000
+        readTimeout: 10000
         loggerLevel: full
 #        requestInterceptors:
 #          - com.example.FooRequestInterceptor
-#          - com.example.BarRequestInterceptor
   httpclient:
     enabled: true
 
@@ -39,5 +38,5 @@ scheduler:
 kafka:
   bootstrapServers: localhost:9092
 
-profile-rest:
-  url: http://localhost:8400/api/profile-service
+profile-rest-client:
+  url: http://localhost:8400
