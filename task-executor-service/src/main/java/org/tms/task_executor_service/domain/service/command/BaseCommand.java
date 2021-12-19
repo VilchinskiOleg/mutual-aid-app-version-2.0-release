@@ -2,15 +2,18 @@ package org.tms.task_executor_service.domain.service.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.tms.task_executor_service.domain.model.payload.Payload;
+import org.mapper.autoconfiguration.mapper.Mapper;
+import org.tms.task_executor_service.domain.model.Task;
 
 @AllArgsConstructor
-public abstract class BaseCommand<T extends Payload> implements Command {
+public abstract class BaseCommand implements Command {
 
     @Getter
-    private final T payload;
+    protected final Task task;
+    protected final Mapper mapper;
 
-    protected String getCommandName() {
+    @Override
+    public String getName() {
         return this.getClass().getSimpleName();
     }
 }
