@@ -14,13 +14,8 @@ public class TaskExecutionProperties {
 
     private LocalDateTime date;
     private long period; //min
-    private Integer lockTimeOut; //sek
 
     public long getExecutionPeriodBySecond() {
         return period * 60;
-    }
-
-    public Integer getLockTimeOut() {
-        return lockTimeOut;
     }
 }

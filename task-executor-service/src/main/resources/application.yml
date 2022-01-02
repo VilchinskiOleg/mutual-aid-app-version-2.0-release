@@ -22,7 +22,6 @@ feign:
 task-execution-props:
   date:
   period: 1
-  lockTimeOut: 2
 
 profile-rest-client:
   url: http://localhost:8400

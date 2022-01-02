@@ -11,14 +11,16 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.annotation.Resource;
 import lombok.Getter;
 import org.mapper.autoconfiguration.mapper.Mapper;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.tms.task_executor_service.domain.model.Task;
-import org.tms.task_executor_service.domain.service.annotation.ThreadSaveMethod;
 import org.tms.task_executor_service.domain.service.command.Command;
 import org.tms.task_executor_service.persistent.repository.TaskRepository;
+import org.tms.thread_save.thread_save_api.annotation.ThreadSaveMethod;
+import org.tms.thread_save.thread_save_api.marker.ThreadSaveResource;
 
 @Component
-public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSaveResource{
+public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSaveResource {
 
     @Getter
     private final Lock lock = new ReentrantLock();
@@ -32,6 +34,7 @@ public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSave
     @Resource
     private Mapper mapper;
 
+    @Nullable
     @ThreadSaveMethod
     @Override
     public List<Task> executeTasks(Integer queueSize) {
@@ -41,12 +44,14 @@ public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSave
         return executeTasks(tasksPage.getContent());
     }
 
+    @Nullable
     @ThreadSaveMethod
     @Override
     public List<Task> executeTasks(Set<String> taskIds) {
         return null;
     }
 
+    @Nullable
     @ThreadSaveMethod(lockTimeOut = 2)
     @Override
     public List<Task> getTasks(Integer queueSize) {
