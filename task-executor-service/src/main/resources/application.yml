@@ -22,6 +22,7 @@ feign:
 task-execution-props:
   date:
   period: 1
+  poolSize: 10
 
 profile-rest-client:
   url: http://localhost:8400

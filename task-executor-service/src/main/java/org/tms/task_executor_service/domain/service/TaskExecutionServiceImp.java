@@ -4,8 +4,11 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.springframework.data.domain.PageRequest.of;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.annotation.Resource;
@@ -32,6 +35,8 @@ public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSave
     @Resource
     private CommandManager commandManager;
     @Resource
+    private ExecutorService asyncTaskExecutorService;
+    @Resource
     private Mapper mapper;
 
     @Nullable
@@ -39,30 +44,61 @@ public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSave
     @Override
     public List<Task> executeTasks(Integer queueSize) {
         var pageRequest = of(INTEGER_ZERO, queueSize);
-        var tasksPage = taskRepository.findAll(pageRequest).map(task -> mapper.map(task, Task.class));
+        var tasksPage = taskRepository.findAll(pageRequest)
+                                                 .map(task -> mapper.map(task, Task.class));
 
-        return executeTasks(tasksPage.getContent());
+        List<Task> successfulTasks = executeTasks(tasksPage.getContent());
+        taskRepository.removeTasks(successfulTasks.stream()
+                                                  .map(Task::getInternalId)
+                                                  .collect(toList()));
+        return successfulTasks;
     }
 
     @Nullable
     @ThreadSaveMethod
     @Override
     public List<Task> executeTasks(Set<String> taskIds) {
-        return null;
+        var dataTasks = taskRepository.findAllByInternalIds(taskIds);
+        List<Task> tasks = mapper.map(dataTasks, new ArrayList<>(), Task.class);
+        List<Task> successfulTasks = executeTasks(tasks);
+        taskRepository.removeTasks(successfulTasks.stream()
+                                                  .map(Task::getInternalId)
+                                                  .collect(toList()));
+        return successfulTasks;
     }
 
     @Nullable
     @ThreadSaveMethod(lockTimeOut = 2)
     @Override
     public List<Task> getTasks(Integer queueSize) {
-        return null;
+        var pageRequest = of(INTEGER_ZERO, queueSize);
+        return taskRepository.findAll(pageRequest)
+                             .map(task -> mapper.map(task, Task.class))
+                             .getContent();
     }
 
     private List<Task> executeTasks(List<Task> tasks) {
-        return tasks.stream()
-                    .map(commandManager::retrieveCommand)
-                    .filter(commandExecutor::execute)
-                    .map(Command::getTask)
-                    .collect(toList());
+        List<CompletableFuture<Command>> commandFutures = tasks.stream()
+                                                         .map(this::executeTask)
+                                                         .collect(toList());
+        return CompletableFuture.allOf(commandFutures.toArray(new CompletableFuture[commandFutures.size()]))
+                                .thenApply(future -> commandFutures.stream()
+                                                                   .map(CompletableFuture::join)
+                                                                   .collect(toList())
+                                )
+                                .thenApply(completedCommands -> completedCommands
+                                        .stream()
+                                        .filter(Command::isSuccessful)
+                                        .map(Command::getTask)
+                                        .collect(toList()))
+                                .join();//todo: check unchecked exceptions for join()!
+    }
+
+    private CompletableFuture<Command> executeTask(Task task) {
+        return CompletableFuture.supplyAsync(() -> {
+            Command command = commandManager.retrieveCommand(task);
+            commandExecutor.execute(command);
+            return command;
+        }, asyncTaskExecutorService);
     }
 }

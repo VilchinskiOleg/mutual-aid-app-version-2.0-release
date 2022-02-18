@@ -20,7 +20,7 @@ public class CreateProfileCommand extends BaseCommand {
     }
 
     @Override
-    public boolean apply() {
+    protected boolean doCommand() {
         var payload = task.getPayload();
         var profile = mapper.map(payload, Profile.class);
         try {

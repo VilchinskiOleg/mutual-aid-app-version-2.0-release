@@ -14,8 +14,13 @@ public class TaskExecutionProperties {
 
     private LocalDateTime date;
     private long period; //min
+    private int poolSize;
 
     public long getExecutionPeriodBySecond() {
         return period * 60;
+    }
+
+    public Integer getPoolSize() {
+        return poolSize;
     }
 }

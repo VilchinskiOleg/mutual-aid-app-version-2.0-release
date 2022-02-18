@@ -8,6 +8,11 @@ public class Constant {
         public static final double NANO_TO_MILlI_RESOLVER = 0.000001;
     }
 
+    public static class Mongo {
+
+        public static final String INTERNAL_ID = "internalId";
+    }
+
     public static final class Errors {
 
         public static final String FAIL_PROFILE_CREATING = "fail.profile.creating";
