@@ -1,18 +1,21 @@
 package org.mapper.autoconfiguration.utils;
 
 import static java.util.Arrays.stream;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_TWO;
 import static org.springframework.util.ReflectionUtils.findField;
 import static org.springframework.util.ReflectionUtils.getField;
 
+import org.mapper.autoconfiguration.exception.ModelMapperException;
 import org.springframework.lang.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 public class ReflectionUtils {
+
+    public static final String PROCESS_GENERIC_TYPES_FAIL = "Unexpected error: cannot process source and destination types.";
 
     @Nullable
     public static Object retrieveFieldValueForClass(Object target, String fieldName) {
@@ -37,10 +40,13 @@ public class ReflectionUtils {
     public static List<Class<?>> retrieveGenericArgumentTypes(Object target) {
         ParameterizedType genericWrapper = (ParameterizedType) target.getClass().getGenericSuperclass();
         if (isNull(genericWrapper)){
-            return emptyList();
+            throw new ModelMapperException(PROCESS_GENERIC_TYPES_FAIL);
         }
-        return stream(genericWrapper.getActualTypeArguments())
-                .map(type -> (Class<?>) type)
-                .collect(toList());
+        List<Class<?>> types = stream(genericWrapper.getActualTypeArguments()).map(type -> (Class<?>) type)
+                                                                              .collect(toList());
+        if (types.size() != INTEGER_TWO) {
+            throw new ModelMapperException(PROCESS_GENERIC_TYPES_FAIL);
+        }
+        return types;
     }
  }

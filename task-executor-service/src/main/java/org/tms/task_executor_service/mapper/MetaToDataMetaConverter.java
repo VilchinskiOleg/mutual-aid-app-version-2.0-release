@@ -9,11 +9,6 @@ import org.tms.task_executor_service.persistent.entity.Error;
 public class MetaToDataMetaConverter extends BaseConverter<Meta, org.tms.task_executor_service.persistent.entity.Meta> {
 
     @Override
-    protected org.tms.task_executor_service.persistent.entity.Meta getDestination() {
-        return new org.tms.task_executor_service.persistent.entity.Meta();
-    }
-
-    @Override
     public void convert(Meta source, org.tms.task_executor_service.persistent.entity.Meta destination) {
         destination.setFlowId(source.getFlowId());
         destination.setClient(source.getClient());

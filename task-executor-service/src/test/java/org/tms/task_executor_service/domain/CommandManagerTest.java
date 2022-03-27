@@ -16,12 +16,15 @@ import org.mapper.autoconfiguration.mapper.Mapper;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.tms.task_executor_service.config.client.ProfileRestClient;
 import org.tms.task_executor_service.domain.model.Task;
 import org.tms.task_executor_service.domain.model.payload.CreateProfilePayload;
 import org.tms.task_executor_service.domain.service.CommandManager;
 import org.tms.task_executor_service.domain.service.client.ProfileClientService;
 import org.tms.task_executor_service.domain.service.client.TaskExecutionProvider;
 import org.tms.task_executor_service.domain.service.command.Command;
+
+import javax.annotation.Resource;
 
 @TestInstance(PER_CLASS)
 public class CommandManagerTest {
@@ -34,6 +37,8 @@ public class CommandManagerTest {
     private final TaskExecutionProvider profileTaskExecutionProvider = spy(ProfileClientService.class);
     @Mock
     private Mapper mapper;
+    @Mock //TODO: also can use @Spy for injection ProfileRestClient to TaskExecutionProvider (not used it in this test, only for example *)
+    private ProfileRestClient profileRestClient;
 
     @BeforeAll
     void initAll() {

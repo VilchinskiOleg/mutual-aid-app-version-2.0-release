@@ -9,11 +9,6 @@ import org.tms.task_executor_service.persistent.entity.Meta;
 public class DataMetaToMetaConverter extends BaseConverter<Meta, org.tms.task_executor_service.domain.model.Meta> {
 
     @Override
-    protected org.tms.task_executor_service.domain.model.Meta getDestination() {
-        return new org.tms.task_executor_service.domain.model.Meta();
-    }
-
-    @Override
     public void convert(Meta source, org.tms.task_executor_service.domain.model.Meta destination) {
         destination.setFlowId(source.getFlowId());
         destination.setClient(source.getClient());

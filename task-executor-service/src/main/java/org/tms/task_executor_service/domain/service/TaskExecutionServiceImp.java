@@ -45,13 +45,11 @@ public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSave
     public List<Task> executeTasks(Integer queueSize) {
         var pageRequest = of(INTEGER_ZERO, queueSize);
         var tasksPage = taskRepository.findAll(pageRequest)
-                                                 .map(task -> mapper.map(task, Task.class));
+                                      .map(task -> mapper.map(task, Task.class));
 
-        List<Task> successfulTasks = executeTasks(tasksPage.getContent());
-        taskRepository.removeTasks(successfulTasks.stream()
-                                                  .map(Task::getInternalId)
-                                                  .collect(toList()));
-        return successfulTasks;
+        List<Task> successfulTasks = executeTasksAsync(tasksPage.getContent());
+        removeSuccessfulTask(successfulTasks);
+        return tasksPage.getContent();
     }
 
     @Nullable
@@ -60,11 +58,11 @@ public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSave
     public List<Task> executeTasks(Set<String> taskIds) {
         var dataTasks = taskRepository.findAllByInternalIds(taskIds);
         List<Task> tasks = mapper.map(dataTasks, new ArrayList<>(), Task.class);
-        List<Task> successfulTasks = executeTasks(tasks);
-        taskRepository.removeTasks(successfulTasks.stream()
-                                                  .map(Task::getInternalId)
-                                                  .collect(toList()));
-        return successfulTasks;
+
+        List<Task> successfulTasks = executeTasksAsync(tasks);
+        //TODO: investigate if what will be if task fail during execution (duplicates not removed failed tasks)
+        removeSuccessfulTask(successfulTasks);
+        return tasks;
     }
 
     @Nullable
@@ -77,12 +75,13 @@ public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSave
                              .getContent();
     }
 
-    private List<Task> executeTasks(List<Task> tasks) {
+    private List<Task> executeTasksAsync(List<Task> tasks) {
         List<CompletableFuture<Command>> commandFutures = tasks.stream()
                                                          .map(this::executeTask)
                                                          .collect(toList());
+
         return CompletableFuture.allOf(commandFutures.toArray(new CompletableFuture[commandFutures.size()]))
-                                .thenApply(future -> commandFutures.stream()
+                                .thenApply(allOfResult -> commandFutures.stream()
                                                                    .map(CompletableFuture::join)
                                                                    .collect(toList())
                                 )
@@ -91,14 +90,21 @@ public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSave
                                         .filter(Command::isSuccessful)
                                         .map(Command::getTask)
                                         .collect(toList()))
-                                .join();//todo: check unchecked exceptions for join()!
+                                .join();
     }
 
     private CompletableFuture<Command> executeTask(Task task) {
         return CompletableFuture.supplyAsync(() -> {
+            //TODO: investigate exception handling for fail retrieve command case (for example) in this block
             Command command = commandManager.retrieveCommand(task);
             commandExecutor.execute(command);
             return command;
         }, asyncTaskExecutorService);
+    }
+
+    private void removeSuccessfulTask(List<Task> successfulTasks) {
+        taskRepository.removeTasks(successfulTasks.stream()
+                                                  .map(Task::getInternalId)
+                                                  .collect(toList()));
     }
 }

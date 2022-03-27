@@ -18,5 +18,6 @@ public class Constant {
         public static final String FAIL_PROFILE_CREATING = "fail.profile.creating";
         public static final String TASK_EXECUTION_PROVIDER_NOT_FOUND = "task.execution.provider.not.found";
         public static final String CANNOT_RETRIEVE_COMMAND = "cannot.retrieve.command";
+        public static final String SOURCE_PAYLOAD_KEY_NOT_FOUND = "source.payload.key.not.found";
     }
 }
