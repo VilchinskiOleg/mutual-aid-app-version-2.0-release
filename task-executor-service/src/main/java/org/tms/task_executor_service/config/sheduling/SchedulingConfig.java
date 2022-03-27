@@ -1,4 +1,4 @@
-package org.tms.task_executor_service.config;
+package org.tms.task_executor_service.config.sheduling;
 
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+import org.tms.task_executor_service.config.TaskExecutionProperties;
 import org.tms.task_executor_service.domain.service.scheduling.TaskExecutionJob;
 
 @Configuration

@@ -35,7 +35,7 @@ public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSave
     @Resource
     private CommandManager commandManager;
     @Resource
-    private ExecutorService asyncTaskExecutorService;
+    private ExecutorService asyncTaskExecutor;
     @Resource
     private Mapper mapper;
 
@@ -99,7 +99,7 @@ public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSave
             Command command = commandManager.retrieveCommand(task);
             commandExecutor.execute(command);
             return command;
-        }, asyncTaskExecutorService);
+        }, asyncTaskExecutor);
     }
 
     private void removeSuccessfulTask(List<Task> successfulTasks) {

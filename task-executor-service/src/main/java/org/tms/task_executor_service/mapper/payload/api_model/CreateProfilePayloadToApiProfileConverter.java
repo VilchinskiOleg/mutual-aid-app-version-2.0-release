@@ -1,4 +1,4 @@
-package org.tms.task_executor_service.mapper.payload;
+package org.tms.task_executor_service.mapper.payload.api_model;
 
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
@@ -10,11 +10,6 @@ import java.util.ArrayList;
 
 @Component
 public class CreateProfilePayloadToApiProfileConverter extends BaseConverter<CreateProfilePayload, Profile> {
-
-    @Override
-    protected Profile getDestination() {
-        return new Profile();
-    }
 
     @Override
     public void convert(CreateProfilePayload source, Profile destination) {

@@ -67,7 +67,7 @@ public class TaskExecutionServiceTest {
     private Mapper mapper = getMapper();
 
     @Spy
-    private final ExecutorService asyncTaskExecutorService = Executors.newFixedThreadPool(TASKS_AMOUNT);
+    private final ExecutorService asyncTaskExecutor = Executors.newFixedThreadPool(TASKS_AMOUNT);
 
     @BeforeAll
     void initAll() {

@@ -8,13 +8,13 @@ import org.springframework.context.annotation.Configuration;
 import org.tms.task_executor_service.config.TaskExecutionProperties;
 
 @Configuration
-public class ExecutorServiceConfig {
+public class AsyncTaskExecutorConfig {
 
     @Resource
     private TaskExecutionProperties properties;
 
-    @Bean(name = "asyncTaskExecutorService")
-    public ExecutorService asyncTaskExecutorService() {
+    @Bean(name = "asyncTaskExecutor")
+    public ExecutorService asyncTaskExecutor() {
         return Executors.newFixedThreadPool(properties.getPoolSize());
     }
 }
