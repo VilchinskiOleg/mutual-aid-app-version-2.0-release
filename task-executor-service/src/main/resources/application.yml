@@ -19,11 +19,21 @@ feign:
   httpclient:
     enabled: true
 
+profile-rest-client:
+  url: http://localhost:8400
+
+application:
+  api-info:
+    version: 2.0
+    title: TASK
+    description: Task SERVICE
+    contact:
+      name: OLEG
+      url: https://mail.google.com
+      email: vilchinskioleg@gmail.com
+
 task-execution-props:
   date:
   period: 1
   poolSize: 10
   tasksAmount: 10
-
-profile-rest-client:
-  url: http://localhost:8400
