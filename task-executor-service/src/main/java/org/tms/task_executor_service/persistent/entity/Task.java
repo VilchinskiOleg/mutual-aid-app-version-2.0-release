@@ -5,12 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.tms.task_executor_service.persistent.entity.payload.Payload;
 
 @Getter
 @Setter
-@Document(collection = "task")
+@Document(collection = "task-executor-service.task")
 public class Task {
 
     @Id
@@ -22,5 +23,6 @@ public class Task {
     private LocalDateTime createdAt;
 
     private Meta meta;
+    @DBRef
     private Payload payload;
 }

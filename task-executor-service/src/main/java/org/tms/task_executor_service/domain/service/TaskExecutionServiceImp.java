@@ -40,7 +40,7 @@ public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSave
     private Mapper mapper;
 
     @Nullable
-    @ThreadSaveMethod
+    @ThreadSaveMethod(lockTimeOut = 2)
     @Override
     public List<Task> executeTasks(Integer queueSize) {
         var pageRequest = of(INTEGER_ZERO, queueSize);
@@ -53,7 +53,7 @@ public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSave
     }
 
     @Nullable
-    @ThreadSaveMethod
+    @ThreadSaveMethod(lockTimeOut = 2)
     @Override
     public List<Task> executeTasks(Set<String> taskIds) {
         var dataTasks = taskRepository.findAllByInternalIds(taskIds);
@@ -66,7 +66,7 @@ public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSave
     }
 
     @Nullable
-    @ThreadSaveMethod(lockTimeOut = 2)
+    @ThreadSaveMethod
     @Override
     public List<Task> getTasks(Integer queueSize) {
         var pageRequest = of(INTEGER_ZERO, queueSize);

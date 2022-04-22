@@ -5,6 +5,8 @@ import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
 import org.tms.task_executor_service.persistent.entity.Meta;
 
+import static java.util.Objects.nonNull;
+
 @Component
 public class DataMetaToMetaConverter extends BaseConverter<Meta, org.tms.task_executor_service.domain.model.Meta> {
 
@@ -12,7 +14,9 @@ public class DataMetaToMetaConverter extends BaseConverter<Meta, org.tms.task_ex
     public void convert(Meta source, org.tms.task_executor_service.domain.model.Meta destination) {
         destination.setFlowId(source.getFlowId());
         destination.setClient(source.getClient());
-        destination.setErrorDetails(mapper.map(source.getErrorDetails(), Error.class));
+        if (nonNull(source.getErrorDetails())) {
+            destination.setErrorDetails(mapper.map(source.getErrorDetails(), Error.class));
+        }
         destination.setRequestDetails(source.getRequestDetails());
     }
 }

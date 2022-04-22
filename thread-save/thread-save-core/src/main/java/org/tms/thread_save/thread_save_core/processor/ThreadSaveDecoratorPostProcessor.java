@@ -1,26 +1,32 @@
 package org.tms.thread_save.thread_save_core.processor;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
+import static java.util.Arrays.stream;
+import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static org.apache.commons.collections4.CollectionUtils.isEqualCollection;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
+import java.util.stream.Stream;
+
 import org.tms.thread_save.thread_save_api.annotation.ThreadSaveMethod;
 import org.tms.thread_save.thread_save_api.marker.ThreadSaveResource;
 import org.tms.thread_save.thread_save_core.config.ThreadSaveProperties;
 import org.tms.thread_save.thread_save_core.model.MethodDetails;
+import org.tms.thread_save.thread_save_core.processor.handler.ThreadSaveInvocationHandler;
 
 @Slf4j
 @Component
@@ -37,17 +43,33 @@ public class ThreadSaveDecoratorPostProcessor implements BeanPostProcessor {
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         Class<?> beanClass = bean.getClass();
 
-        if (beanClass.isInstance(ThreadSaveResource.class)) {
+        if (asList(beanClass.getInterfaces()).contains(ThreadSaveResource.class)) {
             Integer lockTimeOutByProps = properties.getLockTimeOut();
-            List<MethodDetails> threadSaveMethods = Arrays.stream(beanClass.getMethods())
-                    .filter(method -> method.isAnnotationPresent(ThreadSaveMethod.class))
-                    .map(method -> {
-                        ThreadSaveMethod annotation = method.getAnnotation(ThreadSaveMethod.class);
-                        Integer lockTimeOut = annotation.lockTimeOut() > INTEGER_ZERO ? annotation.lockTimeOut() :
-                                nonNull(lockTimeOutByProps) ? lockTimeOutByProps : DEFAULT_LOCK_TIME_OUT;
-                        return new MethodDetails(lockTimeOut, method);
-                    })
-                    .collect(toList());
+
+            Stream<Method> interfaceMethods = stream(beanClass.getInterfaces()).flatMap(intF -> stream(intF.getMethods()));
+            List<Method> classMethods = asList(beanClass.getMethods());
+
+            Map<Method, Method> classMethodByInterfaceMethod = interfaceMethods.collect(toMap(
+                                          im -> im,
+                                          im -> classMethods.stream()
+                                                            .filter(cm -> {
+                                                                var imParams = asList(im.getParameterTypes());
+                                                                var secondParams = asList(cm.getParameterTypes());
+                                                                return StringUtils.equals(im.getName(), cm.getName()) &&
+                                                                        isEqualCollection(imParams, secondParams);
+                                                            })
+                                                            .findFirst()
+                                                            .orElseThrow(() -> new BeanCreationException("Cannot create proxy bean, because cannot math class and interface methods for it."))
+            ));
+            List<MethodDetails> threadSaveMethods = classMethodByInterfaceMethod.entrySet().stream()
+                                                                                           .filter(entry -> entry.getValue().isAnnotationPresent(ThreadSaveMethod.class))
+                                                                                           .map(entry -> {
+                                                                                               ThreadSaveMethod annotation = entry.getValue().getAnnotation(ThreadSaveMethod.class);
+                                                                                               Integer lockTimeOut = annotation.lockTimeOut() > INTEGER_ZERO ? annotation.lockTimeOut() :
+                                                                                                    nonNull(lockTimeOutByProps) ? lockTimeOutByProps : DEFAULT_LOCK_TIME_OUT;
+                                                                                               return new MethodDetails(entry.getKey(), lockTimeOut);
+                                                                                           })
+                                                                                           .collect(toList());
             threadSaveMethodsByBeanName.put(beanName, threadSaveMethods);
         }
 
@@ -62,41 +84,22 @@ public class ThreadSaveDecoratorPostProcessor implements BeanPostProcessor {
             return bean;
         }
         Class<?> beanClass = bean.getClass();
-        Lock lock = (Lock) beanClass.getMethod(GET_LOCK).invoke(bean);
+
+        Lock lock;
+        try {
+            lock = (Lock) beanClass.getMethod(GET_LOCK).invoke(bean);
+        } catch (Exception ex) {
+            log.error("Unexpected error while retrieve Lock for thread-save resource.", ex);
+            throw new BeanCreationException("Cannot create proxy bean");
+        }
 
         if (nonNull(lock)) {
-            return newProxyInstance(beanClass.getClassLoader(), beanClass.getInterfaces(), new InvocationHandler() {
-                @Override
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    MethodDetails currentMethodDetails = threadSaveMethods.stream()
-                            .filter(methodDetails -> methodDetails.getMethod().equals(method))
-                            .findFirst()
-                            .orElse(null);
-                    if (nonNull(currentMethodDetails)) {
-                        return invokeThreadSaveLogics(proxy, method, args, currentMethodDetails.getLockTimeOut(), lock);
-                    }
-                    return method.invoke(proxy, args);
-                }
-            });
+            return newProxyInstance(
+                    beanClass.getClassLoader(),
+                    beanClass.getInterfaces(),
+                    new ThreadSaveInvocationHandler(threadSaveMethods, lock, bean));
         }
 
         return bean;
-    }
-
-    private Object invokeThreadSaveLogics(Object proxy, Method method, Object[] args, Integer lockTimeOut, Lock lock) throws Throwable {
-        try {
-            if (lock.tryLock(lockTimeOut, TimeUnit.SECONDS)) {
-                try {
-                    return method.invoke(proxy, args);
-                } finally {
-                    lock.unlock();
-                }
-            }
-            log.warn("Resource: {} is not allowed", proxy.getClass().getSimpleName());
-            return null;
-        } catch (InterruptedException ex) {
-            log.error("Unexpected error while getting access to resource: {}", proxy.getClass().getSimpleName(), ex);
-            throw ex;
-        }
     }
 }

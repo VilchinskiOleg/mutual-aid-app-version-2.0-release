@@ -10,6 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MethodDetails {
 
-    private Integer lockTimeOut;
     private Method method;
+
+    private Integer lockTimeOut;
 }

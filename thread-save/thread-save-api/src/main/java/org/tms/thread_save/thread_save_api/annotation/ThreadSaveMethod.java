@@ -10,5 +10,9 @@ import org.springframework.lang.Nullable;
 @Target(ElementType.METHOD)
 public @interface ThreadSaveMethod {
 
+    /**
+     * Timeout unit is SECONDS.
+     * @return
+     */
     int lockTimeOut() default 0;
 }

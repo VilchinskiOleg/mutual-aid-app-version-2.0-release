@@ -23,9 +23,9 @@ public class CommandExecutor {
 
     private void loggingResult(Command command, double executionTime) {
         if (command.isSuccessful()) {
-            log.info("Successfully execute command={} with task={}, execution time={}", command.getName(), command.getTask(), executionTime);
+            log.info("Successfully execute command={} with task={}, execution time={} m sec", command.getName(), command.getTask(), executionTime);
         } else {
-            log.warn("Fail execute command={} with task={}, execution time={}", command.getName(), command.getTask(), executionTime);
+            log.warn("Fail execute command={} with task={}, execution time={} m sec", command.getName(), command.getTask(), executionTime);
         }
     }
 }
