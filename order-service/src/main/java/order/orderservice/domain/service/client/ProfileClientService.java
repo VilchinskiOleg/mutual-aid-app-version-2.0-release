@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import feign.Response.Body;
 import lombok.extern.slf4j.Slf4j;
-import order.orderservice.configuration.client.ProfileFeignClient;
+import order.orderservice.configuration.client.ProfileRestClient;
 import org.common.http.autoconfiguration.model.CommonData;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ import java.io.IOException;
 public class ProfileClientService {
 
     @Resource
-    private ProfileFeignClient profileApi;
+    private ProfileRestClient profileApi;
     @Resource
     private CommonData commonData;
 

@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "profileClient", url = "${profile-rest.url}")
-public interface ProfileFeignClient {
+@FeignClient(name = "profileRestClient", url = "${profile-rest-client.url}")
+public interface ProfileRestClient {
 
-    @GetMapping("/{profile-id}")
+    @GetMapping("/api/profile-service/{profile-id}")
     Response getProfileByInternalId(@PathVariable("profile-id") String profileId,
                                     @RequestHeader(LANG_HEADER) String lang);
 }
