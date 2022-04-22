@@ -4,8 +4,7 @@ server:
 spring:
   data:
     mongodb:
-      database: mutual-aid-app
-      uri: mongodb://localhost:27017/mutual-aid-app
+      uri: mongodb+srv://admin:PASSWORD@cluster0.lme5y.mongodb.net/mutual-aid-app?retryWrites=true&w=majority
 
 feign:
   client:

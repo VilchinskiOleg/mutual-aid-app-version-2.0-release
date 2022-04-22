@@ -1,6 +1,6 @@
 package org.tms.thread_save.thread_save_core.processor.handler;
 
-import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 
 import lombok.extern.slf4j.Slf4j;
 import org.tms.thread_save.thread_save_core.model.MethodDetails;
@@ -23,18 +23,20 @@ public class ThreadSaveInvocationHandler implements InvocationHandler {
         this.object = wrapedObject;
     }
 
+    /**
+     * If it will be thread-save method we will find it in method details and will run thread-save logic; if not -> it's
+     * common (not thread-save) method and we should just invoke method with out extra logic.
+     */
     @Override
     public Object invoke(Object proxyObject, Method method, Object[] args) throws Throwable {
         MethodDetails methodDetails = threadSaveMethods.stream()
                                                        .filter(md -> md.getMethod().equals(method))
                                                        .findFirst()
-                                                       .orElseThrow(() -> {
-                                                           log.error("Unexpected error while invoke thread-save method = {}. Cannot get method details from list = {}",
-                                                                   method, threadSaveMethods);
-                                                           return new IllegalStateException(format("Cannot get method details for thread-save method = %s", method));
-                                                       });
-
-        return invokeThreadSaveLogic(this.object, method, args, methodDetails.getLockTimeOut(), lock);
+                                                       .orElse(null);
+        if (nonNull(methodDetails)) {
+            return invokeThreadSaveLogic(this.object, method, args, methodDetails.getLockTimeOut(), lock);
+        }
+        return method.invoke(this.object, args);
     }
 
     private Object invokeThreadSaveLogic(Object object,
