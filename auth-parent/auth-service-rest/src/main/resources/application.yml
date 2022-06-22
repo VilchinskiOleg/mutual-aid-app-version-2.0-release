@@ -1,0 +1,18 @@
+server:
+  port: 8800
+
+application:
+  api-info:
+    version: 2.0
+    title: AUTH
+    description: Auth SERVICE
+    contact:
+      name: OLEG
+      url: https://mail.google.com
+      email: vilchinskioleg@gmail.com
+
+auth:
+  jwt:
+    secret: ${JWT_SECRET}
+    issuer: ${JWT_ISSUER}
+    live: 5
