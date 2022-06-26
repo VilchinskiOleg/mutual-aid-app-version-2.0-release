@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class AuthRestClientProperties {
-  
+
   private String url;
-  @Value("read-timeout")
+  @Value("${auth-rest-client.read-timeout}")
   private Integer readTimeout;
-  @Value("connection-timeout")
+  @Value("${auth-rest-client.connection-timeout}")
   private Integer connectionTimeout;
 }

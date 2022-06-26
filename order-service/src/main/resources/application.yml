@@ -38,5 +38,12 @@ scheduler:
 kafka:
   bootstrapServers: localhost:9092
 
+#rest clients:
+
 profile-rest-client:
   url: http://localhost:8400
+
+auth-rest-client:
+  url: http://localhost:8800/api/auth-service
+  read-timeout: 10000
+  connection-timeout: 10000

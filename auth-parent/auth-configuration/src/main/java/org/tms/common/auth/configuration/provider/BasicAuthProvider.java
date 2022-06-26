@@ -39,7 +39,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
                                                                        .collect(toList());
             return new UsernamePasswordAuthenticationToken(basicClient.getName(), basicClient.getPassword(), roles);
         }
-        throw new BadCredentialsException("Password is wrong");
+        throw new BadCredentialsException("Login or Password is wrong!");
     }
 
     @Override

@@ -6,7 +6,6 @@ import static org.common.http.autoconfiguration.utils.Constant.OK_HTTP_CODE;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.exception.handling.autoconfiguration.model.BaseResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,8 +15,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import ort.tms.mutual_aid.profile_service.client.model.JwtRequest;
-import ort.tms.mutual_aid.profile_service.client.model.VerifyJWTResponse;
+import org.tms.mutual_aid.auth.client.model.JwtRequest;
+import org.tms.mutual_aid.auth.client.model.VerifyJWTResponse;
 
 @Slf4j
 @Component
@@ -25,14 +24,18 @@ public class AuthRestClientService {
 
   private static final String VERIFY_JWT_PATH = "/verify-token";
 
-  @Value("${auth-rest-client.url}")
-  private String baseUrl;
+  @Resource
+  private AuthRestClientProperties authRestClientProperties;
   @Resource
   private RestTemplate restApi;
 
   public VerifyJWTResponse verifyJwt(String jwt) {
-    String url = baseUrl + VERIFY_JWT_PATH;
-    var entity = buildHttpEntity(new JwtRequest(jwt));
+    String url = authRestClientProperties.getUrl() + VERIFY_JWT_PATH;
+
+    JwtRequest request = new JwtRequest();
+    request.setJwt(jwt);
+
+    var entity = buildHttpEntity(request);
     return executeRequest(url, HttpMethod.POST, entity, VerifyJWTResponse.class);
   }
 

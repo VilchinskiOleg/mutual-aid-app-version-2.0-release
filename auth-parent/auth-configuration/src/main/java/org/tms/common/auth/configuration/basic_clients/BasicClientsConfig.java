@@ -1,10 +1,13 @@
 package org.tms.common.auth.configuration.basic_clients;
 
-import static java.util.stream.Collectors.toMap;
+import static java.util.Objects.isNull;
 
-import java.util.List;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,10 +15,20 @@ import org.springframework.context.annotation.Configuration;
 public class BasicClientsConfig {
 
   @Bean(name = "basicClients")
-  @ConfigurationProperties(prefix = "basic-clients")
-  public Map<String, BasicClient> getBasicClients(List<BasicClient> basicClients) {
-    //if empty or null?
-    return basicClients.stream()
-                       .collect(toMap(BasicClient::getName, client -> client));
+  public Map<String, BasicClient> getBasicClients() {
+    URL url = ClassLoader.getSystemClassLoader()
+        .getResource("basicclients/basic-auth-clients.json");
+    if (isNull(url)) {
+      throw new RuntimeException("Error on starting app: cannot build URL for resource 'basicclients/basic-auth-clients.json'");
+    }
+    Map<String, BasicClient> basicClientsByName;
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      TypeReference<Map<String, BasicClient>> type = new TypeReference<>() {};
+      basicClientsByName = objectMapper.readValue(new FileReader(url.getPath()), type);
+    } catch (IOException ex) {
+      throw new RuntimeException("Error on starting app: cannot read basic clients from JSON file");
+    }
+    return basicClientsByName;
   }
 }

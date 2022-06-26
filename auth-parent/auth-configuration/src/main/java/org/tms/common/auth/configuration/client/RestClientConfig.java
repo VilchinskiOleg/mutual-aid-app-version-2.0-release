@@ -2,7 +2,7 @@ package org.tms.common.auth.configuration.client;
 
 import static java.util.Collections.singletonList;
 
-import org.springframework.beans.factory.annotation.Value;
+import javax.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -12,16 +12,14 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class RestClientConfig {
 
-  @Value("${auth-rest-client.read-timeout}")
-  private static Integer READ_TIMEOUT;
-  @Value("${auth-rest-client.connection-timeout}")
-  private static Integer CONNECTION_TIMEOUT;
+  @Resource
+  private AuthRestClientProperties authRestClientProperties;
 
   @Bean(name = "restApi")
   public RestTemplate getRestApi() {
     final var requestFactory = new HttpComponentsClientHttpRequestFactory();
-    requestFactory.setReadTimeout(READ_TIMEOUT);
-    requestFactory.setConnectTimeout(CONNECTION_TIMEOUT);
+    requestFactory.setReadTimeout(authRestClientProperties.getReadTimeout());
+    requestFactory.setConnectTimeout(authRestClientProperties.getConnectionTimeout());
     final var restApi = new RestTemplate(requestFactory);
     restApi.setMessageConverters(singletonList(new MappingJackson2HttpMessageConverter()));
     return restApi;
