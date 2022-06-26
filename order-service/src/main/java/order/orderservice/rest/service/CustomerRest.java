@@ -11,7 +11,7 @@ import order.orderservice.rest.message.OrdersResponse;
 import order.orderservice.rest.model.Order;
 import org.common.http.autoconfiguration.annotation.Api;
 import org.mapper.autoconfiguration.mapper.Mapper;
-//import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -59,9 +59,9 @@ public class CustomerRest {
     @ApiOperation(value = "${order.operation.update-order}")
     @PutMapping(path = "/update-order/{order-id}")
     @ResponseStatus(OK)
-    //@PreAuthorize("hasRole('OWNER')")     // TODO: how to permit this action for only owner of order ?
+    @PreAuthorize("hasRole('UPDATE_ORDER_AS_OWNER') or #updatedOrderRequest.owner.memberId == authentication.profileId")
     public OrderResponse updateOrder(@Valid @RequestBody Order updatedOrderRequest,
-                             @PathVariable("order-id") String orderId) {
+                                     @PathVariable("order-id") String orderId) {
         var orderDetails = mapper.map(updatedOrderRequest, order.orderservice.domain.model.Order.class);
         var updatedOrder = orderService.updateOrder(orderDetails, orderId);
         return new OrderResponse(mapper.map(updatedOrder, Order.class));
@@ -71,6 +71,8 @@ public class CustomerRest {
     @ApiOperation(value = "${order.operation.approve-order}")
     @PutMapping(path = "/approve-order/{order-id}")
     @ResponseStatus(OK)
+
+    @PreAuthorize("hasRole('APPROVE_ORDER_AS_OWNER') or #updatedOrderRequest.owner.memberId == authentication.profileId")
     //@PreAuthorize("hasRole('OWNER')")     // TODO: how to permit this action for only owner of order ?
     public OrderResponse approveOrder(@PathVariable("order-id") String orderId,
                               @RequestParam("executor-id") String executorId) {
@@ -82,6 +84,8 @@ public class CustomerRest {
     @ApiOperation(value = "${order.operation.close-order}")
     @PutMapping(path = "/close-order/{order-id}")
     @ResponseStatus(OK)
+
+    @PreAuthorize("hasRole('CLOSE_ORDER_AS_OWNER') or #updatedOrderRequest.owner.memberId == authentication.profileId")
     //@PreAuthorize("hasRole('OWNER')")     // TODO: how to permit this action for only owner of order ?
     public OrderResponse closeOrder(@PathVariable("order-id") String orderId) {
         var order = orderService.closeOrder(orderId);
