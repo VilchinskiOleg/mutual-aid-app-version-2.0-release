@@ -2,6 +2,7 @@ package org.tms.authservicerest.domain.service;
 
 import com.auth0.jwt.interfaces.Claim;
 import java.util.Map;
+import org.tms.authservicerest.domain.model.Profile;
 
 /**
  * Interface for working with JWT token. Support create, verify token operations.
@@ -11,10 +12,10 @@ public interface JwtHandler {
   /**
    * Create token by ticket as payload. Ticket should kep 'profileId' as field.
    *
-   * @param ticket profile's details as payload.
+   * @param profile profile's model.
    * @return jwt value.
    */
-  String createToken(Map<String, Object> ticket);
+  String createToken(Profile profile);
 
   /**
    * Verify token structure and check sign of token.

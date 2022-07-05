@@ -117,6 +117,13 @@
 
 
 
+    "auth.external.provider.unavailable": {
+        "code": "auth.external.provider.unavailable",
+        "messages": {
+            "en": "Auth external provider unavailable. Access denied.",
+            "ru": "Внешний провайдер авторизации не доступен. Доступ отклонен."
+        }
+    },
     "order.not.found": {
         "code": "order.not.found",
         "messages": {

@@ -11,14 +11,18 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.tms.authservicerest.domain.model.Profile;
 
 @Slf4j
 @Component
 public class JwtHandlerImp implements JwtHandler {
+
+  private static final String EXPIRED_AT_KEY = "expiredAt";
 
   @Value("${auth.jwt.secret}")
   private static String SECRET;
@@ -28,12 +32,14 @@ public class JwtHandlerImp implements JwtHandler {
   private static long LIVE_TOKEN_PERIOD;
 
   @Override
-  public String createToken(Map<String, Object> ticket) {
-    Algorithm algorithm = Algorithm.HMAC256(SECRET);
+  public String createToken(Profile profile) {
     // Claim doesn't support LocalDateTime as type, so I convert it to String:
-    ticket.put("expiredAt", now().plus(LIVE_TOKEN_PERIOD, MINUTES).toString());
+    final var expiredAt = now().plus(LIVE_TOKEN_PERIOD, MINUTES).toString();
+    Algorithm algorithm = Algorithm.HMAC256(SECRET);
+    Map<String, Object> jwtPayload = createPayload(profile);
+    jwtPayload.put(EXPIRED_AT_KEY, expiredAt);
     final String jwt = JWT.create()
-        .withPayload(ticket)
+        .withPayload(jwtPayload)
         .withIssuer(ISSUER)
         .sign(algorithm);
 
@@ -50,7 +56,7 @@ public class JwtHandlerImp implements JwtHandler {
       DecodedJWT decodedJWT = verifier.verify(jwt);
       var ticket = decodedJWT.getClaims();
       // Claim doesn't support LocalDateTime as type, so I parse it from String:
-      var expiredAt = parse(ticket.get("expiredAt").as(String.class));
+      var expiredAt = parse(ticket.get(EXPIRED_AT_KEY).as(String.class));
       if (now().isBefore(expiredAt)) {
         return true;
       }
@@ -71,5 +77,13 @@ public class JwtHandlerImp implements JwtHandler {
       log.error("Unexpected error while parsing token. Should use only verified and trusted token!", ex);
       throw ex;
     }
+  }
+
+  private Map<String, Object> createPayload(Profile profile) {
+    var jwtPayload = new HashMap<String, Object>();
+    jwtPayload.put("resourceId", profile.getResourceId());
+    jwtPayload.put("gender", profile.getGender().toString());
+    //...
+    return jwtPayload;
   }
 }
