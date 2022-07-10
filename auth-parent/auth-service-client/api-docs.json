@@ -29,7 +29,7 @@
           "auth-rest"
         ],
         "summary": "${auth.operation.create}",
-        "operationId": "registerUsingPOST",
+        "operationId": "createUsingPOST",
         "consumes": [
           "application/json"
         ],
@@ -43,8 +43,8 @@
             "description": "request",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/ProfileRequest",
-              "originalRef": "ProfileRequest"
+              "originalRef": "CreateProfileRequest",
+              "$ref": "#/definitions/CreateProfileRequest"
             }
           },
           {
@@ -60,8 +60,8 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/RegisterProfileResponse",
-              "originalRef": "RegisterProfileResponse"
+              "originalRef": "CreateProfileResponse",
+              "$ref": "#/definitions/CreateProfileResponse"
             }
           },
           "201": {
@@ -100,8 +100,8 @@
             "description": "request",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/ProfileRequest",
-              "originalRef": "ProfileRequest"
+              "originalRef": "LoginProfileRequest",
+              "$ref": "#/definitions/LoginProfileRequest"
             }
           },
           {
@@ -117,8 +117,8 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/JwtResponse",
-              "originalRef": "JwtResponse"
+              "originalRef": "JwtResponse",
+              "$ref": "#/definitions/JwtResponse"
             }
           },
           "201": {
@@ -157,8 +157,8 @@
             "description": "request",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/JwtRequest",
-              "originalRef": "JwtRequest"
+              "originalRef": "JwtRequest",
+              "$ref": "#/definitions/JwtRequest"
             }
           },
           {
@@ -174,8 +174,8 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/VerifyJWTResponse",
-              "originalRef": "VerifyJWTResponse"
+              "originalRef": "VerifyJWTResponse",
+              "$ref": "#/definitions/VerifyJWTResponse"
             }
           },
           "201": {
@@ -199,17 +199,19 @@
         "tags": [
           "basic-error-controller"
         ],
-        "summary": "errorHtml",
-        "operationId": "errorHtmlUsingGET",
+        "summary": "error",
+        "operationId": "errorUsingGET",
         "produces": [
-          "text/html"
+          "*/*"
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/ModelAndView",
-              "originalRef": "ModelAndView"
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
             }
           },
           "401": {
@@ -228,20 +230,22 @@
         "tags": [
           "basic-error-controller"
         ],
-        "summary": "errorHtml",
-        "operationId": "errorHtmlUsingHEAD",
+        "summary": "error",
+        "operationId": "errorUsingHEAD",
         "consumes": [
           "application/json"
         ],
         "produces": [
-          "text/html"
+          "*/*"
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/ModelAndView",
-              "originalRef": "ModelAndView"
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
             }
           },
           "204": {
@@ -260,20 +264,22 @@
         "tags": [
           "basic-error-controller"
         ],
-        "summary": "errorHtml",
-        "operationId": "errorHtmlUsingPOST",
+        "summary": "error",
+        "operationId": "errorUsingPOST",
         "consumes": [
           "application/json"
         ],
         "produces": [
-          "text/html"
+          "*/*"
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/ModelAndView",
-              "originalRef": "ModelAndView"
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
             }
           },
           "201": {
@@ -295,20 +301,22 @@
         "tags": [
           "basic-error-controller"
         ],
-        "summary": "errorHtml",
-        "operationId": "errorHtmlUsingPUT",
+        "summary": "error",
+        "operationId": "errorUsingPUT",
         "consumes": [
           "application/json"
         ],
         "produces": [
-          "text/html"
+          "*/*"
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/ModelAndView",
-              "originalRef": "ModelAndView"
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
             }
           },
           "201": {
@@ -330,17 +338,19 @@
         "tags": [
           "basic-error-controller"
         ],
-        "summary": "errorHtml",
-        "operationId": "errorHtmlUsingDELETE",
+        "summary": "error",
+        "operationId": "errorUsingDELETE",
         "produces": [
-          "text/html"
+          "*/*"
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/ModelAndView",
-              "originalRef": "ModelAndView"
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
             }
           },
           "204": {
@@ -359,20 +369,22 @@
         "tags": [
           "basic-error-controller"
         ],
-        "summary": "errorHtml",
-        "operationId": "errorHtmlUsingOPTIONS",
+        "summary": "error",
+        "operationId": "errorUsingOPTIONS",
         "consumes": [
           "application/json"
         ],
         "produces": [
-          "text/html"
+          "*/*"
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/ModelAndView",
-              "originalRef": "ModelAndView"
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
             }
           },
           "204": {
@@ -391,20 +403,22 @@
         "tags": [
           "basic-error-controller"
         ],
-        "summary": "errorHtml",
-        "operationId": "errorHtmlUsingPATCH",
+        "summary": "error",
+        "operationId": "errorUsingPATCH",
         "consumes": [
           "application/json"
         ],
         "produces": [
-          "text/html"
+          "*/*"
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/ModelAndView",
-              "originalRef": "ModelAndView"
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
             }
           },
           "204": {
@@ -422,6 +436,62 @@
     }
   },
   "definitions": {
+    "Character": {
+      "type": "object",
+      "title": "Character"
+    },
+    "Chronology": {
+      "type": "object",
+      "properties": {
+        "calendarType": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      },
+      "title": "Chronology"
+    },
+    "Contact": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "EMAIL",
+            "PHONE"
+          ]
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "title": "Contact"
+    },
+    "CreateProfileRequest": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "originalRef": "Profile",
+          "$ref": "#/definitions/Profile"
+        }
+      },
+      "title": "CreateProfileRequest"
+    },
+    "CreateProfileResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "originalRef": "Error",
+          "$ref": "#/definitions/Error"
+        },
+        "profile": {
+          "originalRef": "Profile",
+          "$ref": "#/definitions/Profile"
+        }
+      },
+      "title": "CreateProfileResponse"
+    },
     "Error": {
       "type": "object",
       "properties": {
@@ -434,12 +504,24 @@
         "nestedErrors": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Error",
-            "originalRef": "Error"
+            "originalRef": "Error",
+            "$ref": "#/definitions/Error"
           }
         }
       },
       "title": "Error"
+    },
+    "IsoChronology": {
+      "type": "object",
+      "properties": {
+        "calendarType": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      },
+      "title": "IsoChronology"
     },
     "JwtRequest": {
       "type": "object",
@@ -454,14 +536,218 @@
       "type": "object",
       "properties": {
         "error": {
-          "$ref": "#/definitions/Error",
-          "originalRef": "Error"
+          "originalRef": "Error",
+          "$ref": "#/definitions/Error"
         },
         "jwt": {
           "type": "string"
         }
       },
       "title": "JwtResponse"
+    },
+    "LocalDate": {
+      "type": "object",
+      "properties": {
+        "chronology": {
+          "originalRef": "IsoChronology",
+          "$ref": "#/definitions/IsoChronology"
+        },
+        "dayOfMonth": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "dayOfWeek": {
+          "type": "string",
+          "enum": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY",
+            "SATURDAY",
+            "SUNDAY"
+          ]
+        },
+        "dayOfYear": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "era": {
+          "type": "string",
+          "enum": [
+            "BCE",
+            "CE"
+          ]
+        },
+        "leapYear": {
+          "type": "boolean"
+        },
+        "month": {
+          "type": "string",
+          "enum": [
+            "JANUARY",
+            "FEBRUARY",
+            "MARCH",
+            "APRIL",
+            "MAY",
+            "JUNE",
+            "JULY",
+            "AUGUST",
+            "SEPTEMBER",
+            "OCTOBER",
+            "NOVEMBER",
+            "DECEMBER"
+          ]
+        },
+        "monthValue": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "year": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "LocalDate"
+    },
+    "LocalDateTime": {
+      "type": "object",
+      "properties": {
+        "chronology": {
+          "originalRef": "Chronology",
+          "$ref": "#/definitions/Chronology"
+        },
+        "dayOfMonth": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "dayOfWeek": {
+          "type": "string",
+          "enum": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY",
+            "SATURDAY",
+            "SUNDAY"
+          ]
+        },
+        "dayOfYear": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "hour": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "minute": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "month": {
+          "type": "string",
+          "enum": [
+            "JANUARY",
+            "FEBRUARY",
+            "MARCH",
+            "APRIL",
+            "MAY",
+            "JUNE",
+            "JULY",
+            "AUGUST",
+            "SEPTEMBER",
+            "OCTOBER",
+            "NOVEMBER",
+            "DECEMBER"
+          ]
+        },
+        "monthValue": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "nano": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "second": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "year": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "LocalDateTime"
+    },
+    "Locale": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string"
+        },
+        "displayCountry": {
+          "type": "string"
+        },
+        "displayLanguage": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "displayScript": {
+          "type": "string"
+        },
+        "displayVariant": {
+          "type": "string"
+        },
+        "extensionKeys": {
+          "type": "array",
+          "items": {
+            "originalRef": "Character",
+            "$ref": "#/definitions/Character"
+          }
+        },
+        "iso3Country": {
+          "type": "string"
+        },
+        "iso3Language": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "script": {
+          "type": "string"
+        },
+        "unicodeLocaleAttributes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unicodeLocaleKeys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "variant": {
+          "type": "string"
+        }
+      },
+      "title": "Locale"
+    },
+    "LoginProfileRequest": {
+      "type": "object",
+      "properties": {
+        "ticket": {
+          "originalRef": "Ticket",
+          "$ref": "#/definitions/Ticket"
+        }
+      },
+      "title": "LoginProfileRequest"
     },
     "ModelAndView": {
       "type": "object",
@@ -555,8 +841,8 @@
           ]
         },
         "view": {
-          "$ref": "#/definitions/View",
-          "originalRef": "View"
+          "originalRef": "View",
+          "$ref": "#/definitions/View"
         },
         "viewName": {
           "type": "string"
@@ -564,7 +850,71 @@
       },
       "title": "ModelAndView"
     },
+    "Name": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "locale": {
+          "originalRef": "Locale",
+          "$ref": "#/definitions/Locale"
+        }
+      },
+      "title": "Name"
+    },
     "Profile": {
+      "type": "object",
+      "properties": {
+        "birthday": {
+          "originalRef": "LocalDate",
+          "$ref": "#/definitions/LocalDate"
+        },
+        "contacts": {
+          "type": "array",
+          "items": {
+            "originalRef": "Contact",
+            "$ref": "#/definitions/Contact"
+          }
+        },
+        "createAt": {
+          "originalRef": "LocalDateTime",
+          "$ref": "#/definitions/LocalDateTime"
+        },
+        "gender": {
+          "type": "string",
+          "enum": [
+            "MALE",
+            "FEMALE"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "modifyAt": {
+          "originalRef": "LocalDateTime",
+          "$ref": "#/definitions/LocalDateTime"
+        },
+        "names": {
+          "type": "array",
+          "items": {
+            "originalRef": "Name",
+            "$ref": "#/definitions/Name"
+          }
+        },
+        "password": {
+          "type": "string"
+        },
+        "resourceId": {
+          "type": "string"
+        }
+      },
+      "title": "Profile"
+    },
+    "Ticket": {
       "type": "object",
       "properties": {
         "login": {
@@ -572,43 +922,19 @@
         },
         "password": {
           "type": "string"
-        }
-      },
-      "title": "Profile"
-    },
-    "ProfileRequest": {
-      "type": "object",
-      "properties": {
-        "profile": {
-          "$ref": "#/definitions/Profile",
-          "originalRef": "Profile"
-        }
-      },
-      "title": "ProfileRequest"
-    },
-    "RegisterProfileResponse": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "$ref": "#/definitions/Error",
-          "originalRef": "Error"
         },
-        "jwt": {
+        "type": {
           "type": "string"
-        },
-        "profile": {
-          "$ref": "#/definitions/Profile",
-          "originalRef": "Profile"
         }
       },
-      "title": "RegisterProfileResponse"
+      "title": "Ticket"
     },
     "VerifyJWTResponse": {
       "type": "object",
       "properties": {
         "error": {
-          "$ref": "#/definitions/Error",
-          "originalRef": "Error"
+          "originalRef": "Error",
+          "$ref": "#/definitions/Error"
         },
         "profileId": {
           "type": "string"

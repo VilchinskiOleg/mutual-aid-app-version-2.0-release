@@ -8,6 +8,7 @@ import static org.tms.common.auth.configuration.utils.Constant.Errors.AUTH_EXTER
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,8 +20,10 @@ import org.springframework.web.client.RestTemplate;
 import org.tms.mutual_aid.auth.client.model.JwtRequest;
 import org.tms.mutual_aid.auth.client.model.VerifyJWTResponse;
 
-@Slf4j
 @Component
+@ConditionalOnBean(name = "authRestClientProperties")
+
+@Slf4j
 public class AuthRestClientService {
 
   private static final String VERIFY_JWT_PATH = "/verify-token";

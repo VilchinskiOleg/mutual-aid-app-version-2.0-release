@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.Ordered;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,6 +27,22 @@ import org.tms.common.auth.configuration.provider.JwtAuthProvider;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+  private static final String[] AUTH_WHITE_LIST = {
+      // -- Swagger UI v2:
+      "/v2/api-docs",
+      "/swagger-resources",
+      "/swagger-resources/**",
+      "/configuration/ui",
+      "/configuration/security",
+      "/swagger-ui.html",
+      "/webjars/**",
+      // -- Swagger UI v3 (OpenAPI):
+      "/v3/api-docs/**",
+      "/swagger-ui/**",
+      // -- Auth Service:
+      "api/auth-service/**"
+  };
+
   @Resource
   private BasicAuthProvider basicAuthProvider;
   @Resource
@@ -38,10 +55,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.csrf().disable();
 
     http.sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // turn off http session ?
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // turn off http session, because check JWT token
 
     http.authorizeRequests()
-        .antMatchers("api/auth-service/**").permitAll()
+        .antMatchers(AUTH_WHITE_LIST).permitAll()
         .anyRequest().authenticated();
 
     http.httpBasic().authenticationEntryPoint(failAuthenticationEntryPoint);
@@ -57,6 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
+  @Lazy
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }

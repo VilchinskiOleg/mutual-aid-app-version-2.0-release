@@ -3,6 +3,7 @@ package org.tms.common.auth.configuration.client.config;
 import static java.util.Collections.singletonList;
 
 import javax.annotation.Resource;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -11,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import org.tms.common.auth.configuration.client.AuthRestClientProperties;
 
 @Configuration
+@ConditionalOnBean(name = "authRestClientProperties")
 public class RestClientConfig {
 
   @Resource

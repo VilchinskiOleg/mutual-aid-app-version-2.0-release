@@ -1,6 +1,7 @@
 package org.tms.authservicerest.domain.service.ticket;
 
 import javax.annotation.Resource;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.tms.authservicerest.domain.model.Profile;
 import org.tms.authservicerest.domain.model.profile.Ticket;
@@ -8,6 +9,7 @@ import org.tms.authservicerest.domain.model.profile.Ticket;
 public abstract class BasicTicketHandlerStrategy implements TicketHandlerStrategy {
 
   @Resource
+  @Lazy
   private PasswordEncoder passwordEncoder;
 
   @Override

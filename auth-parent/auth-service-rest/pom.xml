@@ -21,6 +21,11 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+
         <!-- FOR WORK WITH JWT: -->
         <dependency>
             <groupId>com.auth0</groupId>
@@ -28,34 +33,26 @@
             <version>3.19.2</version>
         </dependency>
 
+        <!-- LOCAL PROJECT STARTERS: -->
         <dependency>
-            <groupId>org.tms.exception.handling</groupId>
-            <artifactId>exception-handling-autoconfiguration</artifactId>
+            <groupId>org.tms.common.auth</groupId>
+            <artifactId>auth-configuration</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>org.tms.common.http</groupId>
             <artifactId>common-http-autoconfiguration</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.tms.exception.handling</groupId>
+            <artifactId>exception-handling-autoconfiguration</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.tms.mapper</groupId>
             <artifactId>model-mapper-autoconfiguration</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
-        </dependency>
-
-        <!-- SPRING SECURITY, FOR BY_CRYPT ENCODING: -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-            <scope>provided</scope>
         </dependency>
 
     </dependencies>
