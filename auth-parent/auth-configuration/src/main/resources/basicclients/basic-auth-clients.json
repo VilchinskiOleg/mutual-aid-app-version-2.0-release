@@ -1,12 +1,20 @@
 [
     {
         "name": "test",
-        "password": "12345",
-        "roles": ["ADMIN", "USER"]
+        "password": "$2a$12$hCUSXhHqmQewL9wAfe.ZDOmEgQ7hOi1io1E5oAIYL6L9puw48zcXS",
+        "description": "123welcome!45",
+        "roles": [
+            "CREATE_AUTH_PROFILE",
+
+            "UPDATE_ORDER_AS_OWNER"
+        ]
     },
     {
-        "name": "user",
-        "password": "123456789",
-        "roles": ["USER"]
+        "name": "profile-service-client",
+        "password": "$2a$12$QRPnAbX16QjEGO/NoNlZRO9eK2BjmI.3rtTmqE7bSD7Zh3YnN8aTm",
+        "description": "423welcome!76",
+        "roles": [
+            "CREATE_AUTH_PROFILE"
+        ]
     }
 ]

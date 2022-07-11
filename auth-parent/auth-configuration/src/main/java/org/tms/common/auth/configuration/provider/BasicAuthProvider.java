@@ -21,6 +21,7 @@ import org.tms.common.auth.configuration.basic_clients.BasicClient;
 @Component
 public class BasicAuthProvider implements AuthenticationProvider {
 
+    public static final String AUTHORITY_PREFIX = "ROLE_";
     @Resource
     private PasswordEncoder passwordEncoder;
     @Resource
@@ -35,7 +36,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
         var basicClient = basicClients.get(login);
         if (nonNull(basicClient) && passwordEncoder.matches(password, basicClient.getPassword())) {
             List<SimpleGrantedAuthority> roles = basicClient.getRoles().stream()
-                                                                       .map(SimpleGrantedAuthority::new)
+                                                                       .map(role -> new SimpleGrantedAuthority(AUTHORITY_PREFIX.concat(role)))
                                                                        .collect(toList());
             return new UsernamePasswordAuthenticationToken(basicClient.getName(), basicClient.getPassword(), roles);
         }

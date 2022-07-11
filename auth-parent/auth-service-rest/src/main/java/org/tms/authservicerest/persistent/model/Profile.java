@@ -20,11 +20,10 @@ public class Profile {
 
   @Id
   private String id;
-  private String profileId;
 
+  private String profileId;
   private String resourceId;
-//  private List<Name> names;
-//  private List<Contact> contacts;
+
   private String gender;
   private LocalDate birthday;
 

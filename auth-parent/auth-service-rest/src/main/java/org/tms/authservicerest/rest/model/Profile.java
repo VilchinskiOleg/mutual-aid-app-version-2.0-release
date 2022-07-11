@@ -1,5 +1,6 @@
 package org.tms.authservicerest.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,14 +20,16 @@ public class Profile {
   private String Id;
   private String resourceId;
 
-  private List<Contact> contacts;
-  private List<Name> names;
   private Gender gender;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private LocalDate birthday;
 
+  // only for output:
   private LocalDateTime createAt;
   private LocalDateTime modifyAt;
 
   // only for input:
+  private List<Contact> contacts;
+  private List<Name> names;
   private String password;
 }

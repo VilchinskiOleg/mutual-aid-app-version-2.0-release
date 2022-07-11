@@ -1,4 +1,4 @@
-package org.tms.authservicerest.domain.service;
+package org.tms.authservicerest.domain.service.jwt;
 
 import static java.time.LocalDateTime.now;
 import static java.time.LocalDateTime.parse;
@@ -13,8 +13,8 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.tms.authservicerest.domain.model.Profile;
 
@@ -24,23 +24,19 @@ public class JwtHandlerImp implements JwtHandler {
 
   private static final String EXPIRED_AT_KEY = "expiredAt";
 
-  @Value("${auth.jwt.secret}")
-  private static String SECRET;
-  @Value("${auth.jwt.issuer}")
-  private static String ISSUER;
-  @Value("${auth.jwt.live}")
-  private static long LIVE_TOKEN_PERIOD;
+  @Resource
+  private JwtProperties jwtProperties;
 
   @Override
   public String createToken(Profile profile) {
     // Claim doesn't support LocalDateTime as type, so I convert it to String:
-    final var expiredAt = now().plus(LIVE_TOKEN_PERIOD, MINUTES).toString();
-    Algorithm algorithm = Algorithm.HMAC256(SECRET);
+    final var expiredAt = now().plus(jwtProperties.getLive(), MINUTES).toString();
+    Algorithm algorithm = Algorithm.HMAC256(jwtProperties.getSecret());
     Map<String, Object> jwtPayload = createPayload(profile);
     jwtPayload.put(EXPIRED_AT_KEY, expiredAt);
     final String jwt = JWT.create()
         .withPayload(jwtPayload)
-        .withIssuer(ISSUER)
+        .withIssuer(jwtProperties.getIssuer())
         .sign(algorithm);
 
     return jwt;
@@ -48,9 +44,9 @@ public class JwtHandlerImp implements JwtHandler {
 
   @Override
   public boolean verifyToken(String jwt) {
-    Algorithm algorithm = Algorithm.HMAC256(SECRET);
+    Algorithm algorithm = Algorithm.HMAC256(jwtProperties.getSecret());
     JWTVerifier verifier = JWT.require(algorithm)
-        .withIssuer(ISSUER)
+        .withIssuer(jwtProperties.getIssuer())
         .build();
     try {
       DecodedJWT decodedJWT = verifier.verify(jwt);

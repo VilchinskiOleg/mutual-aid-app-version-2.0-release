@@ -1,4 +1,4 @@
-package org.tms.authservicerest.domain.service;
+package org.tms.authservicerest.domain.service.jwt;
 
 import com.auth0.jwt.interfaces.Claim;
 import java.util.Map;

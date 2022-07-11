@@ -6,13 +6,14 @@ import java.util.Map;
 import javax.annotation.Resource;
 import org.common.http.autoconfiguration.annotation.Api;
 import org.mapper.autoconfiguration.mapper.Mapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.tms.authservicerest.domain.model.Profile;
 import org.tms.authservicerest.domain.model.profile.Ticket;
-import org.tms.authservicerest.domain.service.JwtHandler;
+import org.tms.authservicerest.domain.service.jwt.JwtHandler;
 import org.tms.authservicerest.domain.service.ProfileManagerService;
 import org.tms.authservicerest.rest.message.req.JwtRequest;
 import org.tms.authservicerest.rest.message.req.LoginProfileRequest;
@@ -35,6 +36,7 @@ public class AuthRest {
   @Api
   @ApiOperation(value = "${auth.operation.create}")
   @PostMapping("/create")
+  @PreAuthorize("hasRole('CREATE_AUTH_PROFILE')")
   public CreateProfileResponse create(@RequestBody CreateProfileRequest request) {
     var profile = profileManagerService.create(mapper.map(request.getProfile(), Profile.class));
     var createdProfile = mapper.map(profile, org.tms.authservicerest.rest.model.Profile.class);

@@ -10,6 +10,8 @@ public class TicketToDataTicketConverter extends
 
   @Override
   public void convert(Ticket source, org.tms.authservicerest.persistent.model.profile.Ticket destination) {
-    System.out.println("OK!");
+    destination.setLogin(source.getLogin());
+    destination.setPassword(source.getPassword());
+    destination.setType(mapper.map(source.getType()));
   }
 }

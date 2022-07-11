@@ -40,7 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       "/v3/api-docs/**",
       "/swagger-ui/**",
       // -- Auth Service:
-      "api/auth-service/**"
+      "/api/auth-service/login",
+      "/api/auth-service/verify-token"
   };
 
   @Resource

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.tms.authservicerest.domain.model.Profile;
 import org.tms.authservicerest.domain.model.profile.Ticket;
 import org.tms.authservicerest.domain.model.profile.Ticket.Type;
+import org.tms.authservicerest.domain.service.jwt.JwtHandler;
 import org.tms.authservicerest.domain.service.ticket.TicketHandlerStrategy;
 import org.tms.authservicerest.persistent.service.ProfileRepository;
 
@@ -25,10 +26,13 @@ public class ProfileManagerServiceImpl implements ProfileManagerService {
   @Resource
   private List<TicketHandlerStrategy> ticketHandlerStrategies;
   @Resource
+  private IdGeneratorService idGeneratorService;
+  @Resource
   private Mapper mapper;
 
   @Override
   public Profile create(Profile profile) {
+    profile.setProfileId(idGeneratorService.generate());
     ticketHandlerStrategies.forEach(ticketStrategy -> ticketStrategy.addTicket(profile));
     return saveProfile(profile);
   }

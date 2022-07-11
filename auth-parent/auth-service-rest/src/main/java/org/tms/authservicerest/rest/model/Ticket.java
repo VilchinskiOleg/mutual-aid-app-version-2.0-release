@@ -9,7 +9,7 @@ import lombok.Setter;
 public class Ticket {
 
   private String login;
-  private String password;
+  private String password; // only for input
   @Pattern(regexp = "^(USER_NAME|EMAIL|PHONE)$", message = "TICKET_TYPE_RULE")
   private String type;
 }

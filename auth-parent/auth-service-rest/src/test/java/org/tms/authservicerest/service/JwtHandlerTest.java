@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.tms.authservicerest.domain.model.Profile;
-import org.tms.authservicerest.domain.service.JwtHandler;
-import org.tms.authservicerest.domain.service.JwtHandlerImp;
+import org.tms.authservicerest.domain.service.jwt.JwtHandler;
+import org.tms.authservicerest.domain.service.jwt.JwtHandlerImp;
 
 @ContextConfiguration(classes = JwtHandlerImp.class)
 @ExtendWith(SpringExtension.class)
