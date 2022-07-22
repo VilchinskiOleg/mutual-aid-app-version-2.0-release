@@ -36,7 +36,9 @@ public class AuthClientService {
 
     private CreateProfileRequest createRequest(Profile profile) {
         var authProfile = mapper.map(profile, org.tms.mutual_aid.auth.client.model.Profile.class);
-        return new CreateProfileRequest(authProfile);
+        var request = new CreateProfileRequest();
+        request.setProfile(authProfile);
+        return request;
     }
 
     private CreateProfileResponse deserializeResponse(Body responseBody) {

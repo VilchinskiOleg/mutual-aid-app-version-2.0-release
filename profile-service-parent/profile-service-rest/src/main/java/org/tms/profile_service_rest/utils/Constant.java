@@ -24,5 +24,6 @@ public class Constant {
         public static final String PROFILE_NOT_FUND = "profile.not.fund";
 
         public static final String FAIL_CREATING_AUTH_PROFILE = "fail.creating.auth.profile";
+        public static final String FAIL_CREATING_NEW_PROFILE = "fail.creating.new.profile";
     }
 }
