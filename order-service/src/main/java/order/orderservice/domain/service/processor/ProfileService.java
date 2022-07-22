@@ -47,6 +47,14 @@ public class ProfileService {
         //TODO: notification order owner.
     }
 
+    public Member retrieveMemberByIdRequired(String memberId) {
+        Profile profile = profileClientService.getProfileById(memberId);
+        if (isNull(profile)) {
+            throw new ConflictException(MEMBER_NOT_FUND);
+        }
+        return mapper.map(profile, Member.class);
+    }
+
     private Member getExecutorFromCandidatesRequired(Member executor, Set<Member> candidates) {
         Optional<Member> newExecutor = candidates.stream()
                 .filter(candidate -> candidate.equals(executor))
@@ -55,13 +63,5 @@ public class ProfileService {
             throw new ConflictException(EXECUTOR_SHOULD_BE_FROM_CANDIDATES);
         }
         return newExecutor.get();
-    }
-
-    private Member retrieveMemberByIdRequired(String memberId) {
-        Profile profile = profileClientService.getProfileById(memberId);
-        if (isNull(profile)) {
-            throw new ConflictException(MEMBER_NOT_FUND);
-        }
-        return mapper.map(profile, Member.class);
     }
 }

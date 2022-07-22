@@ -23,8 +23,8 @@ feign:
         connectTimeout: 5000
         readTimeout: 10000
         loggerLevel: full
-#        requestInterceptors:
-#          - com.example.FooRequestInterceptor
+        requestInterceptors:
+          - order.orderservice.configuration.client.ProfileRestClientAuthInterceptor
   httpclient:
     enabled: true
 
@@ -41,6 +41,8 @@ kafka:
 
 profile-rest-client:
   url: http://localhost:8400
+  user: order-service-client
+  password: 42vovk_wEle!76
 
 auth-rest-client:
   url: http://localhost:8800/api/auth-service

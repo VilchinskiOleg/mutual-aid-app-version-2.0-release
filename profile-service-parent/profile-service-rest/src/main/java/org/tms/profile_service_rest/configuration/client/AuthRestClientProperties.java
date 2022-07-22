@@ -1,4 +1,4 @@
-package order.orderservice.configuration.client;
+package org.tms.profile_service_rest.configuration.client;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,10 +6,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "profile-rest-client")
+@ConfigurationProperties(prefix = "auth-rest-client")
 @Getter
 @Setter
-public class ProfileRestClientProperties {
+public class AuthRestClientProperties {
 
     private String url;
     private String user;

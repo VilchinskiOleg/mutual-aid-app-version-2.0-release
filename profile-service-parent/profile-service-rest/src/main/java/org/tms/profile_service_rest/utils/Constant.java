@@ -22,5 +22,7 @@ public class Constant {
         public static final String PROFILE_NAMES_RULE = "validation.profile.names.rule";
 
         public static final String PROFILE_NOT_FUND = "profile.not.fund";
+
+        public static final String FAIL_CREATING_AUTH_PROFILE = "fail.creating.auth.profile";
     }
 }
