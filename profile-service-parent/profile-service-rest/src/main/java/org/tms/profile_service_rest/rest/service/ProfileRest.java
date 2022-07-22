@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.*;
 import io.swagger.annotations.ApiOperation;
 import org.common.http.autoconfiguration.annotation.Api;
 import org.mapper.autoconfiguration.mapper.Mapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.tms.profile_service_rest.domain.service.ProfileService;
 import org.tms.profile_service_rest.rest.message.ProfileResponse;
@@ -35,6 +36,7 @@ public class ProfileRest {
     @ApiOperation(value = "${profile.operation.get-profile}")
     @GetMapping(path = "/{profile-id}")
     @ResponseStatus(OK)
+    @PreAuthorize("hasRole('GET_PROFILE_BY_ID') or #profileId == authentication.profileId")
     public ProfileResponse getProfileById(@PathVariable("profile-id") String profileId) {
         var result = profileService.findByProfileIdRequired(profileId);
         return new ProfileResponse(mapper.map(result, Profile.class));

@@ -1,10 +1,13 @@
 package order.orderservice.rest.service;
 
+import static order.orderservice.util.Constant.Service.Strategy.CHOOSE_ORDER_STRATEGY;
 import static org.springframework.http.HttpStatus.OK;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import java.util.Map;
 import order.orderservice.domain.service.OrderService;
+import order.orderservice.domain.service.strategy.ManageOrderStateStrategy;
 import order.orderservice.rest.message.OrderResponse;
 import order.orderservice.rest.message.OrdersPageResponse;
 import order.orderservice.rest.message.OrdersResponse;
@@ -12,6 +15,7 @@ import order.orderservice.rest.message.SearchOrderDetails;
 import order.orderservice.rest.model.Order;
 import org.common.http.autoconfiguration.annotation.Api;
 import org.mapper.autoconfiguration.mapper.Mapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -25,12 +29,15 @@ public class WorkerRest {
     private Mapper mapper;
     @Resource
     private OrderService orderService;
+    @Resource
+    private Map<String, ManageOrderStateStrategy> orderStateStrategies;
 
     @Api
     @ApiOperation(value = "${order.operation.get-executor-candidate-orders}")
     @ApiImplicitParam(name = "member-id", dataType = "string", paramType = "query", defaultValue = "123")
     @GetMapping
     @ResponseStatus(OK)
+    @PreAuthorize("hasRole('FIND_ORDERS_BY_MEMBER_ID') or #memberId == authentication.profileId")
     public OrdersResponse getAllOrdersByExecutorOrCandidateIds(@RequestParam("member-id") String memberId) {
         var result = orderService.findByExecutorOrCandidateIds(memberId);
         return new OrdersResponse(mapper.map(result, new ArrayList<>(), Order.class));
@@ -67,14 +74,14 @@ public class WorkerRest {
         return mapper.map(result, OrdersPageResponse.class);
     }
 
-    //TODO: add spring security for methods ->:
     @Api
     @ApiOperation(value = "${order.operation.choose-order}")
     @PutMapping(path = "/choose/{order-id}/{member-id}")
     @ResponseStatus(OK)
+    @PreAuthorize("hasRole('CHOOSE_ORDER_AS_WORKER') or #memberId == authentication.profileId")
     public OrderResponse chooseOrder(@PathVariable("order-id") String orderId,
                              @PathVariable("member-id") String memberId) {
-        var updatedOrder = orderService.chooseOrder(orderId, memberId);
+        var updatedOrder = orderStateStrategies.get(CHOOSE_ORDER_STRATEGY).manageOrder(orderId, memberId);
         return new OrderResponse(mapper.map(updatedOrder, Order.class));
     }
 }

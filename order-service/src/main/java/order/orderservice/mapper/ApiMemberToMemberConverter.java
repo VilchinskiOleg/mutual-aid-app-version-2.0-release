@@ -15,8 +15,5 @@ public class ApiMemberToMemberConverter extends BaseConverter<Member, order.orde
     @Override
     public void convert(Member source, order.orderservice.domain.model.Member destination) {
         destination.setMemberId(source.getMemberId());
-        destination.setFirstName(source.getFirstName());
-        destination.setLastName(source.getLastName());
-        destination.setNickName(source.getNickName());
     }
 }

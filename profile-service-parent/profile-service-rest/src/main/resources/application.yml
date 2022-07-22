@@ -16,3 +16,18 @@ application:
       name: OLEG
       url: https://mail.google.com
       email: vilchinskioleg@gmail.com
+
+feign:
+  client:
+    config:
+      authRestClient:
+        connectTimeout: 5000
+        readTimeout: 10000
+        loggerLevel: full
+        requestInterceptors:
+          - org.tms.profile_service_rest.configuration.client.AuthRestClientAuthInterceptor
+
+auth-rest-client:
+  url: http://localhost:8800
+  user: auth-service-client
+  password: 423welcome!76

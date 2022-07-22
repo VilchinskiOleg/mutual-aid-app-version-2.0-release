@@ -3,6 +3,7 @@ package order.orderservice.rest.model;
 import static order.orderservice.util.Constant.Errors.*;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import javax.validation.Valid;
 import lombok.Getter;
 import lombok.Setter;
 import order.orderservice.rest.validation.annotation.ValidOrder;
@@ -40,6 +41,7 @@ public class Order {
     private LocalDateTime modifyAt;
 
     @NotNull(message = ORDER_OWNER_REQUIRED)
+    @Valid
     private Member owner;
     private Set<Member> candidates;
     private Member executor;

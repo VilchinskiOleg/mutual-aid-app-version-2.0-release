@@ -4,8 +4,7 @@ server:
 spring:
   data:
     mongodb:
-      database: mutual-aid-app
-      uri: mongodb://localhost:27017/mutual-aid-app
+      uri: mongodb+srv://admin:${MONGO_DB_PASSWORD}@cluster0.lme5y.mongodb.net/mutual-aid-app?retryWrites=true&w=majority
 
 application:
   api-info:
@@ -24,8 +23,8 @@ feign:
         connectTimeout: 5000
         readTimeout: 10000
         loggerLevel: full
-#        requestInterceptors:
-#          - com.example.FooRequestInterceptor
+        requestInterceptors:
+          - order.orderservice.configuration.client.ProfileRestClientAuthInterceptor
   httpclient:
     enabled: true
 
@@ -38,5 +37,14 @@ scheduler:
 kafka:
   bootstrapServers: localhost:9092
 
+#rest clients:
+
 profile-rest-client:
   url: http://localhost:8400
+  user: order-service-client
+  password: 42vovk_wEle!76
+
+auth-rest-client:
+  url: http://localhost:8800/api/auth-service
+  read-timeout: 10000
+  connection-timeout: 10000

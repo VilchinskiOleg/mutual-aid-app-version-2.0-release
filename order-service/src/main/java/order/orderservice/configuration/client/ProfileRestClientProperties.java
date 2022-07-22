@@ -12,4 +12,6 @@ import org.springframework.stereotype.Component;
 public class ProfileRestClientProperties {
 
     private String url;
+    private String user;
+    private String password;
 }
