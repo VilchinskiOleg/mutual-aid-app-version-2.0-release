@@ -4,8 +4,8 @@ server:
 spring:
   data:
     mongodb:
-      database: mutual-aid-app
-      uri: mongodb://localhost:27017/mutual-aid-app
+      # for connection to local DB. In my case for connection to docker mongoDB container:
+      uri: mongodb://${MONGO_USERNAME}:${MONGO_PWD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}?authSource=admin
 
 application:
   api-info:
