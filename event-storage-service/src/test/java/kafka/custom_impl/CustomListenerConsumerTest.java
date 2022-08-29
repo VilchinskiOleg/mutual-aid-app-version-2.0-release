@@ -14,9 +14,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+/**
+ * Tests for custom ListenerConsumer impl witch uses org.apache.kafka.clients.consumer.KafkaConsumer inside.
+ *
+ * Expects that you run docker container with Kafka and send events by CLI.
+ */
 
 @Slf4j
 public class CustomListenerConsumerTest {
@@ -39,7 +46,6 @@ public class CustomListenerConsumerTest {
 
   @Test
   void listen_events_and_shutdown_by_change_flag() {
-    // Expects that you run docker container with Kafka and send events by CLI:
     config.put("enable.auto.commit", true);
     config.put("auto.offset.reset", "earliest"); // ?
 
@@ -49,6 +55,30 @@ public class CustomListenerConsumerTest {
 
     await()
         .atMost(10000, TimeUnit.SECONDS)
+        .until(() -> results.size() >= 2);
+    try {
+      log.info("### run 'shutdown' from main thread ###");
+      consumer.shutdown();
+      log.info("### continue main thread ###");
+    } catch (InterruptedException ex) {
+      //...
+      log.error("Error: thread was interrupted.", ex);
+    }
+    log.info("### Test is finished! ###");
+  }
+
+  @Test
+  void listen_events_and_shutdown_by_method() {
+    config.put("enable.auto.commit", true);
+    config.put("auto.offset.reset", "earliest"); // ?
+
+    ExecutorService executorService = Executors.newFixedThreadPool(1);
+    final var consumer = new ListenerConsumerStopByMethod(config, List.of("test"));
+    executorService.submit(consumer);
+
+    await()
+        .atMost(10000, TimeUnit.SECONDS)
+        .pollInterval(1, TimeUnit.SECONDS)
         .until(() -> results.size() >= 2);
     try {
       log.info("### run 'shutdown' from main thread ###");
@@ -106,6 +136,58 @@ public class CustomListenerConsumerTest {
 
     public void shutdown() throws InterruptedException {
       shutdown.set(true);
+      // main thread (test class) will sleep until 'final' block run countDown() :
+      shutdownLatch.await();
+    }
+  }
+
+  private class ListenerConsumerStopByMethod implements Runnable {
+    private final KafkaConsumer<String, String> consumer;
+    private final List<String> topics;
+    private final CountDownLatch shutdownLatch;
+    public ListenerConsumerStopByMethod(Properties config, List<String> topics) {
+      this.consumer = new KafkaConsumer<>(config, new StringDeserializer(), new StringDeserializer());
+      this.topics = topics;
+      this.shutdownLatch = new CountDownLatch(1);
+    }
+
+
+    public void run() {
+      try {
+        consumer.subscribe(topics);
+
+        while (true) {
+          log.info("### try to poll new recodes ###"); // won't see that log after 'consumer.wakeup()', consumer will stop immediately
+          ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(500));
+          process(records);
+        }
+      } catch (WakeupException ex) {
+        log.error("Ex: consumer was closed.", ex);
+      } catch (Exception ex) {
+        log.error("Unexpected ex.", ex);
+      } finally {
+        consumer.close();
+
+        // for check that main thread is waiting:
+        log.info("### waiting 3 sec before 'countDown' ###");
+        try {
+          Thread.sleep(3000);
+        } catch (InterruptedException e) {
+          log.error("Ex : ", e);
+        }
+        log.info("### do 'countDown' ###");
+
+        shutdownLatch.countDown();
+      }
+    }
+
+    public void process(ConsumerRecords<String, String> records) {
+      log.info("Got record: {}", records);
+      records.records("test").forEach(rec -> results.add(rec.value()));
+    }
+
+    public void shutdown() throws InterruptedException {
+      consumer.wakeup();
       // main thread (test class) will sleep until 'final' block run countDown() :
       shutdownLatch.await();
     }
