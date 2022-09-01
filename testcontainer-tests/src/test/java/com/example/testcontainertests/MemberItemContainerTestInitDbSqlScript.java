@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.example.testcontainertests.entity.MemberItem;
 import com.example.testcontainertests.repo.MemberItemRepo;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @DirtiesContext
+
+@Disabled
 class MemberItemContainerTestInitDbSqlScript {
 
   @Container
@@ -55,7 +58,7 @@ class MemberItemContainerTestInitDbSqlScript {
 
     // create and check saved item:
     var secondMember = new MemberItem();
-    secondMember.setId(2L);
+//    secondMember.setId(2L);
     secondMember.setFirstName("first_name_test_2");
     secondMember.setLastName("last_name_test_2");
 

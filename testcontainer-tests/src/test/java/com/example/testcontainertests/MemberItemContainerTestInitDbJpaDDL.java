@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.example.testcontainertests.entity.MemberItemAutoIncrement;
 import com.example.testcontainertests.repo.MemberItemAutoIncrementRepo;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @DirtiesContext
+
+@Disabled
 public class MemberItemContainerTestInitDbJpaDDL {
 
   @Container
