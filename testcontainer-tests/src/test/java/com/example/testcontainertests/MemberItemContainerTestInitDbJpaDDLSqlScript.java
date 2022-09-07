@@ -36,7 +36,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 @DirtiesContext
 
-@Disabled
+@Disabled // only because they are global test end we can skip them during build project.
 public class MemberItemContainerTestInitDbJpaDDLSqlScript {
 
   @Container

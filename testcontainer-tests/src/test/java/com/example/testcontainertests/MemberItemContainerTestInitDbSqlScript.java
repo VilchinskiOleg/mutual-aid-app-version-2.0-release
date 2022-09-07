@@ -33,7 +33,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 @DirtiesContext
 
-@Disabled
+@Disabled // only because they are global test end we can skip them during build project.
 class MemberItemContainerTestInitDbSqlScript {
 
   @Container
@@ -58,7 +58,7 @@ class MemberItemContainerTestInitDbSqlScript {
 
     // create and check saved item:
     var secondMember = new MemberItem();
-//    secondMember.setId(2L);
+    secondMember.setId(2L);
     secondMember.setFirstName("first_name_test_2");
     secondMember.setLastName("last_name_test_2");
 

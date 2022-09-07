@@ -30,6 +30,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.kafka.config.TopicBuilder;
@@ -47,6 +48,8 @@ import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
 @DirtiesContext
+
+@Disabled // only because they are global test end we can skip them during build project.
 public class EssentialCasesKafkaTest extends BaseKafkaComponentTest {
 
   @Container
@@ -125,6 +128,7 @@ public class EssentialCasesKafkaTest extends BaseKafkaComponentTest {
    * Test expect: ONLY ONE consumer will get a recorde, because they have common group.
    *
    * For test run more correct, create topic with several partitions by Kafka CLI before running test.
+   * Because you need several partitions in the topic to register extra consumer to the same group.
    */
   @Test
   void send_messages_to_only_one_consumer_if_consumers_have_common_groupID() {
