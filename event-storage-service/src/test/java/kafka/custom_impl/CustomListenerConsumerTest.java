@@ -17,15 +17,18 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests for custom ListenerConsumer impl witch uses org.apache.kafka.clients.consumer.KafkaConsumer inside.
  *
  * Expects that you run docker container with Kafka and send events by CLI.
+ * So we ignore its in runtime by @Disabled.
  */
 
 @Slf4j
+@Disabled
 public class CustomListenerConsumerTest {
 
   private final Properties config = new Properties();
