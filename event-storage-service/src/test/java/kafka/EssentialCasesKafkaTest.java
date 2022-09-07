@@ -25,13 +25,10 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -45,7 +42,7 @@ public class EssentialCasesKafkaTest extends BaseKafkaComponentTest {
   private IdGeneratorService idGenerator;
 
   {
-    initKafkaTemplate();
+    setupAndInitialKafkaTemplate(null);
   }
 
   @BeforeEach
@@ -55,15 +52,15 @@ public class EssentialCasesKafkaTest extends BaseKafkaComponentTest {
 
 
   /**
-   * Test expect: every consumers will get a recorde, because they have different groups.
+   * Test expect: EVERY consumer will get a recorde, because they have different groups.
    *
    */
   @Test
   void send_messages_to_two_different_consumer_parallel_if_they_have_different_groupID() {
 
-    final String group_A = "group_A";
-    final String group_B = "group_B";
-    final String topicName = "test_topic_0";
+    final String group_A = "GroupA";
+    final String group_B = "GroupB";
+    final String topicName = "TestTopicZero";
 
     // Set up consumer A:
     final String consumerA = this.setupAndStartContainer(group_A, topicName, null);
@@ -90,19 +87,21 @@ public class EssentialCasesKafkaTest extends BaseKafkaComponentTest {
     assertNotNull(recordB);
     log.info(msgPattern, group_B, consumerB, recordB.topic(), recordB.partition(), recordB.key());
 
+    assertEquals(recordA.partition(), recordB.partition());
     assertEquals(recordA.value().getOrderId(), recordB.value().getOrderId());
   }
 
 
   /**
-   * Test expect: only one consumer will get a recorde, because they have common group.
+   * Test expect: ONLY ONE consumer will get a recorde, because they have common group.
    *
+   * For test run more correct, create topic with several partitions by Kafka CLI before running test.
    */
   @Test
   void send_messages_to_only_one_consumer_if_consumers_have_common_groupID() {
 
-    final String group = "common_group";
-    final String topicName = "test_topic_1";
+    final String group = "CommonGroup";
+    final String topicName = "TestTopicFirst";
 
     // Set up consumer A, it got uniq ID, but will work for the same topic and group like B:
     final String consumerA = this.setupAndStartContainer(group, topicName, null);
@@ -133,20 +132,14 @@ public class EssentialCasesKafkaTest extends BaseKafkaComponentTest {
 
 
 
-  private void initKafkaTemplate() {
-    var factory = initializeProducerFactory(Map.of(
-        ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS,
-        ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
-        ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class
-    ));
-    setupAndInitialKafkaTemplate(factory);
-  }
-
   private String setupAndStartContainer(String group, String topicName, @Nullable Map<String, Object> extraProps) {
-    Map<String, Object> consumerProps = Map.of(ConsumerConfig.GROUP_ID_CONFIG, group);
+    final var consumerProps = new HashMap<String, Object>();
+    consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, group);
+
     if (MapUtils.isNotEmpty(extraProps)) {
       consumerProps.putAll(extraProps);
     }
+
     try {
       final String messageListenerContainerId = String.format("container-%s", idGenerator.generate());
       setupAndStartContainer(
