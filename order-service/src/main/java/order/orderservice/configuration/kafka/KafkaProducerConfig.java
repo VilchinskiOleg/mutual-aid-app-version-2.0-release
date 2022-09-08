@@ -17,12 +17,12 @@ import java.util.Map;
 public class KafkaProducerConfig {
 
     @Resource
-    private KafkaProperties properties;
+    private KafkaProperties kafkaProperties;
 
     @Bean
     public ProducerFactory<String, KafkaOrderEvent> producerFactory() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.getBootstrapServers());
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getBootstrapServers());
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<>(props);
