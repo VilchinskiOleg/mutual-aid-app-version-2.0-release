@@ -9,7 +9,7 @@ keytool -keystore ./serverkeystore.jks -alias ${ALIAS_VALUE} -validity 365 -genk
 
 #  2. Extract the certificate from the [key store] and Sign its using the CA:
 keytool -keystore ./serverkeystore.jks -alias ${ALIAS_VALUE} -certreq -file ./cert-file
-openssl x509 -req -CA ../ca-cert -CAkey ../ca-key -in ./cert-file -out ./cert-signed -days 365 -CAcreateserial -extfile ./openssl.cnf -extensions req_ext
+openssl x509 -req -CA ../ca-cert -CAkey ../ca-key -in ./cert-file -out ./cert-signed -days 365 -CAcreateserial -extfile ../openssl.cnf -extensions req_ext
 
 #  3. Import both the certificate of the CA and the signed certificate into the [key store]:
 keytool -keystore ./serverkeystore.jks -alias CARoot -import -file ../ca-cert

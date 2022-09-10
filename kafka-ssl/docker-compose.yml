@@ -20,7 +20,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: SSL://broker1:9093
 
       KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SSL
-      SSL_ENABLED_PROTOCOLS: '[TLSv1.2,TLSv1.1,TLSv1]'
+      SSL_ENABLED_PROTOCOLS: 'TLSv1,TLSv1.1,TLSv1.2,TLSv1.3'
       KAFKA_SSL_CLIENT_AUTH: 'required'
 
       KAFKA_SSL_KEY_PASSWORD: '34rtsTb290'
@@ -30,5 +30,5 @@ services:
       KAFKA_SSL_TRUSTSTORE_PASSWORD: '34rtsTb290'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./secrets/broker/serverkeystore.jks:/etc/kafka/secrets/certs/serverkeystore.jks
-      - ./secrets/broker/servertruststore.jks:/etc/kafka/secrets/certs/servertruststore.jks
+      - ./secret/broker/serverkeystore.jks:/etc/kafka/secrets/certs/serverkeystore.jks
+      - ./secret/broker/servertruststore.jks:/etc/kafka/secrets/certs/servertruststore.jks
