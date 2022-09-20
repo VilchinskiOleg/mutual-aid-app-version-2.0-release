@@ -41,8 +41,9 @@ public class LambdaTest {
     assertEquals(res2, counter.getVal());
   }
 
+
   @Test
-  void boubleSort() {
+  void bubbleSort() {
 
       int[] array = {2,33,5,11,7,23,3,45};
       System.out.println(Arrays.toString(array));
@@ -61,17 +62,15 @@ public class LambdaTest {
       System.out.println(Arrays.toString(array));
   }
 
+
   @Test
   void fastSortTest() {
-
     List<Integer> array = new ArrayList<>();
     array.addAll(List.of(2,33,5,11,5,7,23,3,45,45));
-
     System.out.println("Before: " + array);
 
-    fastSort(array);
-
-    System.out.println("After: " + array);
+    var sortedArray = fastSort(array);
+    System.out.println("After: " + sortedArray);
   }
 
   private List<Integer> fastSort(List<Integer> array) {
@@ -80,8 +79,8 @@ public class LambdaTest {
 
     boolean isEqual = false;
     for (int i = 1; i < array.size(); ++i) {
-//      isEqual = ??? array.get(i - 1) == array.get(i);
-      if (isEqual) break;
+      isEqual = array.get(i - 1).equals(array.get(i));
+      if (!isEqual) break;
     }
 
     if (isEqual) return array;
