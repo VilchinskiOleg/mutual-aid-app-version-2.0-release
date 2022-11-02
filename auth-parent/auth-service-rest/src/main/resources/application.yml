@@ -1,0 +1,23 @@
+server:
+  port: 8800
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://admin:${MONGO_DB_PASSWORD}@cluster0.lme5y.mongodb.net/mutual-aid-app?retryWrites=true&w=majority
+
+application:
+  api-info:
+    version: 2.0
+    title: AUTH
+    description: Auth SERVICE
+    contact:
+      name: OLEG
+      url: https://mail.google.com
+      email: vilchinskioleg@gmail.com
+
+auth:
+  jwt:
+    secret: secret_key
+    issuer: auth.service.issuer
+    live: 5

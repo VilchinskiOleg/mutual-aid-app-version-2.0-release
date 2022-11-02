@@ -21,6 +21,7 @@ public class RequestCommonDataInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         commonData.setLocale(new Locale(extractLang(request)));
+//        setFlowIdToHider_If_itIsNull;
         commonData.setHttpSession(request.getSession());
         commonData.setHeaders(extractHeaders(request));
         return true;
