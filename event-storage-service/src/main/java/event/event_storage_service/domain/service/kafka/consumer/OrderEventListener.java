@@ -7,6 +7,7 @@ import event.event_storage_service.configuration.kafka.message.KafkaOrderEvent;
 import event.event_storage_service.domain.model.OrderEvent;
 import event.event_storage_service.domain.service.EventStorageService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.CommitFailedException;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.mapper.autoconfiguration.mapper.Mapper;
@@ -35,10 +36,15 @@ public class OrderEventListener {
                 eventStorageService.saveEvent(orderEvent);
             }
         } catch (Exception ex) {
-            log.error("Unexpected error while processing record: topic={}, key={}, offset={}, value={}",
-                    record.topic(), record.key(), record.offset(), kafkaOrderEvent, ex);
+            log.error("Unexpected error while processing record: topic={}, partition={}, key={}, offset={}, value={}",
+                    record.topic(), record.partition(), record.key(), record.offset(), kafkaOrderEvent, ex);
         } finally {
-            consumer.commitSync();
+            // best practice:
+            try {
+                consumer.commitSync();
+            } catch (CommitFailedException e) {
+                // application-specific rollback of processed records
+            }
         }
     }
 }

@@ -1,0 +1,2 @@
+INSERT INTO member_items_yes_increment (member_id, first_name, last_name) VALUES ('member_id', 'first_name_test_1', 'last_name_test_1');
+INSERT INTO member_items_yes_increment (member_id, first_name, last_name) VALUES ('member_id', 'first_name_test_2', 'last_name_test_2')

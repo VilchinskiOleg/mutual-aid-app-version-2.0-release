@@ -37,25 +37,6 @@ public class KafkaOrderEventDeserializer implements Deserializer<KafkaOrderEvent
         return deserializeMessage(data);
     }
 
-    /**
-     * @param data is array of bytes, which describe message from kafka.
-     * @return KafkaOrderEvent object.
-     *
-     * Can investigate way why not correctly work such algorithms:
-     *
-     *   1)
-     *   KafkaOrderEvent orderEvent = null;
-     *   try (ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data))) {
-     *      orderEvent = (KafkaOrderEvent) objectInputStream.readObject();
-     *   catch (IOException | ClassNotFoundException ex) {
-     *      log.error("Unexpected error, cannot convert bytes to KafkaOrderEvent:", ex);
-     *   }
-     *   return orderEvent;
-     *
-     *   2)
-     *   KafkaOrderEvent orderEvent = (KafkaOrderEvent) SerializationUtils.deserialize(data);
-     *   return orderEvent;
-     */
     private KafkaOrderEvent deserializeMessage(byte[] data) {
         try {
             KafkaOrderEvent orderEvent = objectMapper.readValue(data, KafkaOrderEvent.class);

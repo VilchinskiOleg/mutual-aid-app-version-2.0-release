@@ -1,0 +1,52 @@
+[
+  {
+    "orderId": "ae9cebf1-8523-4ebe-a653-6a573f02db42",
+    "title": "order-mock-one",
+    "description": "Learn and create sample to run and init with data mongoDB docker container",
+    "location": {
+
+      "country": "USA",
+      "city": "New-York",
+      "street": "Hilton st.",
+      "home": "21A",
+      "flat": 17
+    },
+    "status": "IN_WORK",
+    "type": "UNPAID",
+    "priority": "CRITICAL",
+    "owner": {
+
+      "memberId": "eb93b9f5-be1e-4485-b9dc-7348a2d81222",
+      "firstName": "Tim",
+      "lastName": "Harison"
+    },
+    "executor": {
+
+      "memberId": "e78257e6-9921-4b64-9bfb-8be4d270bca9",
+      "firstName": "Aleh",
+      "lastName": "Vilchynski"
+    }
+  },
+  {
+    "orderId": "08ef55c9-3896-49c3-8308-df213726f94e",
+    "title": "new-headphone",
+    "description": "Bay new headphone with nose canceling",
+    "location": {
+
+      "country": "Litva",
+      "city": "Vilno",
+      "street": "Smelio st.",
+      "home": "5A",
+      "flat": 403
+    },
+    "status": "ACTIVE",
+    "type": "PAID",
+    "price": 999.89,
+    "owner": {
+
+      "memberId": "9eb8d183-3d98-42cb-ae20-54773c549d33",
+      "firstName": "Ivan",
+      "lastName": "Ivanov"
+    }
+  }
+]
