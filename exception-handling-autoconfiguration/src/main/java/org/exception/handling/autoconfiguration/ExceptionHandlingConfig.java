@@ -4,6 +4,7 @@ import static java.util.Objects.isNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.exception.handling.autoconfiguration.model.LocalizedErrorMessages;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 @Configuration
 @ComponentScan(basePackages = "org.exception.handling.autoconfiguration.handler")
+@Slf4j
 public class ExceptionHandlingConfig {
 
     @Bean(name = "localizedErrorMessagesConfig")
@@ -30,6 +32,7 @@ public class ExceptionHandlingConfig {
             TypeReference<Map<String, LocalizedErrorMessages>> type = new TypeReference<>() {};
             localizedErrorMessages = objectMapper.readValue(new FileReader(url.getPath()), type);
         } catch (IOException ex) {
+            log.error("Error on starting app: cannot read error messages JSON file", ex);
             throw new RuntimeException("Error on starting app: cannot read error messages JSON file");
         }
         return localizedErrorMessages;
