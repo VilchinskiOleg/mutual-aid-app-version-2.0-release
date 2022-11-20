@@ -15,7 +15,9 @@ import org.tms.common.auth.configuration.model.JwtAuthenticationToken;
 @Component
 public class JwtAuthProvider implements AuthenticationProvider {
 
-    // If this is starter inside AuthRest -> we don't need any authClientServices. Look at AuthRestClientService class definition:
+    /**
+     * If this is starter inside AuthRest -> we don't need any authClientServices. Look at AuthRestClientService class definition:
+     */
     @Autowired(required = false)
     private AuthRestClientService authClientService;
 

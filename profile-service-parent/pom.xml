@@ -6,7 +6,7 @@
         <groupId>org.tms</groupId>
         <artifactId>mutual-aid-app</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>profile-service-parent</artifactId>
@@ -23,5 +23,7 @@
         <module>profile-service-rest</module>
         <module>profile-service-client</module>
     </modules>
+
+
 
 </project>
