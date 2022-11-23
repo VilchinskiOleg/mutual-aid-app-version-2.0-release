@@ -138,8 +138,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findByOwnerId(String memberId) {
-        // todo: ...
-        return null;
+        var result = orderRepository.searchByOwnerId(memberId);
+        return mapper.map(result, new ArrayList<>(), Order.class);
     }
 
     private Order createNewOrder() {

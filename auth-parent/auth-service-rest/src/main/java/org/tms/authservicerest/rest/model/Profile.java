@@ -20,7 +20,7 @@ public class Profile {
   private String Id;
   private String resourceId;
 
-  private Gender gender;
+  private String gender;
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private LocalDate birthday;
 

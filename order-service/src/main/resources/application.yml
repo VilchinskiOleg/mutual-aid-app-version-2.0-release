@@ -58,3 +58,5 @@ auth-rest-client:
   url: http://localhost:8800/api/auth-service
   read-timeout: 10000
   connection-timeout: 10000
+  user: order-service-client
+  password: 42vovk_wEle!76

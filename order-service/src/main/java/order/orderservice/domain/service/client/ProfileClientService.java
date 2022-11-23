@@ -12,8 +12,8 @@ import order.orderservice.configuration.client.ProfileRestClient;
 import org.common.http.autoconfiguration.model.CommonData;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.springframework.stereotype.Component;
-import ort.tms.mutual_aid.profile_service.client.model.Profile;
-import ort.tms.mutual_aid.profile_service.client.model.ProfileResponse;
+import org.tms.mutual_aid.profile_service.client.model.Profile;
+import org.tms.mutual_aid.profile_service.client.model.ProfileResponse;
 import javax.annotation.Resource;
 import java.io.IOException;
 

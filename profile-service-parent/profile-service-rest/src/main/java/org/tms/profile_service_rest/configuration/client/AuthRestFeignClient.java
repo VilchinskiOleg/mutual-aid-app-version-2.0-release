@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.tms.mutual_aid.auth.client.model.CreateProfileRequest;
 
-@FeignClient(name = "authRestClient", url = "${auth-rest-client.url}")
-public interface AuthRestClient {
+@FeignClient(name = "authRestFeignClient", url = "${auth-rest-client.url}")
+public interface AuthRestFeignClient {
 
     @GetMapping("/api/auth-service/create")
     Response create(@RequestBody CreateProfileRequest request);

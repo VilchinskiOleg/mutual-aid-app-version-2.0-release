@@ -7,6 +7,7 @@ import feign.RequestTemplate;
 import javax.annotation.Resource;
 import org.common.http.autoconfiguration.model.CommonData;
 import org.springframework.stereotype.Component;
+import org.tms.common.auth.configuration.client.AuthRestClientProperties;
 
 @Component
 public class AuthRestClientAuthInterceptor implements RequestInterceptor {

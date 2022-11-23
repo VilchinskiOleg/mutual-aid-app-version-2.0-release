@@ -14,21 +14,21 @@ import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.stereotype.Component;
 import org.tms.mutual_aid.auth.client.model.CreateProfileRequest;
 import org.tms.mutual_aid.auth.client.model.CreateProfileResponse;
-import org.tms.profile_service_rest.configuration.client.AuthRestClient;
+import org.tms.profile_service_rest.configuration.client.AuthRestFeignClient;
 import org.tms.profile_service_rest.domain.model.Profile;
 
 @Component
 @Slf4j
-public class AuthClientService {
+public class AuthAdditionalClientService {
 
     @Resource
-    private AuthRestClient authApi;
+    private AuthRestFeignClient authRestFeignClient;
     @Resource
     private Mapper mapper;
 
     public void createAuth(Profile profile) {
         final var request = createRequest(profile);
-        Response response = authApi.create(request);
+        Response response = authRestFeignClient.create(request);
 
         CreateProfileResponse authResponse = deserializeResponse(response.body());
         checkResponse(response.status(), authResponse, profile.getProfileId());

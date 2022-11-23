@@ -38,7 +38,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
             List<SimpleGrantedAuthority> roles = basicClient.getRoles().stream()
                                                                        .map(role -> new SimpleGrantedAuthority(AUTHORITY_PREFIX.concat(role)))
                                                                        .collect(toList());
-            return new UsernamePasswordAuthenticationToken(basicClient.getName(), basicClient.getPassword(), roles);
+            return new UsernamePasswordAuthenticationToken(basicClient.getName(), null, roles);
         }
         throw new BadCredentialsException("Login or Password is wrong!");
     }
