@@ -511,18 +511,6 @@
       },
       "title": "Error"
     },
-    "IsoChronology": {
-      "type": "object",
-      "properties": {
-        "calendarType": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        }
-      },
-      "title": "IsoChronology"
-    },
     "JwtRequest": {
       "type": "object",
       "properties": {
@@ -544,71 +532,6 @@
         }
       },
       "title": "JwtResponse"
-    },
-    "LocalDate": {
-      "type": "object",
-      "properties": {
-        "chronology": {
-          "originalRef": "IsoChronology",
-          "$ref": "#/definitions/IsoChronology"
-        },
-        "dayOfMonth": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "dayOfWeek": {
-          "type": "string",
-          "enum": [
-            "MONDAY",
-            "TUESDAY",
-            "WEDNESDAY",
-            "THURSDAY",
-            "FRIDAY",
-            "SATURDAY",
-            "SUNDAY"
-          ]
-        },
-        "dayOfYear": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "era": {
-          "type": "string",
-          "enum": [
-            "BCE",
-            "CE"
-          ]
-        },
-        "leapYear": {
-          "type": "boolean"
-        },
-        "month": {
-          "type": "string",
-          "enum": [
-            "JANUARY",
-            "FEBRUARY",
-            "MARCH",
-            "APRIL",
-            "MAY",
-            "JUNE",
-            "JULY",
-            "AUGUST",
-            "SEPTEMBER",
-            "OCTOBER",
-            "NOVEMBER",
-            "DECEMBER"
-          ]
-        },
-        "monthValue": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "year": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "title": "LocalDate"
     },
     "LocalDateTime": {
       "type": "object",
@@ -870,8 +793,8 @@
       "type": "object",
       "properties": {
         "birthday": {
-          "originalRef": "LocalDate",
-          "$ref": "#/definitions/LocalDate"
+          "type": "string",
+          "example": "yyyy-MM-dd"
         },
         "contacts": {
           "type": "array",
@@ -885,11 +808,7 @@
           "$ref": "#/definitions/LocalDateTime"
         },
         "gender": {
-          "type": "string",
-          "enum": [
-            "MALE",
-            "FEMALE"
-          ]
+          "type": "string"
         },
         "id": {
           "type": "string"

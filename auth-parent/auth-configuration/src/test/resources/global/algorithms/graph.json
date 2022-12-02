@@ -1,0 +1,63 @@
+
+{
+  "name": "Book",
+  "valueToThisNode": 0,
+  "nextNodes": [
+    {
+      "name": "Poster",
+      "valueToThisNode": 0,
+      "nextNodes": [
+        {
+          "name": "Guitar",
+          "valueToThisNode": 30,
+          "nextNodes": [
+            {
+              "name": "Piano",
+              "valueToThisNode": 20,
+              "nextNodes": []
+            }
+          ]
+        },
+        {
+          "name": "Drum",
+          "valueToThisNode": 35,
+          "nextNodes": [
+            {
+              "name": "Piano",
+              "valueToThisNode": 10,
+              "nextNodes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Disc",
+      "valueToThisNode": 5,
+      "nextNodes": [
+        {
+          "name": "Guitar",
+          "valueToThisNode": 15,
+          "nextNodes": [
+            {
+              "name": "Piano",
+              "valueToThisNode": 20,
+              "nextNodes": []
+            }
+          ]
+        },
+        {
+          "name": "Drum",
+          "valueToThisNode": 20,
+          "nextNodes": [
+            {
+              "name": "Piano",
+              "valueToThisNode": 10,
+              "nextNodes": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

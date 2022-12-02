@@ -24,12 +24,14 @@ public class Profile {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private LocalDate birthday;
 
-  // only for output:
-  private LocalDateTime createAt;
-  private LocalDateTime modifyAt;
-
-  // only for input:
   private List<Contact> contacts;
   private List<Name> names;
+
+  /**
+   * Only for input, if user wants to declare password on his own:
+   */
   private String password;
+
+  private LocalDateTime createAt;
+  private LocalDateTime modifyAt;
 }

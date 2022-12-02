@@ -1,6 +1,8 @@
 package org.tms.authservicerest.domain.service;
 
+import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
+import static org.tms.authservicerest.utils.Constant.Service.PASSWORD_LENGTH;
 
 import java.util.List;
 import javax.annotation.Resource;
@@ -33,6 +35,16 @@ public class ProfileManagerServiceImpl implements ProfileManagerService {
   @Override
   public Profile create(Profile profile) {
     profile.setProfileId(idGeneratorService.generate());
+    if (isNull(profile.getPassword())) {
+      profile.setWeekPassword(true);
+      var generator = PasswordGenerator
+              .builder()
+              .length(PASSWORD_LENGTH)
+              .upper().lower().digits().punctuation()
+              .build();
+      profile.setPassword(generator.generatePassword());
+      //TODO: add notification by email with generated password and link to regenerate by user on his own.
+    }
     ticketHandlerStrategies.forEach(ticketStrategy -> ticketStrategy.addTicket(profile));
     return saveProfile(profile);
   }
