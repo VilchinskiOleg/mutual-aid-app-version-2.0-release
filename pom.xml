@@ -35,8 +35,10 @@
         <module>event-storage-service</module>
         <module>profile-service-parent</module>
         <module>task-executor-service</module>
-
         <module>auth-parent</module>
+
+        <!-- JUST GLOBAL TEST. They aren't business part of project-->
+        <module>testcontainer-tests</module>
     </modules>
 
     <dependencies>

@@ -7,14 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.tms.common.auth.configuration.utils.Constant.Errors.AUTH_EXTERNAL_PROVIDER_UNAVAILABLE;
 
 import com.google.gson.JsonObject;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +27,7 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.http.client.MockClientHttpRequest;
 import org.springframework.mock.http.client.MockClientHttpResponse;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import org.tms.common.auth.configuration.client.AuthRestClientProperties;
 import org.tms.common.auth.configuration.client.AuthRestClientService;
@@ -96,10 +95,10 @@ public class AuthRestClientServiceTest {
 
     when(authRestClientProperties.getUrl()).thenReturn(AUTH_REST_URL);
     when(requestFactory.createRequest(calledEndpointURI, HttpMethod.POST)).thenReturn((ClientHttpRequest) MOCKRequest);
-    var throwable = assertThrows(ConflictException.class, () -> authRestClientService.verifyJwt(JWT_MOCK));
 
     //verify:
-    assertEquals(AUTH_EXTERNAL_PROVIDER_UNAVAILABLE, throwable.getMessage());
+    var throwable = assertThrows(RestClientResponseException.class, () -> authRestClientService.verifyJwt(JWT_MOCK));
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), throwable.getRawStatusCode());
   }
 
   private String buildSuccessfullyResponseMOCK() {

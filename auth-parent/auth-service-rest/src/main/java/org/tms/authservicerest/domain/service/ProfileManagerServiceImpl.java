@@ -9,10 +9,12 @@ import javax.annotation.Resource;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.mapper.autoconfiguration.mapper.Mapper;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.tms.authservicerest.domain.model.Profile;
 import org.tms.authservicerest.domain.model.profile.Ticket;
 import org.tms.authservicerest.domain.model.profile.Ticket.Type;
+import org.tms.authservicerest.domain.service.client.EmailSenderClientService;
 import org.tms.authservicerest.domain.service.jwt.JwtHandler;
 import org.tms.authservicerest.domain.service.ticket.TicketHandlerStrategy;
 import org.tms.authservicerest.persistent.service.ProfileRepository;
@@ -30,6 +32,8 @@ public class ProfileManagerServiceImpl implements ProfileManagerService {
   @Resource
   private IdGeneratorService idGeneratorService;
   @Resource
+  private EmailSenderClientService emailSenderClientService;
+  @Resource
   private Mapper mapper;
 
   @Override
@@ -42,8 +46,9 @@ public class ProfileManagerServiceImpl implements ProfileManagerService {
               .length(PASSWORD_LENGTH)
               .upper().lower().digits().punctuation()
               .build();
-      profile.setPassword(generator.generatePassword());
-      //TODO: add notification by email with generated password and link to regenerate by user on his own.
+      String temporaryPassword = generator.generatePassword();
+      profile.setPassword(temporaryPassword);
+      emailSenderClientService.sendEmailForResetPassword(temporaryPassword);
     }
     ticketHandlerStrategies.forEach(ticketStrategy -> ticketStrategy.addTicket(profile));
     return saveProfile(profile);
@@ -60,7 +65,7 @@ public class ProfileManagerServiceImpl implements ProfileManagerService {
       getTicketHandlerStrategy(ticket.getType()).verifyTicket(profile, ticket);
     } catch (RuntimeException ex) {
       log.error("Error while login by Ticket={}: {}", ticket, ex.getMessage());
-      throw new RuntimeException("BAD_CREDENTIALS"); // like wrong ticket ?
+      throw new BadCredentialsException(ex.getMessage());
     }
     return jwtHandler.createToken(profile);
   }

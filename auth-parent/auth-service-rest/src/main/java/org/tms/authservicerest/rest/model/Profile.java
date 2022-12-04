@@ -4,13 +4,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.tms.authservicerest.domain.model.Profile.Gender;
-import org.tms.authservicerest.domain.model.profile.Contact;
-import org.tms.authservicerest.domain.model.profile.Name;
+import org.tms.authservicerest.rest.model.profile.Contact;
+import org.tms.authservicerest.rest.model.profile.Name;
 
 @Getter
 @Setter
@@ -28,7 +26,7 @@ public class Profile {
   private List<Name> names;
 
   /**
-   * Only for input, if user wants to declare password on his own:
+   * Only for input, if user wants to declare password on his own during creation new auth profile:
    */
   private String password;
 

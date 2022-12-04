@@ -24,7 +24,7 @@ feign:
         readTimeout: 10000
         loggerLevel: full
         requestInterceptors:
-          - org.tms.profile_service_rest.configuration.client.AuthRestClientAuthInterceptor
+          - org.tms.profile_service_rest.configuration.client.auth.AuthRestClientAuthInterceptor
 
 auth-rest-client:
   url: http://localhost:8800

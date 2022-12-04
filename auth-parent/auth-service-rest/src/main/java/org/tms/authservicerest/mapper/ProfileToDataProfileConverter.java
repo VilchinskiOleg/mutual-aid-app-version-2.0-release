@@ -17,5 +17,6 @@ public class ProfileToDataProfileConverter extends
     destination.setGender(mapper.map(source.getGender()));
     destination.setBirthday(source.getBirthday());
     destination.setTickets(mapper.map(source.getTickets(), new HashSet<>(), Ticket.class));
+    destination.setWeekPassword(source.isWeekPassword());
   }
 }

@@ -1,4 +1,4 @@
-package org.tms.authservicerest.rest.model;
+package org.tms.authservicerest.rest.model.profile;
 
 import javax.validation.constraints.Pattern;
 import lombok.Getter;

@@ -26,6 +26,7 @@ public class Profile {
 
   private String gender;
   private LocalDate birthday;
+  private boolean weekPassword;
 
   // no return for user; only for login processing:
   private Set<Ticket> tickets;

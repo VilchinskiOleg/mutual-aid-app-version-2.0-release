@@ -11,5 +11,11 @@ public class Constant {
     public static final LocalDateTime GLOBAL_MARK_START_COUNT_TIME_BY_GREGORIAN = LocalDateTime.of(1582, 10, 15, 0, 0, 0);
 
     public static final int PASSWORD_LENGTH = 12;
+
+    public static class EmailSenderOpenApi {
+
+      public static final String HOST_HEADER = "X-RapidAPI-Host";
+      public static final String TOKEN_HEADER = "X-RapidAPI-Key";
+    }
   }
 }

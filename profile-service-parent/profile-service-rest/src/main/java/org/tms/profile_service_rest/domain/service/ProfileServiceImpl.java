@@ -5,6 +5,7 @@ import static java.util.Objects.nonNull;
 import static org.tms.profile_service_rest.utils.Constant.Errors.FAIL_CREATING_NEW_PROFILE;
 import static org.tms.profile_service_rest.utils.Constant.Errors.PROFILE_NOT_FUND;
 
+import lombok.extern.slf4j.Slf4j;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import org.tms.profile_service_rest.persistent.repository.ProfileRepository;
 import javax.annotation.Resource;
 
 @Component
+@Slf4j
 public class ProfileServiceImpl implements ProfileService {
 
     @Resource
@@ -37,6 +39,7 @@ public class ProfileServiceImpl implements ProfileService {
             authAdditionalClientService.createAuth(profile);
             return savedProfile;
         } catch (Exception ex) {
+            log.error("Unexpected error during creation auth profile", ex);
             roleBackCreatingProfile(savedProfile);
             throw new ConflictException(FAIL_CREATING_NEW_PROFILE);
         }

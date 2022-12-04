@@ -1,6 +1,5 @@
 package org.tms.common.auth.configuration.provider;
 
-import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;

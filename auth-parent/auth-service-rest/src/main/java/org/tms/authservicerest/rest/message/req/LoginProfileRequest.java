@@ -5,8 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.tms.authservicerest.rest.model.Profile;
-import org.tms.authservicerest.rest.model.Ticket;
+import org.tms.authservicerest.rest.model.profile.Ticket;
 
 @Getter
 @Setter

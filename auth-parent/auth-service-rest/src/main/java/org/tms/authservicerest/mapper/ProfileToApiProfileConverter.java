@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.tms.authservicerest.domain.model.Profile;
 
 @Component
-public class ProfileToRestProfileConverter extends BaseConverter<Profile, org.tms.authservicerest.rest.model.Profile> {
+public class ProfileToApiProfileConverter extends BaseConverter<Profile, org.tms.authservicerest.rest.model.Profile> {
 
     @Override
     public void convert(Profile source, org.tms.authservicerest.rest.model.Profile destination) {
