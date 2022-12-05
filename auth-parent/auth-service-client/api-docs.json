@@ -199,19 +199,17 @@
         "tags": [
           "basic-error-controller"
         ],
-        "summary": "error",
-        "operationId": "errorUsingGET",
+        "summary": "errorHtml",
+        "operationId": "errorHtmlUsingGET",
         "produces": [
-          "*/*"
+          "text/html"
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "object"
-              }
+              "originalRef": "ModelAndView",
+              "$ref": "#/definitions/ModelAndView"
             }
           },
           "401": {
@@ -230,22 +228,20 @@
         "tags": [
           "basic-error-controller"
         ],
-        "summary": "error",
-        "operationId": "errorUsingHEAD",
+        "summary": "errorHtml",
+        "operationId": "errorHtmlUsingHEAD",
         "consumes": [
           "application/json"
         ],
         "produces": [
-          "*/*"
+          "text/html"
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "object"
-              }
+              "originalRef": "ModelAndView",
+              "$ref": "#/definitions/ModelAndView"
             }
           },
           "204": {
@@ -264,22 +260,20 @@
         "tags": [
           "basic-error-controller"
         ],
-        "summary": "error",
-        "operationId": "errorUsingPOST",
+        "summary": "errorHtml",
+        "operationId": "errorHtmlUsingPOST",
         "consumes": [
           "application/json"
         ],
         "produces": [
-          "*/*"
+          "text/html"
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "object"
-              }
+              "originalRef": "ModelAndView",
+              "$ref": "#/definitions/ModelAndView"
             }
           },
           "201": {
@@ -301,22 +295,20 @@
         "tags": [
           "basic-error-controller"
         ],
-        "summary": "error",
-        "operationId": "errorUsingPUT",
+        "summary": "errorHtml",
+        "operationId": "errorHtmlUsingPUT",
         "consumes": [
           "application/json"
         ],
         "produces": [
-          "*/*"
+          "text/html"
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "object"
-              }
+              "originalRef": "ModelAndView",
+              "$ref": "#/definitions/ModelAndView"
             }
           },
           "201": {
@@ -338,19 +330,17 @@
         "tags": [
           "basic-error-controller"
         ],
-        "summary": "error",
-        "operationId": "errorUsingDELETE",
+        "summary": "errorHtml",
+        "operationId": "errorHtmlUsingDELETE",
         "produces": [
-          "*/*"
+          "text/html"
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "object"
-              }
+              "originalRef": "ModelAndView",
+              "$ref": "#/definitions/ModelAndView"
             }
           },
           "204": {
@@ -369,22 +359,20 @@
         "tags": [
           "basic-error-controller"
         ],
-        "summary": "error",
-        "operationId": "errorUsingOPTIONS",
+        "summary": "errorHtml",
+        "operationId": "errorHtmlUsingOPTIONS",
         "consumes": [
           "application/json"
         ],
         "produces": [
-          "*/*"
+          "text/html"
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "object"
-              }
+              "originalRef": "ModelAndView",
+              "$ref": "#/definitions/ModelAndView"
             }
           },
           "204": {
@@ -403,22 +391,20 @@
         "tags": [
           "basic-error-controller"
         ],
-        "summary": "error",
-        "operationId": "errorUsingPATCH",
+        "summary": "errorHtml",
+        "operationId": "errorHtmlUsingPATCH",
         "consumes": [
           "application/json"
         ],
         "produces": [
-          "*/*"
+          "text/html"
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "object"
-              }
+              "originalRef": "ModelAndView",
+              "$ref": "#/definitions/ModelAndView"
             }
           },
           "204": {
@@ -436,10 +422,6 @@
     }
   },
   "definitions": {
-    "Character": {
-      "type": "object",
-      "title": "Character"
-    },
     "Chronology": {
       "type": "object",
       "properties": {
@@ -456,11 +438,7 @@
       "type": "object",
       "properties": {
         "type": {
-          "type": "string",
-          "enum": [
-            "EMAIL",
-            "PHONE"
-          ]
+          "type": "string"
         },
         "value": {
           "type": "string"
@@ -511,18 +489,6 @@
       },
       "title": "Error"
     },
-    "IsoChronology": {
-      "type": "object",
-      "properties": {
-        "calendarType": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        }
-      },
-      "title": "IsoChronology"
-    },
     "JwtRequest": {
       "type": "object",
       "properties": {
@@ -544,71 +510,6 @@
         }
       },
       "title": "JwtResponse"
-    },
-    "LocalDate": {
-      "type": "object",
-      "properties": {
-        "chronology": {
-          "originalRef": "IsoChronology",
-          "$ref": "#/definitions/IsoChronology"
-        },
-        "dayOfMonth": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "dayOfWeek": {
-          "type": "string",
-          "enum": [
-            "MONDAY",
-            "TUESDAY",
-            "WEDNESDAY",
-            "THURSDAY",
-            "FRIDAY",
-            "SATURDAY",
-            "SUNDAY"
-          ]
-        },
-        "dayOfYear": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "era": {
-          "type": "string",
-          "enum": [
-            "BCE",
-            "CE"
-          ]
-        },
-        "leapYear": {
-          "type": "boolean"
-        },
-        "month": {
-          "type": "string",
-          "enum": [
-            "JANUARY",
-            "FEBRUARY",
-            "MARCH",
-            "APRIL",
-            "MAY",
-            "JUNE",
-            "JULY",
-            "AUGUST",
-            "SEPTEMBER",
-            "OCTOBER",
-            "NOVEMBER",
-            "DECEMBER"
-          ]
-        },
-        "monthValue": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "year": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "title": "LocalDate"
     },
     "LocalDateTime": {
       "type": "object",
@@ -680,64 +581,6 @@
         }
       },
       "title": "LocalDateTime"
-    },
-    "Locale": {
-      "type": "object",
-      "properties": {
-        "country": {
-          "type": "string"
-        },
-        "displayCountry": {
-          "type": "string"
-        },
-        "displayLanguage": {
-          "type": "string"
-        },
-        "displayName": {
-          "type": "string"
-        },
-        "displayScript": {
-          "type": "string"
-        },
-        "displayVariant": {
-          "type": "string"
-        },
-        "extensionKeys": {
-          "type": "array",
-          "items": {
-            "originalRef": "Character",
-            "$ref": "#/definitions/Character"
-          }
-        },
-        "iso3Country": {
-          "type": "string"
-        },
-        "iso3Language": {
-          "type": "string"
-        },
-        "language": {
-          "type": "string"
-        },
-        "script": {
-          "type": "string"
-        },
-        "unicodeLocaleAttributes": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "unicodeLocaleKeys": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "variant": {
-          "type": "string"
-        }
-      },
-      "title": "Locale"
     },
     "LoginProfileRequest": {
       "type": "object",
@@ -860,8 +703,7 @@
           "type": "string"
         },
         "locale": {
-          "originalRef": "Locale",
-          "$ref": "#/definitions/Locale"
+          "type": "string"
         }
       },
       "title": "Name"
@@ -870,8 +712,8 @@
       "type": "object",
       "properties": {
         "birthday": {
-          "originalRef": "LocalDate",
-          "$ref": "#/definitions/LocalDate"
+          "type": "string",
+          "example": "yyyy-MM-dd"
         },
         "contacts": {
           "type": "array",
@@ -885,11 +727,7 @@
           "$ref": "#/definitions/LocalDateTime"
         },
         "gender": {
-          "type": "string",
-          "enum": [
-            "MALE",
-            "FEMALE"
-          ]
+          "type": "string"
         },
         "id": {
           "type": "string"

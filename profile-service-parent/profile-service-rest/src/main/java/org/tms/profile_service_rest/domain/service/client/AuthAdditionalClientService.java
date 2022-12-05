@@ -14,21 +14,21 @@ import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.stereotype.Component;
 import org.tms.mutual_aid.auth.client.model.CreateProfileRequest;
 import org.tms.mutual_aid.auth.client.model.CreateProfileResponse;
-import org.tms.profile_service_rest.configuration.client.AuthRestClient;
+import org.tms.profile_service_rest.configuration.client.auth.AuthRestFeignClient;
 import org.tms.profile_service_rest.domain.model.Profile;
 
 @Component
 @Slf4j
-public class AuthClientService {
+public class AuthAdditionalClientService {
 
     @Resource
-    private AuthRestClient authApi;
+    private AuthRestFeignClient authRestFeignClient;
     @Resource
     private Mapper mapper;
 
     public void createAuth(Profile profile) {
         final var request = createRequest(profile);
-        Response response = authApi.create(request);
+        Response response = authRestFeignClient.create(request);
 
         CreateProfileResponse authResponse = deserializeResponse(response.body());
         checkResponse(response.status(), authResponse, profile.getProfileId());
@@ -53,7 +53,7 @@ public class AuthClientService {
 
     private void checkResponse(int statusCode, CreateProfileResponse authResponse, String profileId) {
         if (statusCode != OK_HTTP_CODE) {
-            log.error("The request for create auth profile by id={} is failed: {}", profileId, authResponse.getError());
+            log.error("The request for create auth profile by resourceId={} is failed: \n\tstatus = {} \n\terror = {}", profileId, statusCode, authResponse.getError());
             throw new ConflictException(FAIL_CREATING_AUTH_PROFILE);
         }
     }

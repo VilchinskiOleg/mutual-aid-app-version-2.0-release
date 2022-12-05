@@ -31,11 +31,13 @@ public class Profile {
   private Gender gender;
   private LocalDate birthday;
 
-  // no return for user; only for login processing:
+  /**
+   * Exists only on Domain and Persist layers. In order to process user's login:
+   */
   private Set<Ticket> tickets;
 
-  // only for input and put the ticket after:
   private String password;
+  private boolean weekPassword;
 
   private LocalDateTime createAt;
   private LocalDateTime modifyAt;

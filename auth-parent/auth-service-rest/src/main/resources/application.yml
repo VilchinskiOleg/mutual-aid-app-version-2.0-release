@@ -21,3 +21,18 @@ auth:
     secret: secret_key
     issuer: auth.service.issuer
     live: 5
+
+feign:
+  client:
+    config:
+      emailSenderApiClient:
+        connectTimeout: 10000
+        readTimeout: 15000
+        loggerLevel: full
+        requestInterceptors:
+          - org.tms.authservicerest.configuration.client.RapidEmailSenderApiInterceptor
+
+email-sender-open-api:
+  url: https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send
+  host: rapidprod-sendgrid-v1.p.rapidapi.com
+  token: ${EMAIL_SENDER_API_TOKEN}

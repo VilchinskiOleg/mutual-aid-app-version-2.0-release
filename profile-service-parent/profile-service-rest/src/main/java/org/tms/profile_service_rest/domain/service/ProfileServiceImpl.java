@@ -5,16 +5,18 @@ import static java.util.Objects.nonNull;
 import static org.tms.profile_service_rest.utils.Constant.Errors.FAIL_CREATING_NEW_PROFILE;
 import static org.tms.profile_service_rest.utils.Constant.Errors.PROFILE_NOT_FUND;
 
+import lombok.extern.slf4j.Slf4j;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.stereotype.Component;
 import org.tms.profile_service_rest.domain.model.Profile;
-import org.tms.profile_service_rest.domain.service.client.AuthClientService;
+import org.tms.profile_service_rest.domain.service.client.AuthAdditionalClientService;
 import org.tms.profile_service_rest.domain.service.processor.IdGeneratorService;
 import org.tms.profile_service_rest.persistent.repository.ProfileRepository;
 import javax.annotation.Resource;
 
 @Component
+@Slf4j
 public class ProfileServiceImpl implements ProfileService {
 
     @Resource
@@ -22,7 +24,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Resource
     private IdGeneratorService idGeneratorService;
     @Resource
-    private AuthClientService authClientService;
+    private AuthAdditionalClientService authAdditionalClientService;
     @Resource
     private Mapper mapper;
 
@@ -34,9 +36,10 @@ public class ProfileServiceImpl implements ProfileService {
         try {
             var dataProfile = mapper.map(profile, org.tms.profile_service_rest.persistent.entity.Profile.class);
             savedProfile = mapper.map(profileRepository.save(dataProfile), Profile.class);
-            authClientService.createAuth(profile);
+            authAdditionalClientService.createAuth(profile);
             return savedProfile;
         } catch (Exception ex) {
+            log.error("Unexpected error during creation auth profile", ex);
             roleBackCreatingProfile(savedProfile);
             throw new ConflictException(FAIL_CREATING_NEW_PROFILE);
         }

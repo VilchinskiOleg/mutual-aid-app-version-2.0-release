@@ -1,4 +1,4 @@
-package org.tms.common.auth.configuration.global.skip_list_impl;
+package org.tms.common.auth.configuration.global.core.skip_list_map_impl;
 
 public interface SkipListMap<K extends Comparable<K>, V> {
 

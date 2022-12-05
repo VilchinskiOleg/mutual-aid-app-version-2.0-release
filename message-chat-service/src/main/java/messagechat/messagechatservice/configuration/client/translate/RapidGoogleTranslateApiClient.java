@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+/**
+ * As open api I use 'Google Translate'.
+ */
 @FeignClient(name = "googleTranslateApiClient", url = "${google-translate-open-api.url}")
 public interface RapidGoogleTranslateApiClient {
 

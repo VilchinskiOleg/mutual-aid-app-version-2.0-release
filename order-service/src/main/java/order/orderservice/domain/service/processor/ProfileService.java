@@ -10,7 +10,7 @@ import order.orderservice.domain.service.client.ProfileClientService;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.stereotype.Component;
-import ort.tms.mutual_aid.profile_service.client.model.Profile;
+import org.tms.mutual_aid.profile_service.client.model.Profile;
 import javax.annotation.Resource;
 import java.util.Optional;
 import java.util.Set;

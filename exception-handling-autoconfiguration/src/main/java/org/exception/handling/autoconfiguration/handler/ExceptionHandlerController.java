@@ -22,12 +22,11 @@ import java.util.*;
 @ControllerAdvice
 public class ExceptionHandlerController {
 
-    //TODO: language for common-http keep in Locale.class, for example: Locale locale = new Locale("en");
     @Resource
     private ErrorMessagesManager errorMessagesManager;
 
     @ExceptionHandler(value = ConflictException.class)
-    public ResponseEntity<BaseResponse> ConflictExceptionHandler(HttpServletRequest request, ConflictException ex) {
+    public ResponseEntity<BaseResponse> conflictExceptionHandler(HttpServletRequest request, ConflictException ex) {
         Error error= Error.builder()
                 .code(ex.getMessage())
                 .message(errorMessagesManager.getLocalizedErrorMessage(ex.getMessage(), extractLang(request)))
@@ -37,7 +36,7 @@ public class ExceptionHandlerController {
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<BaseResponse> ValidationExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException ex) {
+    public ResponseEntity<BaseResponse> validationExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException ex) {
         String lang = extractLang(request);
         List<ObjectError> validationErrorsData = ex.getAllErrors();
         List<Error> validationErrors = isEmpty(validationErrorsData) ?
@@ -52,7 +51,7 @@ public class ExceptionHandlerController {
     }
 
     @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<BaseResponse> CommonExceptionHandler(HttpServletRequest request, Exception ex) {
+    public ResponseEntity<BaseResponse> commonExceptionHandler(HttpServletRequest request, Exception ex) {
         log.error("Unexpected error: cannot process this case.", ex);
         Error error= Error.builder()
                 .code(COMMON_EXCEPTION_MESSAGE_CODE)

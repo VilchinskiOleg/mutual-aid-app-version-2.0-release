@@ -7,7 +7,7 @@
         <groupId>org.tms</groupId>
         <artifactId>mutual-aid-app</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>auth-parent</artifactId>
@@ -21,8 +21,9 @@
     </properties>
 
     <modules>
+        <module>auth-service-client</module>
         <module>auth-configuration</module>
         <module>auth-service-rest</module>
-        <module>auth-service-client</module>
     </modules>
+
 </project>
