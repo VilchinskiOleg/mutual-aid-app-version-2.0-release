@@ -18,4 +18,9 @@ public class Constant {
       public static final String TOKEN_HEADER = "X-RapidAPI-Key";
     }
   }
+
+  public static class Errors {
+
+    public static final String RESET_PASSWORD_FAILED = "reset.password.failed";
+  }
 }

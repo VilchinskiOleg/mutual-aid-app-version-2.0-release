@@ -30,5 +30,5 @@ auth-rest-client:
   url: http://localhost:8800
   user: profile-service-client
   password: 423welcome!76
-  read-timeout: 10000
+  read-timeout: 15000
   connection-timeout: 10000
