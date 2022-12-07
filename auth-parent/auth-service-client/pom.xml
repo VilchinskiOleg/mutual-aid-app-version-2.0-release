@@ -4,13 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.0</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>org.tms</groupId>
+        <artifactId>profile-service-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.tms</groupId>
     <artifactId>auth-service-client</artifactId>
     <name>auth-service-client</name>
     <version>0.0.1-SNAPSHOT</version>
@@ -28,12 +27,6 @@
         </dependency>
 
         <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>1.5.21</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.3.1</version>
@@ -45,33 +38,10 @@
             <plugin>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
-                <version>2.3.1</version>
                 <executions>
                     <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
                         <configuration>
-                            <inputSpec>api-docs.json</inputSpec>
-                            <language>java</language>
-                            <configOptions>
-                                <dateLibrary>java11</dateLibrary>
-                            </configOptions>
-                            <typeMappings>
-                                <typeMapping>Error=org.exception.handling.autoconfiguration.model.Error</typeMapping>
-                            </typeMappings>
-                            <importMappings>
-                                <importMappings>LocalTime=java.time.LocalTime</importMappings>
-                                <importMappings>LocalDate=java.time.LocalDate</importMappings>
-                                <importMappings>LocalDateTime=java.time.LocalDateTime</importMappings>
-                                <importMappings>ZonedDateTime=java.time.ZonedDateTime</importMappings>
-                            </importMappings>
                             <modelPackage>org.tms.mutual_aid.auth.client.model</modelPackage>
-                            <generateApiTests>false</generateApiTests>
-                            <generateModelDocumentation>false</generateModelDocumentation>
-                            <generateApiDocumentation>false</generateApiDocumentation>
-                            <generateSupportingFiles>false</generateSupportingFiles>
-                            <generateApis>false</generateApis>
                         </configuration>
                     </execution>
                 </executions>

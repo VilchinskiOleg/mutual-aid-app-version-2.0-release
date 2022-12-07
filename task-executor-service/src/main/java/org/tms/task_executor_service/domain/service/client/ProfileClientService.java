@@ -17,8 +17,8 @@ import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.springframework.stereotype.Component;
 import org.tms.task_executor_service.config.client.ProfileRestClient;
 import org.tms.task_executor_service.domain.model.Task.Type;
-import ort.tms.mutual_aid.profile_service.client.model.Profile;
-import ort.tms.mutual_aid.profile_service.client.model.ProfileResponse;
+import org.tms.mutual_aid.profile_service.client.model.Profile;
+import org.tms.mutual_aid.profile_service.client.model.ProfileResponse;
 
 @Component
 @Slf4j

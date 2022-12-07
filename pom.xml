@@ -25,17 +25,17 @@
     </properties>
 
     <modules>
+        <module>common-http-autoconfiguration</module>
         <module>exception-handling-autoconfiguration</module>
         <module>model-mapper-autoconfiguration</module>
-        <module>common-http-autoconfiguration</module>
         <module>thread-save</module>
 
-        <module>message-chat-service</module>
-        <module>order-service</module>
-        <module>event-storage-service</module>
+        <module>auth-parent</module>
         <module>profile-service-parent</module>
         <module>task-executor-service</module>
-        <module>auth-parent</module>
+        <module>order-service</module>
+        <module>event-storage-service</module>
+        <module>message-chat-service</module>
 
         <!-- JUST GLOBAL TEST. They aren't business part of project-->
         <module>testcontainer-tests</module>
@@ -59,6 +59,7 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- For REST validation constraints:-->
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
@@ -71,6 +72,7 @@
             <version>6.1.2.Final</version>
         </dependency>
 
+        <!-- Additional common libs:-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -176,7 +178,6 @@
                                     <importMappings>LocalDateTime=java.time.LocalDateTime</importMappings>
                                     <importMappings>ZonedDateTime=java.time.ZonedDateTime</importMappings>
                                 </importMappings>
-                                <modelPackage>org.tms.mutual_aid.profile_service.client.model</modelPackage>
                                 <generateApiTests>false</generateApiTests>
                                 <generateModelDocumentation>false</generateModelDocumentation>
                                 <generateApiDocumentation>false</generateApiDocumentation>

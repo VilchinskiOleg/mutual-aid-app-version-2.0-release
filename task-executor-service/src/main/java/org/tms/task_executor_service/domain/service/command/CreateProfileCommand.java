@@ -5,7 +5,7 @@ import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.tms.task_executor_service.domain.model.Task;
 import org.tms.task_executor_service.domain.service.client.ProfileClientService;
-import ort.tms.mutual_aid.profile_service.client.model.Profile;
+import org.tms.mutual_aid.profile_service.client.model.Profile;
 
 @Slf4j
 public class CreateProfileCommand extends BaseCommand {

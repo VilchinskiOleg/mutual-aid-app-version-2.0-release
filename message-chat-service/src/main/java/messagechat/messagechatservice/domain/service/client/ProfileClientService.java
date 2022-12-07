@@ -13,8 +13,8 @@ import org.exception.handling.autoconfiguration.model.Error;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
-import ort.tms.mutual_aid.profile_service.client.model.Profile;
-import ort.tms.mutual_aid.profile_service.client.model.ProfileResponse;
+import org.tms.mutual_aid.profile_service.client.model.Profile;
+import org.tms.mutual_aid.profile_service.client.model.ProfileResponse;
 import java.io.IOException;
 
 @Slf4j

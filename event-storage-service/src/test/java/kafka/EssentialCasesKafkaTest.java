@@ -214,7 +214,8 @@ public class EssentialCasesKafkaTest extends BaseKafkaComponentTest {
         .atMost(10000, TimeUnit.SECONDS)
         .pollInterval(3, TimeUnit.SECONDS)
         .until(() -> {
-          // sometimes have bug -> overwrating:
+          // it sometimes has a bug -> overwriting.
+          // Probably because of offset (if it happens not quickly, consumer read available record again).
           return RESULT_PUBLISHING_MAP.size() >= resultMapSize;
         });
 

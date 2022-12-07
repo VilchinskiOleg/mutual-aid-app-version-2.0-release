@@ -8,6 +8,7 @@ import messagechat.messagechatservice.domain.service.client.ProfileClientService
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.stereotype.Component;
+import org.tms.mutual_aid.profile_service.client.model.Profile;
 import javax.annotation.Resource;
 
 @Component

@@ -3,9 +3,9 @@ package org.tms.task_executor_service.mapper.payload.api_model;
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
 import org.tms.task_executor_service.domain.model.payload.CreateProfilePayload;
-import ort.tms.mutual_aid.profile_service.client.model.Contact;
-import ort.tms.mutual_aid.profile_service.client.model.Name;
-import ort.tms.mutual_aid.profile_service.client.model.Profile;
+import org.tms.mutual_aid.profile_service.client.model.Contact;
+import org.tms.mutual_aid.profile_service.client.model.Name;
+import org.tms.mutual_aid.profile_service.client.model.Profile;
 import java.util.ArrayList;
 
 @Component
