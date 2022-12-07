@@ -52,8 +52,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order createOrder(Order orderDetails) {
+        // build new order:
         var order = createNewOrder();
         mapper.map(orderDetails, order, CREATE);
+        order.setOwner(profileService.retrieveMemberByIdRequired(orderDetails.getOwner().getMemberId()));
+        // save oder:
         Order savedOrder = saveOrder(order);
         eventManagerService.sendEvent(OperationType.CREATE, savedOrder);
         return savedOrder;
@@ -94,50 +97,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findByExecutorOrCandidateIds(String memberId) { //TODO: get memberId from spring security context ?
+    public List<Order> findByExecutorOrCandidateIds(String memberId) {
         var result = orderRepository.searchByExecutorOrCandidateIds(memberId);
         if (isEmpty(result)) {
             log.info("Such 'worker' hasn't processing orders");
             return emptyList();
         }
         return mapper.map(result, new ArrayList<>(), Order.class);
-    }
-
-    @Override
-    public Order chooseOrder(String orderId, String memberId) { //TODO: get memberId from spring security context ?
-        Order currentOrder = findByOrderIdRequired(orderId);
-        checkAddingCandidatesOpportunity(currentOrder);
-        profileService.populateOrderExecutionCandidate(currentOrder, memberId);
-        currentOrder.setModifyAt(now());
-        if (currentOrder.getStatus() == ACTIVE) {
-            currentOrder.setStatus(AWAITING_APPROVAL);
-        }
-        Order savedOrder = saveOrder(currentOrder);
-        eventManagerService.sendEvent(OperationType.UPDATE, savedOrder);
-        return savedOrder;
-    }
-
-    @Override
-    public Order approveOrder(String orderId, String executorId) {
-        Order currentOrder = findByOrderIdRequired(orderId);
-        checkApprovingExecutionOpportunity(currentOrder);
-        profileService.populateOrderExecutor(currentOrder, executorId);
-        currentOrder.setStatus(IN_WORK);
-        currentOrder.setModifyAt(now());
-        Order savedOrder = saveOrder(currentOrder);
-        eventManagerService.sendEvent(OperationType.UPDATE, savedOrder);
-        return savedOrder;
-    }
-
-    @Override
-    public Order closeOrder(String orderId) {
-        Order currentOrder = findByOrderIdRequired(orderId);
-        checkClosingOrderOpportunity(currentOrder);
-        currentOrder.setStatus(CLOSED);
-        currentOrder.setModifyAt(now());
-        Order savedOrder = saveOrder(currentOrder);
-        eventManagerService.sendEvent(OperationType.UPDATE, savedOrder);
-        return savedOrder;
     }
 
     @Override
@@ -163,12 +129,24 @@ public class OrderServiceImpl implements OrderService {
         return orders.size();
     }
 
+    @Override
+    public Order saveOrder(Order order) {
+        var orderData = mapper.map(order, order.orderservice.persistent.entity.Order.class);
+        var savedOrderData = orderRepository.save(orderData);
+        return mapper.map(savedOrderData, Order.class);
+    }
+
+    @Override
+    public List<Order> findByOwnerId(String memberId) {
+        var result = orderRepository.searchByOwnerId(memberId);
+        return mapper.map(result, new ArrayList<>(), Order.class);
+    }
+
     private Order createNewOrder() {
         var order = new Order();
         order.setOrderId(idGeneratorService.generate());
         order.setStatus(ACTIVE);
         order.setCreateAt(now());
-        order.setOwner(getOwnerBySecurityContext());
         return order;
     }
 
@@ -180,34 +158,5 @@ public class OrderServiceImpl implements OrderService {
                 .currentPage(pageOrdersDetails.getNumber())
                 .sizeOfPage(pageOrdersDetails.getSize())
                 .build();
-    }
-
-    private Member getOwnerBySecurityContext() {return new Member("1-1-1", "owner", "owner", "owner");} // TODO: write method after creating base security module.
-
-    private void checkAddingCandidatesOpportunity(Order order) {
-        var currentStatus = order.getStatus();
-        if (currentStatus == IN_WORK || currentStatus == CLOSED) {
-            throw new ConflictException(CANNOT_ADD_NEW_CANDIDATE);
-        }
-    }
-
-    private void checkApprovingExecutionOpportunity(Order order) {
-        var currentStatus = order.getStatus();
-        if (currentStatus != AWAITING_APPROVAL) {
-            throw new ConflictException(CANNOT_APPROVE_EXECUTION);
-        }
-    }
-
-    private void checkClosingOrderOpportunity(Order order) {
-        var currentStatus = order.getStatus();
-        if (currentStatus != IN_WORK) {
-            throw new ConflictException(CANNOT_CLOSE_ORDER);
-        }
-    }
-
-    private Order saveOrder(Order order) {
-        var orderData = mapper.map(order, order.orderservice.persistent.entity.Order.class);
-        var savedOrderData = orderRepository.save(orderData);
-        return mapper.map(savedOrderData, Order.class);
     }
 }

@@ -20,11 +20,9 @@ public interface OrderService {
 
     List<Order> findByExecutorOrCandidateIds(String memberId);
 
-    Order chooseOrder(String orderId, String memberId);
-
-    Order approveOrder(String orderId, String executorId);
-
-    Order closeOrder(String orderId);
+    List<Order> findByOwnerId(String memberId);
 
     Integer removeOrdersAsync(List<Order> orders);
+
+    Order saveOrder(Order order);
 }

@@ -1,0 +1,32 @@
+[
+    {
+        "name": "test",
+        "password": "$2a$12$hCUSXhHqmQewL9wAfe.ZDOmEgQ7hOi1io1E5oAIYL6L9puw48zcXS",
+        "description": "123welcome!45",
+        "roles": [
+            "CREATE_AUTH_PROFILE",
+
+            "UPDATE_ORDER_AS_OWNER",
+
+            "GET_PROFILE_BY_ID"
+        ]
+    },
+
+    {
+        "name": "profile-service-client",
+        "password": "$2a$12$QRPnAbX16QjEGO/NoNlZRO9eK2BjmI.3rtTmqE7bSD7Zh3YnN8aTm",
+        "description": "423welcome!76",
+        "roles": [
+            "CREATE_AUTH_PROFILE"
+        ]
+    },
+
+    {
+        "name": "order-service-client",
+        "password": "$2a$12$9kBBiVGou/jK2RZsFyCrH.9dBjYEh2/7Y4bMkwrH2ycdVJbfG7RZy",
+        "description": "42vovk_wEle!76",
+        "roles": [
+            "GET_PROFILE_BY_ID"
+        ]
+    }
+]

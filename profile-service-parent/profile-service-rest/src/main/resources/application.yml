@@ -4,8 +4,7 @@ server:
 spring:
   data:
     mongodb:
-      database: mutual-aid-app
-      uri: mongodb://localhost:27017/mutual-aid-app
+      uri: mongodb+srv://admin:${MONGO_DB_PASSWORD}@cluster0.lme5y.mongodb.net/mutual-aid-app?retryWrites=true&w=majority
 
 application:
   api-info:
@@ -16,3 +15,20 @@ application:
       name: OLEG
       url: https://mail.google.com
       email: vilchinskioleg@gmail.com
+
+feign:
+  client:
+    config:
+      authRestFeignClient:
+        connectTimeout: 5000
+        readTimeout: 10000
+        loggerLevel: full
+        requestInterceptors:
+          - org.tms.profile_service_rest.configuration.client.auth.AuthRestClientAuthInterceptor
+
+auth-rest-client:
+  url: http://localhost:8800
+  user: profile-service-client
+  password: 423welcome!76
+  read-timeout: 15000
+  connection-timeout: 10000

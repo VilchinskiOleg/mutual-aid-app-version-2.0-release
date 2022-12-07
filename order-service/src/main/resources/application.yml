@@ -4,8 +4,11 @@ server:
 spring:
   data:
     mongodb:
-      database: mutual-aid-app
-      uri: mongodb://localhost:27017/mutual-aid-app
+
+      uri: mongodb+srv://admin:${MONGO_DB_PASSWORD}@cluster0.lme5y.mongodb.net/mutual-aid-app?retryWrites=true&w=majority
+
+      # for connection to local DB. In my case for connection to docker mongoDB container:
+      # uri: mongodb://${MONGO_USERNAME}:${MONGO_PWD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}?authSource=admin
 
 application:
   api-info:
@@ -20,13 +23,12 @@ application:
 feign:
   client:
     config:
-      default:
+      profileRestClient:
         connectTimeout: 5000
-        readTimeout: 50000
+        readTimeout: 10000
         loggerLevel: full
-#        requestInterceptors:
-#          - com.example.FooRequestInterceptor
-#          - com.example.BarRequestInterceptor
+        requestInterceptors:
+          - order.orderservice.configuration.client.ProfileRestClientAuthInterceptor
   httpclient:
     enabled: true
 
@@ -37,7 +39,24 @@ scheduler:
     page-size: 10
 
 kafka:
-  bootstrapServers: localhost:9092
+  bootstrapServers: 127.0.0.1:9093
+  # for SSL security:
+  ssl-key-password: 34rtsTb290
+  ssl-keystore-location: /Users/aleh/IdeaProjects/mutual-aid-app-version-2.0-release/order-service/kafka-ssl/secret/clientkeystore.jks
+  ssl-keystore-password: 34rtsTb290
+  ssl-truststore-location: /Users/aleh/IdeaProjects/mutual-aid-app-version-2.0-release/order-service/kafka-ssl/secret/clienttruststore.jks
+  ssl-truststore-password: 34rtsTb290
 
-profile-rest:
-  url: http://localhost:8400/api/profile-service
+#rest clients:
+
+profile-rest-client:
+  url: http://localhost:8400
+  user: order-service-client
+  password: 42vovk_wEle!76
+
+auth-rest-client:
+  url: http://localhost:8800/api/auth-service
+  read-timeout: 10000
+  connection-timeout: 10000
+  user: order-service-client
+  password: 42vovk_wEle!76

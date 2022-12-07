@@ -2,11 +2,12 @@ package messagechat.messagechatservice.persistent.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -17,8 +18,13 @@ public class Dialog {
     private String id;
 
     private String internalId;
-    private List<Member> members;
+    private Set<Member> members;
     private String status;
+    private String type;
+    @CreatedDate
     private LocalDateTime createAt;
+    @LastModifiedDate
     private LocalDateTime modifyAt;
+    private String createByMemberId;
+    private String modifyByMemberId;
 }

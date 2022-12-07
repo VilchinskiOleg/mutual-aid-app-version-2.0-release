@@ -1,0 +1,1 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.tms.thread_save.thread_save_autoconfiguration.ThreadSaveConfiguration

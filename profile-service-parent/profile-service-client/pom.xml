@@ -25,6 +25,12 @@
             <artifactId>exception-handling-autoconfiguration</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.3.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -32,38 +38,10 @@
             <plugin>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
-                <version>2.3.1</version>
                 <executions>
                     <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
                         <configuration>
-                            <inputSpec>api-docs.json</inputSpec>
-                            <language>java</language>
-                            <library>resttemplate</library>
-                            <configOptions>
-                                <dateLibrary>java11</dateLibrary>
-                            </configOptions>
-                            <typeMappings>
-                                <typeMapping>Error=org.exception.handling.autoconfiguration.model.Error</typeMapping>
-                            </typeMappings>
-                            <importMappings>
-                                <importMappings>LocalTime=java.time.LocalTime</importMappings>
-                                <importMappings>LocalDate=java.time.LocalDate</importMappings>
-                                <importMappings>LocalDateTime=java.time.LocalDateTime</importMappings>
-                                <importMappings>ZonedDateTime=java.time.ZonedDateTime</importMappings>
-                            </importMappings>
-                            <modelPackage>ort.tms.mutual_aid.profile_service.client.model</modelPackage>
-                            <generateApiTests>false</generateApiTests>
-                            <generateModelDocumentation>false</generateModelDocumentation>
-                            <generateApiDocumentation>false</generateApiDocumentation>
-                            <generateSupportingFiles>false</generateSupportingFiles>
-
-<!--                            //TODO: refactor after create client invoker lib. -->
-                            <generateApis>false</generateApis>
-<!--                            <apiPackage>org.tms.mutual_aid.profile_service.client.api</apiPackage>-->
-<!--                            <invokerPackage>com.ots.common.common_http.core.client.invoker</invokerPackage>-->
+                            <modelPackage>org.tms.mutual_aid.profile_service.client.model</modelPackage>
                         </configuration>
                     </execution>
                 </executions>
