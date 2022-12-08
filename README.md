@@ -35,3 +35,16 @@ That project is C2C application. One of user (Customer) can publish certain Job.
 * Awaitility V4.1.1
 * Modelmapper V2.3.8
 * Open API's (email sender; translater)
+
+### Set up project
+
+In order to set up project you need to take care about:
+* Install Java 11, Apache Maven on your machine.
+* Create your own account in MongoDB Atlas (cloud repository) and make user by name 'admin'. You need to put your password as environment variable, it will be fetched from env to URI during run the project. 
+* Run Kafka service on your local machine (as an option you can run Kafka brokers by Docker image, in this case you need to have Docker installed) or cloud service (if you try to deploy it in the cloud).
+* Set up and run SSL secured Kafka connections (set up/run brokers and set up certificates for application.yml). In order to do that you need to regard file by path './kafka-ssl/README.md'.
+* You need to put as environment variable access tokens for open API's like EMAIL_SENDER_API_TOKEN and TRANSLATE_API_TOKEN.
+
+After that preparations you can run command 'mvn clean install' in current directory in order to build project.
+
+After that you can go to needed service (root directory) and run it by command 'java -jar target/[artifactId]-[version].jar [fully.qualified.package.Application]' or 'mvn spring-boot:run'.
