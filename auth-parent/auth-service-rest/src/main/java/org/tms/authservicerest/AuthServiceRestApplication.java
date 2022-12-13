@@ -13,5 +13,4 @@ public class AuthServiceRestApplication {
   public static void main(String[] args) {
     SpringApplication.run(AuthServiceRestApplication.class, args);
   }
-
 }

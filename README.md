@@ -47,4 +47,4 @@ In order to set up project you need to take care about:
 
 After that preparations you can run command 'mvn clean install' in current directory in order to build project.
 
-After that you can go to needed service (root directory) and run it by command 'java -jar target/[artifactId]-[version].jar [fully.qualified.package.Application]' or 'mvn spring-boot:run'.
+After that you can go to needed service (root directory) and run it by command 'java -jar target/[artifactId]-[version].jar [fully.qualified.package.Application]' (for instance 'java -jar target/auth-service-rest-0.0.1-SNAPSHOT.jar org.tms.authservicerest.AuthServiceRestApplication') or 'mvn spring-boot:run'.
