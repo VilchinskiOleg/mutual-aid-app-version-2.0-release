@@ -1,6 +1,0 @@
-#Not used. Just for information.
-
-auth-rest-client:
-  url: http://localhost:8800/api/auth-service
-  read-timeout: 10000
-  connection-timeout: 10000
