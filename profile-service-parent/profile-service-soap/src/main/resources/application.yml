@@ -1,12 +1,2 @@
 server:
-  port: 8450
-
-feign:
-  client:
-    config:
-      default:
-        connectTimeout: 5000
-        readTimeout: 50000
-        loggerLevel: full
-  httpclient:
-    enabled: true
+  port: 8900

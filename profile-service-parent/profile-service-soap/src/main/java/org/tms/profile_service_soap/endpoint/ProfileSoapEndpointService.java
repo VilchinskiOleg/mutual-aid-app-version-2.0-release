@@ -6,7 +6,6 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-import org.tms.profile_service_soap.domain.client.ProfileClientService;
 import org.tms.profile_service_soap.endpoint.model.CreateProfileRequest;
 import org.tms.profile_service_soap.endpoint.model.GetProfileRequest;
 import org.tms.profile_service_soap.endpoint.model.ProfileResponse;
@@ -15,8 +14,8 @@ import javax.annotation.Resource;
 @Endpoint
 public class ProfileSoapEndpointService {
 
-    @Resource
-    private ProfileClientService profileClientService;
+//    @Resource
+//    private ProfileClientService profileClientService;
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "CreateProfileRequest")
     @ResponsePayload

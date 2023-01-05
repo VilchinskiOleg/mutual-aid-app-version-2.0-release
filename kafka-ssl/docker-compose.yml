@@ -11,6 +11,8 @@ services:
     image: wurstmeister/kafka
     container_name: kafka
     hostname: broker1
+    depends_on:
+      - zookeeper
     ports:
       - "9093:9093"
     environment:
@@ -19,16 +21,19 @@ services:
       KAFKA_LISTENERS: SSL://broker1:9093
       KAFKA_ADVERTISED_LISTENERS: SSL://broker1:9093
 
-      KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SSL
-      SSL_ENABLED_PROTOCOLS: 'TLSv1,TLSv1.1,TLSv1.2,TLSv1.3'
-      KAFKA_SSL_CLIENT_AUTH: 'required'
+#      KAFKA_LISTENERS: SSL://broker1:9093
+#      KAFKA_ADVERTISED_LISTENERS: SSL://broker1:9093
 
-      KAFKA_SSL_KEY_PASSWORD: '34rtsTb290'
-      KAFKA_SSL_KEYSTORE_LOCATION: '/etc/kafka/secrets/certs/serverkeystore.jks'
-      KAFKA_SSL_KEYSTORE_PASSWORD: '34rtsTb290'
-      KAFKA_SSL_TRUSTSTORE_LOCATION: '/etc/kafka/secrets/certs/servertruststore.jks'
-      KAFKA_SSL_TRUSTSTORE_PASSWORD: '34rtsTb290'
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./secret/broker/serverkeystore.jks:/etc/kafka/secrets/certs/serverkeystore.jks
-      - ./secret/broker/servertruststore.jks:/etc/kafka/secrets/certs/servertruststore.jks
+#      KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SSL
+#      SSL_ENABLED_PROTOCOLS: 'TLSv1,TLSv1.1,TLSv1.2,TLSv1.3'
+#      KAFKA_SSL_CLIENT_AUTH: 'required'
+
+#      KAFKA_SSL_KEY_PASSWORD: '34rtsTb290'
+#      KAFKA_SSL_KEYSTORE_LOCATION: '/etc/kafka/secrets/certs/serverkeystore.jks'
+#      KAFKA_SSL_KEYSTORE_PASSWORD: '34rtsTb290'
+#      KAFKA_SSL_TRUSTSTORE_LOCATION: '/etc/kafka/secrets/certs/servertruststore.jks'
+#      KAFKA_SSL_TRUSTSTORE_PASSWORD: '34rtsTb290'
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#      - ./secret/broker/serverkeystore.jks:/etc/kafka/secrets/certs/serverkeystore.jks
+#      - ./secret/broker/servertruststore.jks:/etc/kafka/secrets/certs/servertruststore.jks

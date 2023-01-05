@@ -1,7 +1,7 @@
 package org.tms.authservicerest.domain.service;
 
-import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.tms.authservicerest.utils.Constant.Service.PASSWORD_LENGTH;
 
 import java.util.List;
@@ -39,17 +39,7 @@ public class ProfileManagerServiceImpl implements ProfileManagerService {
   @Override
   public Profile create(Profile profile) {
     profile.setProfileId(idGeneratorService.generate());
-    if (isNull(profile.getPassword())) {
-      profile.setWeekPassword(true);
-      var generator = PasswordGenerator
-              .builder()
-              .length(PASSWORD_LENGTH)
-              .upper().lower().digits().punctuation()
-              .build();
-      String temporaryPassword = generator.generatePassword();
-      profile.setPassword(temporaryPassword);
-      emailSenderClientService.sendEmailForResetPassword(temporaryPassword);
-    }
+    generateTemporaryPasswordIfNeed(profile);
     ticketHandlerStrategies.forEach(ticketStrategy -> ticketStrategy.addTicket(profile));
     return saveProfile(profile);
   }
@@ -80,5 +70,20 @@ public class ProfileManagerServiceImpl implements ProfileManagerService {
                                   .filter(ticketStrategy -> ticketStrategy.getTye() == type)
                                   .findFirst()
                                   .orElseThrow(() -> new RuntimeException("Cannot found TicketHandlerStrategy by type."));
+  }
+
+  private void generateTemporaryPasswordIfNeed(Profile profile) {
+    if (isNotBlank(profile.getPassword())) {
+      return;
+    }
+    profile.setWeekPassword(true);
+    var generator = PasswordGenerator
+            .builder()
+            .length(PASSWORD_LENGTH)
+            .upper().lower().digits().punctuation()
+            .build();
+    String temporaryPassword = generator.generatePassword();
+    profile.setPassword(temporaryPassword);
+    emailSenderClientService.sendEmailForResetPassword(temporaryPassword);
   }
 }

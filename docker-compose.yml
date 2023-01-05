@@ -1,0 +1,54 @@
+version: '3'
+services:
+  zookeeper:
+    image: 'ubuntu/zookeeper'
+    container_name: 'zookeeper'
+    ports:
+      - '2181:2181'
+  kafka:
+    image: 'ubuntu/kafka'
+    container_name: 'kafka'
+    ports:
+      - '9092:9092'
+    depends_on:
+      - 'zookeeper'
+    environment:
+      - KAFKA_ADVERTISED_HOST_NAME=localhost
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+  auth-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./auth-parent/auth-service-rest
+    container_name: 'auth-service'
+    ports:
+      - '8100:8100'
+    environment:
+      - MONGO_DB_PASSWORD
+      - EMAIL_SENDER_API_TOKEN
+  profile-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./profile-service-parent/profile-service-rest
+    container_name: 'profile-service'
+    ports:
+      - '8200:8100'
+    environment:
+      - MONGO_DB_PASSWORD
+  order-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./order-service
+    container_name: 'order-service'
+    ports:
+      - '8300:8100'
+    environment:
+      - MONGO_DB_PASSWORD
+  event-storage-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./order-service
+    container_name: 'event-storage-service'
+    ports:
+      - '8400:8100'
+    environment:
+      - MONGO_DB_PASSWORD
