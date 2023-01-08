@@ -10,6 +10,7 @@ import order.orderservice.domain.model.Order;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import javax.annotation.Resource;
 
@@ -30,13 +31,18 @@ public abstract class OrderEventProducer {
 
     protected void send(KafkaOrderEvent orderEvent) {
         populateMetaData(orderEvent);
-        var resultListenableFuture =
-                orderEventTemplate.send(ORDER_TOPIC, UPDATE_ORDER_EVENT, orderEvent);
-        resultListenableFuture.addCallback(new ListenableFutureCallback<>() {
+        ListenableFuture<SendResult<String, KafkaOrderEvent>> result;
+        final String errorMessage = "Unexpected error while sending: event={} to topic={} by key={}";
+        try{
+            result = orderEventTemplate.send(ORDER_TOPIC, UPDATE_ORDER_EVENT, orderEvent);
+        } catch (Exception ex) {
+            log.error(errorMessage, orderEvent, ORDER_TOPIC, UPDATE_ORDER_EVENT, ex);
+            throw ex;
+        }
+        result.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onFailure(Throwable ex) {
-                log.error("Unexpected error while sending event={} in topic={} by key={}",
-                        orderEvent, ORDER_TOPIC, UPDATE_ORDER_EVENT, ex);
+                log.error(errorMessage, orderEvent, ORDER_TOPIC, UPDATE_ORDER_EVENT, ex);
             }
 
             @Override

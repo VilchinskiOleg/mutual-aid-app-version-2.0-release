@@ -17,7 +17,6 @@
 
     <properties>
         <java.version>11</java.version>
-        <feign.version>10.11</feign.version>
     </properties>
 
     <dependencies>
@@ -25,7 +24,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
-
+        <!-- FEIGN CLOUD CLIENT: -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+        </dependency>
 
 
         <dependency>
@@ -33,36 +40,21 @@
             <artifactId>model-mapper-autoconfiguration</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>org.tms.exception.handling</groupId>
             <artifactId>exception-handling-autoconfiguration</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>org.tms.common.http</groupId>
             <artifactId>common-http-autoconfiguration</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-
         <!-- COMMON AUTH CONFIGURATION: -->
         <dependency>
             <groupId>org.tms.common.auth</groupId>
             <artifactId>auth-configuration</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <!-- FEIGN CLOUD CLIENT: -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-            <version>3.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.openfeign</groupId>
-            <artifactId>feign-httpclient</artifactId>
-            <version>${feign.version}</version>
         </dependency>
     </dependencies>
 

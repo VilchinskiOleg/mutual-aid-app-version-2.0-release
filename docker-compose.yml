@@ -22,6 +22,7 @@ services:
     container_name: 'auth-service'
     ports:
       - '8100:8100'
+      - '5015:5005'
     environment:
       - MONGO_DB_PASSWORD
       - EMAIL_SENDER_API_TOKEN
@@ -31,24 +32,43 @@ services:
       context: ./profile-service-parent/profile-service-rest
     container_name: 'profile-service'
     ports:
-      - '8200:8100'
+      - '8200:8200'
+      - '5025:5005'
+    depends_on:
+      - 'auth-service'
     environment:
       - MONGO_DB_PASSWORD
+      - auth-rest-client.url=auth-service:8100
   order-service:
     build:
       dockerfile: Dockerfile
       context: ./order-service
     container_name: 'order-service'
     ports:
-      - '8300:8100'
+      - '8300:8300'
+      - '5035:5005'
+    depends_on:
+      - 'kafka'
+      - 'auth-service'
+      - 'profile-service'
     environment:
       - MONGO_DB_PASSWORD
-  event-storage-service:
-    build:
-      dockerfile: Dockerfile
-      context: ./order-service
-    container_name: 'event-storage-service'
-    ports:
-      - '8400:8100'
-    environment:
-      - MONGO_DB_PASSWORD
+      # It must be internal Port and Name of containers:
+      - kafka.bootstrapServers=kafka:9092
+      - auth-rest-client.url=auth-service:8100
+      - profile-rest-client.url=profile-service:8200
+#  event-storage-service:
+#    build:
+#      dockerfile: Dockerfile
+#      context: ./order-service
+#    container_name: 'event-storage-service'
+#    ports:
+#      - '8400:8400'
+#      - '5045:5005'
+#    depends_on:
+#      - 'kafka'
+#      - 'auth-service'
+#      - 'order-service'
+#    environment:
+#      - MONGO_DB_PASSWORD
+#      - kafka.bootstrapServers=kafka:9092

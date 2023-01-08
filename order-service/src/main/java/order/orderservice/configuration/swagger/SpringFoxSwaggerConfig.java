@@ -11,6 +11,10 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 
 @PropertySource(value = "classpath:swagger-api.properties")
@@ -21,6 +25,10 @@ public class SpringFoxSwaggerConfig {
     @Bean
     public Docket apiDocket(ApiProperties apiProperties) {
         return new Docket(SWAGGER_2)
+                .directModelSubstitute(LocalDate.class, LocalDate.class)
+                .directModelSubstitute(LocalTime.class, LocalTime.class)
+                .directModelSubstitute(LocalDateTime.class, LocalDateTime.class)
+                .directModelSubstitute(ZonedDateTime.class, ZonedDateTime.class)
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
