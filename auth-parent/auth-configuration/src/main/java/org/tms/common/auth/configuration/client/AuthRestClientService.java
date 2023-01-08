@@ -22,8 +22,8 @@ import org.tms.mutual_aid.auth.client.model.VerifyJWTResponse;
 @Slf4j
 public class AuthRestClientService {
 
-  private static final String AUTH_REST_API_PATH = "/api/auth-service";
-  private static final String VERIFY_JWT_PATH = "/verify-token";
+  public static final String AUTH_REST_API_PATH = "/api/auth-service";
+  public static final String VERIFY_JWT_PATH = "/verify-token";
 
   @Resource
   private AuthRestClientProperties authRestClientProperties;

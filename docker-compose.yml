@@ -57,18 +57,18 @@ services:
       - kafka.bootstrapServers=kafka:9092
       - auth-rest-client.url=auth-service:8100
       - profile-rest-client.url=profile-service:8200
-#  event-storage-service:
-#    build:
-#      dockerfile: Dockerfile
-#      context: ./order-service
-#    container_name: 'event-storage-service'
-#    ports:
-#      - '8400:8400'
-#      - '5045:5005'
-#    depends_on:
-#      - 'kafka'
-#      - 'auth-service'
-#      - 'order-service'
-#    environment:
-#      - MONGO_DB_PASSWORD
-#      - kafka.bootstrapServers=kafka:9092
+  event-storage-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./event-storage-service
+    container_name: 'event-storage-service'
+    ports:
+      - '8400:8400'
+      - '5045:5005'
+    depends_on:
+      - 'kafka'
+      - 'auth-service'
+      - 'order-service'
+    environment:
+      - MONGO_DB_PASSWORD
+      - kafka.bootstrapServers=kafka:9092
