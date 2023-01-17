@@ -88,3 +88,32 @@ services:
       - kafka.bootstrapServers=kafka:9092
       - kafka.ssl-keystore-location=/app/clientkeystore.jks
       - kafka.ssl-truststore-location=/app/clienttruststore.jks
+  message-chat-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./message-chat-service
+    container_name: 'message-chat-service'
+    ports:
+      - '8500:8500'
+      - '5055:5005'
+    depends_on:
+      - 'auth-service'
+      - 'profile-service'
+    environment:
+      - MONGO_DB_PASSWORD
+      - TRANSLATE_API_TOKEN
+      - profile-rest-client.url=http://profile-service:8200
+  task-executor-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./task-executor-service
+    container_name: 'task-executor-service'
+    ports:
+      - '8600:8600'
+      - '5065:5005'
+    depends_on:
+      - 'auth-service'
+      - 'profile-service'
+    environment:
+      - MONGO_DB_PASSWORD
+      - profile-rest-client.url=http://profile-service:8200

@@ -1,9 +1,9 @@
-FROM tianxue04/jdk17-ubuntu:latest as builder
+FROM adoptopenjdk/openjdk11 as builder
 WORKDIR '/app'
 COPY target/*.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
-FROM tianxue04/jdk17-ubuntu:latest
+FROM adoptopenjdk/openjdk11
 WORKDIR '/app'
 COPY --from=builder /app/dependencies/ ./
 COPY --from=builder /app/snapshot-dependencies/ ./
