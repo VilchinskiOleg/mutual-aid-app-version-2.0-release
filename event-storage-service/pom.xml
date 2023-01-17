@@ -49,7 +49,14 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-<!--    FOR TESTS:-->
+        <!-- COMMON AUTH CONFIGURATION: -->
+        <dependency>
+            <groupId>org.tms.common.auth</groupId>
+            <artifactId>auth-configuration</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+<!--    FOR TESTS (ADDITIONAL):-->
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
