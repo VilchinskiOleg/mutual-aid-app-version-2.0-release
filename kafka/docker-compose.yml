@@ -13,8 +13,5 @@ services:
     depends_on:
       - 'zookeeper'
     environment:
-      - KAFKA_ADVERTISED_HOST_NAME=localhost
+      - KAFKA_ADVERTISED_HOST_NAME=kafka
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-    # need to forward CLI commands to manage kafka:
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock

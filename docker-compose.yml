@@ -6,15 +6,27 @@ services:
     ports:
       - '2181:2181'
   kafka:
-    image: 'ubuntu/kafka'
+    build:
+      dockerfile: Dockerfile.Kafka.SSL
+      context: ./kafka-ssl
     container_name: 'kafka'
+    image: 'kafka-ssl'
     ports:
       - '9092:9092'
     depends_on:
       - 'zookeeper'
     environment:
-      - KAFKA_ADVERTISED_HOST_NAME=localhost
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: SSL://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: SSL://kafka:9092
+      KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SSL
+      SSL_ENABLED_PROTOCOLS: 'TLSv1,TLSv1.1,TLSv1.2,TLSv1.3'
+      KAFKA_SSL_CLIENT_AUTH: 'required'
+      KAFKA_SSL_KEY_PASSWORD: '34rtsTb290'
+      KAFKA_SSL_KEYSTORE_LOCATION: '/serverkeystore.jks'
+      KAFKA_SSL_KEYSTORE_PASSWORD: '34rtsTb290'
+      KAFKA_SSL_TRUSTSTORE_LOCATION: '/servertruststore.jks'
+      KAFKA_SSL_TRUSTSTORE_PASSWORD: '34rtsTb290'
   auth-service:
     build:
       dockerfile: Dockerfile
@@ -38,7 +50,7 @@ services:
       - 'auth-service'
     environment:
       - MONGO_DB_PASSWORD
-      - auth-rest-client.url=auth-service:8100
+      - auth-rest-client.url=http://auth-service:8100
   order-service:
     build:
       dockerfile: Dockerfile
@@ -55,8 +67,10 @@ services:
       - MONGO_DB_PASSWORD
       # It must be internal Port and Name of containers:
       - kafka.bootstrapServers=kafka:9092
-      - auth-rest-client.url=auth-service:8100
-      - profile-rest-client.url=profile-service:8200
+      - kafka.ssl-keystore-location=/app/clientkeystore.jks
+      - kafka.ssl-truststore-location=/app/clienttruststore.jks
+      - auth-rest-client.url=http://auth-service:8100
+      - profile-rest-client.url=http://profile-service:8200
   event-storage-service:
     build:
       dockerfile: Dockerfile
@@ -66,9 +80,11 @@ services:
       - '8400:8400'
       - '5045:5005'
     depends_on:
-      - 'kafka'
       - 'auth-service'
       - 'order-service'
+      - 'kafka'
     environment:
       - MONGO_DB_PASSWORD
       - kafka.bootstrapServers=kafka:9092
+      - kafka.ssl-keystore-location=/app/clientkeystore.jks
+      - kafka.ssl-truststore-location=/app/clienttruststore.jks

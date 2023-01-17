@@ -1,0 +1,3 @@
+FROM nginx
+WORKDIR /certs
+RUN openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout ./ca-key.key -out ./ca-cert.crt -subj "/C=PL/ST=City/L=City/O=Organisation/OU=Organisation/CN=kafka"

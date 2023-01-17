@@ -25,7 +25,7 @@ kafka:
   groupId: event-storage-service
   # for SSL security:
   ssl-key-password: 34rtsTb290
-  ssl-keystore-location: /Users/aleh/IdeaProjects/mutual-aid-app-version-2.0-release/event-storage-service/kafka-ssl/secret/clientkeystore.jks
+  ssl-keystore-location:
   ssl-keystore-password: 34rtsTb290
-  ssl-truststore-location: /Users/aleh/IdeaProjects/mutual-aid-app-version-2.0-release/event-storage-service/kafka-ssl/secret/clienttruststore.jks
+  ssl-truststore-location:
   ssl-truststore-password: 34rtsTb290

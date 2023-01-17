@@ -43,12 +43,10 @@ kafka:
   bootstrapServers: 127.0.0.1:9093
   # for SSL security:
   ssl-key-password: 34rtsTb290
-  ssl-keystore-location: /Users/aleh/IdeaProjects/mutual-aid-app-version-2.0-release/order-service/kafka-ssl/secret/clientkeystore.jks
+  ssl-keystore-location:
   ssl-keystore-password: 34rtsTb290
-  ssl-truststore-location: /Users/aleh/IdeaProjects/mutual-aid-app-version-2.0-release/order-service/kafka-ssl/secret/clienttruststore.jks
+  ssl-truststore-location:
   ssl-truststore-password: 34rtsTb290
-
-#rest clients:
 
 profile-rest-client:
   url: http://localhost:8200
