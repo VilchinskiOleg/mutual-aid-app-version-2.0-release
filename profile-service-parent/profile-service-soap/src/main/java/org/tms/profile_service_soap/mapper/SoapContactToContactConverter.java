@@ -1,14 +1,14 @@
-package org.tms.profile_service_rest.mapper;
+package org.tms.profile_service_soap.mapper;
 
 import static org.apache.commons.lang3.StringUtils.upperCase;
 import static org.tms.profile_service_core.domain.model.Contact.Type;
 
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
-import org.tms.profile_service_rest.rest.model.Contact;
+import org.tms.profile_service_soap.endpoint.model.Contact;
 
 @Component
-public class ApiContactToContactConverter extends BaseConverter<Contact, org.tms.profile_service_core.domain.model.Contact> {
+public class SoapContactToContactConverter extends BaseConverter<Contact, org.tms.profile_service_core.domain.model.Contact> {
 
     @Override
     protected org.tms.profile_service_core.domain.model.Contact getDestination() {

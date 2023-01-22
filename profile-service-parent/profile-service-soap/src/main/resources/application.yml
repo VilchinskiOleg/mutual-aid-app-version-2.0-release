@@ -1,2 +1,28 @@
 server:
   port: 8250
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://admin:${MONGO_DB_PASSWORD}@cluster0.lme5y.mongodb.net/mutual-aid-app?retryWrites=true&w=majority
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+
+feign:
+  client:
+    config:
+      authRestFeignClient:
+        connectTimeout: 5000
+        readTimeout: 10000
+        loggerLevel: full
+        requestInterceptors:
+          - org.tms.profile_service_core.configuration.client.auth.AuthRestClientAuthInterceptor
+
+auth-rest-client:
+  url: http://localhost:8100
+  user: profile-service-soap-client
+  password: 423welcome!7629
+  # for common auth config:
+  read-timeout: 15000
+  connection-timeout: 10000

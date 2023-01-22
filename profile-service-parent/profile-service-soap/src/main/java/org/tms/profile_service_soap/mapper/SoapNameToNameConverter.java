@@ -1,14 +1,14 @@
-package org.tms.profile_service_rest.mapper;
+package org.tms.profile_service_soap.mapper;
 
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
-import org.tms.profile_service_rest.rest.model.Name;
+import org.tms.profile_service_soap.endpoint.model.Name;
 import java.util.Locale;
 
 @Component
-public class ApiNameToNameConverter extends BaseConverter<Name, org.tms.profile_service_core.domain.model.Name> {
+public class SoapNameToNameConverter extends BaseConverter<Name, org.tms.profile_service_core.domain.model.Name> {
 
     @Override
     protected org.tms.profile_service_core.domain.model.Name getDestination() {

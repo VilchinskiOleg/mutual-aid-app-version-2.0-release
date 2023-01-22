@@ -2,7 +2,7 @@ package org.tms.profile_service_rest.mapper;
 
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
-import org.tms.profile_service_rest.domain.model.Name;
+import org.tms.profile_service_core.domain.model.Name;
 
 @Component
 public class NameToApiNameConverter extends BaseConverter<Name, org.tms.profile_service_rest.rest.model.Name> {

@@ -18,6 +18,10 @@ public class Profile {
     private List<Contact> contacts;
     private Gender gender;
     private LocalDate birthday;
+
+    // Optional property, only for transfer to the Auth Rest:
+    private String password;
+
     private LocalDateTime createAt;
     private LocalDateTime modifyAt;
 

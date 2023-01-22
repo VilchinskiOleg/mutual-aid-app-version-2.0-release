@@ -1,8 +1,8 @@
-package org.tms.profile_service_rest.mapper.client;
+package org.tms.profile_service_core.mapper.client;
 
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
-import org.tms.profile_service_rest.domain.model.Contact;
+import org.tms.profile_service_core.domain.model.Contact;
 
 @Component
 public class ContactToAuthContactConverter extends BaseConverter<Contact, org.tms.mutual_aid.auth.client.model.Contact> {

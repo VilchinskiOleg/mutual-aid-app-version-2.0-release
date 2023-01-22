@@ -4,6 +4,7 @@ import feign.RequestTemplate;
 import feign.auth.BasicAuthRequestInterceptor;
 import org.common.http.autoconfiguration.model.CommonData;
 
+import static java.util.Objects.nonNull;
 import static org.common.http.autoconfiguration.utils.Constant.LANG_HEADER;
 
 public class AuthRestClientAuthInterceptor extends BasicAuthRequestInterceptor {
@@ -18,6 +19,8 @@ public class AuthRestClientAuthInterceptor extends BasicAuthRequestInterceptor {
   @Override
   public void apply(RequestTemplate template) {
     super.apply(template);
-    template.header(LANG_HEADER, commonData.getLocale().getLanguage());
+    if (nonNull(commonData.getLocale())) {
+      template.header(LANG_HEADER, commonData.getLocale().getLanguage());
+    }
   }
 }

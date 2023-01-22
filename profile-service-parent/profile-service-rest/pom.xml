@@ -21,39 +21,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
-        </dependency>
-        <!-- FEIGN CLOUD CLIENT: -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.openfeign</groupId>
-            <artifactId>feign-httpclient</artifactId>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.tms.mapper</groupId>
-            <artifactId>model-mapper-autoconfiguration</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.tms.exception.handling</groupId>
-            <artifactId>exception-handling-autoconfiguration</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.tms.common.http</groupId>
-            <artifactId>common-http-autoconfiguration</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <!-- COMMON AUTH CONFIGURATION: -->
-        <dependency>
-            <groupId>org.tms.common.auth</groupId>
-            <artifactId>auth-configuration</artifactId>
+            <groupId>org.tms</groupId>
+            <artifactId>profile-service-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

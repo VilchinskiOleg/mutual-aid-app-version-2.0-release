@@ -7,7 +7,7 @@ import org.common.http.autoconfiguration.annotation.Api;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.tms.profile_service_rest.domain.service.ProfileService;
+import org.tms.profile_service_core.domain.service.ProfileService;
 import org.tms.profile_service_rest.rest.message.ProfileResponse;
 import org.tms.profile_service_rest.rest.model.Profile;
 import javax.annotation.Resource;
@@ -27,7 +27,7 @@ public class ProfileRest {
     @PostMapping
     @ResponseStatus(CREATED)
     public ProfileResponse createProfile(@RequestBody @Valid Profile profile) {
-        var profileDetails = mapper.map(profile, org.tms.profile_service_rest.domain.model.Profile.class);
+        var profileDetails = mapper.map(profile, org.tms.profile_service_core.domain.model.Profile.class);
         var result = profileService.create(profileDetails);
         return new ProfileResponse(mapper.map(result, Profile.class));
     }

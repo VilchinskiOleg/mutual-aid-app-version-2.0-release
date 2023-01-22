@@ -13,9 +13,18 @@
     },
 
     {
-        "name": "profile-service-client",
+        "name": "profile-service-rest-client",
         "password": "$2a$12$QRPnAbX16QjEGO/NoNlZRO9eK2BjmI.3rtTmqE7bSD7Zh3YnN8aTm",
         "description": "423welcome!76",
+        "roles": [
+            "CREATE_AUTH_PROFILE"
+        ]
+    },
+
+    {
+        "name": "profile-service-soap-client",
+        "password": "$2a$12$bPwN6SfbpDXi2p.lFEmok.hEsHgEqCeQ/CJA.AT50vkCRl/vIYv1q",
+        "description": "423welcome!7629",
         "roles": [
             "CREATE_AUTH_PROFILE"
         ]

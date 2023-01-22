@@ -29,10 +29,11 @@
         <xs:sequence>
             <xs:element name="id" type="xs:string" minOccurs="0"/>
             <xs:element name="profileId" type="xs:string" minOccurs="0"/>
-            <xs:element name="names" type="tns:Name" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="contacts" type="tns:Contact" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="names" type="tns:Name" nillable="true" maxOccurs="unbounded"/>
+            <xs:element name="contacts" type="tns:Contact" nillable="true" maxOccurs="unbounded"/>
             <xs:element name="gender" type="xs:string"/>
             <xs:element name="birthday" type="xs:date"/>
+            <xs:element name="password" type="xs:string" minOccurs="0"/>
             <xs:element name="createAt" type="xs:dateTime" minOccurs="0"/>
             <xs:element name="modifyAt" type="xs:dateTime" minOccurs="0"/>
         </xs:sequence>
