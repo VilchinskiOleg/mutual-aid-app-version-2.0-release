@@ -20,11 +20,10 @@
     </properties>
 
     <modules>
+        <module>profile-service-core</module>
         <module>profile-service-rest</module>
         <module>profile-service-soap</module>
         <module>profile-service-client</module>
     </modules>
-
-
 
 </project>
