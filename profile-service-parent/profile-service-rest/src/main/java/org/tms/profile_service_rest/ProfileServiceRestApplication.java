@@ -3,11 +3,12 @@ package org.tms.profile_service_rest;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.tms.profile_service_core.ProfileCoreConfig;
 
 @SpringBootApplication
-@EnableMongoRepositories(basePackages = "org.tms.profile_service_rest.persistent")
-@EnableFeignClients(basePackages = "org.tms.profile_service_rest.configuration.client")
+@Import(ProfileCoreConfig.class)
 public class ProfileServiceRestApplication {
 
     public static void main(String[] args) {

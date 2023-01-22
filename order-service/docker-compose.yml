@@ -1,27 +1,27 @@
+# Only as example to run application with local DB:
+
 version: '3'
 services:
-  app:
+  order-service:
     build: .
-    image: order-app-img
-    container_name: spring-boot-app-container
+    image: 'order-service-img'
+    container_name: 'order-service'
     ports:
-      - 8110:8100
-      - 5005:5005
-#    volumes:
-#      - ./:/app
+      - '8300:8300'
+      - '5005:5005'
     environment:
-      MONGO_HOST: mongo-db
-      MONGO_PORT: 27017
-      MONGO_DB: mutual-aid-app_MOCK
-      MONGO_USERNAME: testUser
-      MONGO_PWD: welcome!
+      - MONGO_HOST=mongo-db
+      - MONGO_PORT=27017
+      - MONGO_DB=mutual-aid-app_MOCK
+      - MONGO_USERNAME=testUser
+      - MONGO_PWD=welcome!
     links:
       - mongo-db
   mongo-db:
-    image: mongo:5.0.5
-    container_name: mongo-db-container
+    image: 'mongo:5.0.5'
+    container_name: 'mongo-db'
     ports:
-      - 27017:27017
+      - '27017:27017'
     volumes:
       - ./init-mongodb:/docker-entrypoint-initdb.d
       - ./init-mongodb/data:/tmp/data

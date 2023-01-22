@@ -57,6 +57,7 @@ public class CustomerRest {
     @ApiOperation(value = "${order.operation.create-order}")
     @PostMapping
     @ResponseStatus(CREATED)
+    //TODO: need authorization by method !
     public OrderResponse createOrder(@Valid @RequestBody Order newOrderRequest) {
         var orderDetails = mapper.map(newOrderRequest, order.orderservice.domain.model.Order.class);
         var createdOrder = orderService.createOrder(orderDetails);

@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.tms.common.auth.configuration.client.AuthRestClientService.AUTH_REST_API_PATH;
+import static org.tms.common.auth.configuration.client.AuthRestClientService.VERIFY_JWT_PATH;
 
 import com.google.gson.JsonObject;
 import java.net.URI;
@@ -38,7 +40,7 @@ import org.tms.mutual_aid.auth.client.model.VerifyJWTResponse;
 @ExtendWith(MockitoExtension.class)
 public class AuthRestClientServiceTest {
 
-  private static final String AUTH_REST_URL = "http://localhost:8800/api/auth-service";
+  private static final String AUTH_REST_URL = "http://localhost:8100";
   private static final String JWT_MOCK = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
   @InjectMocks
@@ -62,7 +64,7 @@ public class AuthRestClientServiceTest {
   @SneakyThrows
   void verify_token_successfully_by_external_API() {
 
-    final var calledEndpointURI = new URI(AUTH_REST_URL.concat("/verify-token"));
+    final var calledEndpointURI = new URI(AUTH_REST_URL + AUTH_REST_API_PATH + VERIFY_JWT_PATH);
 
     var MOCKResponseStr = buildSuccessfullyResponseMOCK();
     var MOCKResponse = new MockClientHttpResponse(MOCKResponseStr.getBytes(StandardCharsets.UTF_8), HttpStatus.OK);
@@ -84,7 +86,7 @@ public class AuthRestClientServiceTest {
   @SneakyThrows
   void verify_token_fail_by_external_API() {
 
-    final var calledEndpointURI = new URI(AUTH_REST_URL.concat("/verify-token"));
+    final var calledEndpointURI = new URI(AUTH_REST_URL + AUTH_REST_API_PATH + VERIFY_JWT_PATH);
 
     var MOCKResponseStr = buildErrorResponseMOCK();
     var MOCKResponse = new MockClientHttpResponse(MOCKResponseStr.getBytes(StandardCharsets.UTF_8), HttpStatus.INTERNAL_SERVER_ERROR);

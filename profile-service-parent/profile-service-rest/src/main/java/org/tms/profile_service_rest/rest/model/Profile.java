@@ -35,6 +35,13 @@ public class Profile {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @ValidDate(type = PAST, message = PROFILE_BIRTHDAY_RULE)
     private LocalDate birthday;
+
+    // Optional property.
+    // If it won't be provided, auth service will send email to user with default value
+    // and link for generation new password:
+    //TODO: Add regexp expression to check password to be strong.
+    private String password;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

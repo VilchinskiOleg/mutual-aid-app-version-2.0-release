@@ -1,0 +1,12 @@
+# only use as a container for CA:
+FROM alehvilchynski/kafka-ca-ssl as ssl_ca_container
+
+FROM wurstmeister/kafka
+RUN mkdir -p etc/kafka/secret/certs
+COPY --from=ssl_ca_container /certs/ca-key.key .
+COPY --from=ssl_ca_container /certs/ca-cert.crt .
+COPY kafka-broker-SSL-script.sh ./script.sh
+# RUN cd etc/kafka/secret/certs
+RUN ./script.sh
+# RUN cd /
+# don't declare 'CMD' command, that command will be provided by parent image, we don't want to override it.

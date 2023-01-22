@@ -1,2 +1,0 @@
-#Generate the self-signed certificate authority (CA). We will signe all certs by its in the future:
-openssl req -new -x509 -keyout ./ca-key -out ./ca-cert -days 365 -subj "/C=PL/ST=City/L=City/O=Organisation/OU=Organisation/CN=broker1"
