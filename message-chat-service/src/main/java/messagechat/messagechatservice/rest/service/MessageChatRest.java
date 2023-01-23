@@ -29,6 +29,49 @@ public class MessageChatRest {
     @Resource
     private Mapper mapper;
 
+    /**
+     * Step 1:
+     * User opens message-chat app and look at his chats (Dialogs).
+     *
+     * @param pageRequest - how many dialogs you want to pull from DB.
+     * @param memberId - user ID, who must be provided by dialogs.
+     * @return DialogsPageResponse - page of Dialogs.
+     */
+    @Api
+    @ApiOperation(value = "${message-chat.operation.get-dialog}",
+            nickname = "getDialog")
+    @ApiImplicitParam(name = "member-id", dataType = "string", paramType = "path", defaultValue = "123")
+    @PostMapping(path = "/get-page-dialogs/{member-id}")
+    @ResponseStatus(OK)
+    public DialogsPageResponse getPageDialogsForMember(@RequestBody @Valid PageRequest pageRequest,
+                                                       @PathVariable("member-id") String memberId) {
+        var pageDialogs = dialogService.getPageDialogsByMemberId(
+                memberId, pageRequest.getPageNumber(), pageRequest.getSize());
+        return mapper.map(pageDialogs, DialogsPageResponse.class);
+    }
+
+    /**
+     * Step 2:
+     * User chooses certain particular message-chat and must be provided by all messages (within received pageRequest)
+     * from that chat (Dialog).
+     *
+     * @param pageRequest - how many messages you want to pull from DB.
+     * @param dialogId
+     * @return
+     */
+    @Api
+    @ApiOperation(value = "${message-chat.operation.get-page-messages}",
+            nickname = "getPageMessages")
+    @PostMapping(path = "/get-page-messages/{dialog-id}")
+    @ResponseStatus(OK)
+    public MessagesPageResponse getPageMassagesFromDialog(@RequestBody @Valid PageRequest pageRequest,
+                                                          @PathVariable("dialog-id") String dialogId) {
+        var pageMessages = messageChatService.getPageMessagesFromDialog(pageRequest.getPageNumber(),
+                pageRequest.getSize(),
+                dialogId);
+        return mapper.map(pageMessages, MessagesPageResponse.class);
+    }
+
     @Api
     @ApiOperation(value = "${message-chat.operation.create-message}",
                   nickname = "createMessage")
@@ -56,31 +99,5 @@ public class MessageChatRest {
                                                                                        updateMessageRequest.getSize(),
                                                                                        message.getDialogId());
         return mapper.map(pageMessages, MessagesPageResponse.class);
-    }
-
-    @Api
-    @ApiOperation(value = "${message-chat.operation.get-page-messages}",
-                  nickname = "getPageMessages")
-    @PostMapping(path = "/get-page-messages/{dialog-id}")
-    @ResponseStatus(OK)
-    public MessagesPageResponse getPageMassagesFromDialog(@RequestBody @Valid PageRequest pageRequest,
-                                                          @PathVariable("dialog-id") String dialogId) {
-        var pageMessages = messageChatService.getPageMessagesFromDialog(pageRequest.getPageNumber(),
-                                                                                       pageRequest.getSize(),
-                                                                                       dialogId);
-        return mapper.map(pageMessages, MessagesPageResponse.class);
-    }
-
-    @Api
-    @ApiOperation(value = "${message-chat.operation.get-dialog}",
-                  nickname = "getDialog")
-    @ApiImplicitParam(name = "member-id", dataType = "string", paramType = "path", defaultValue = "123")
-    @PostMapping(path = "/get-page-dialogs/{member-id}")
-    @ResponseStatus(OK)
-    public DialogsPageResponse getPageDialogsForMember(@RequestBody @Valid PageRequest pageRequest,
-                                                       @PathVariable("member-id") String memberId) {
-        var pageDialogs = dialogService.getPageDialogsByMemberId(
-                memberId, pageRequest.getPageNumber(), pageRequest.getSize());
-        return mapper.map(pageDialogs, DialogsPageResponse.class);
     }
 }
