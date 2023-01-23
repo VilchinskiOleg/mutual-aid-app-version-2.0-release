@@ -17,7 +17,7 @@ spec:
           image: alehvilchynski/auth-service-boot
           ports:
             - containerPort: 8100
-#            - containerPort: 5005
+            - containerPort: 5005
           env:
             - name: MONGO_DB_PASSWORD
               valueFrom:

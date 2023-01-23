@@ -1,3 +1,5 @@
+* Prepare necessary Docker images in your remote repo or local Docker storage.
+
 * Install Kubernetes to your computer.
 
 * Install Ingress Nginx project by command:
