@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      component: order
+  template:
+    metadata:
+      labels:
+        component: order
+    spec:
+      containers:
+        - name: order-service-container
+          image: alehvilchynski/order-service-boot
+          ports:
+            - containerPort: 8300
+            - containerPort: 5005
+          env:
+            - name: MONGO_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-db-password
+                  key: MONGO_DB_PASSWORD
+            - name: auth-rest-client.url
+              value: auth-service-cluster-ip:8100
+            - name: profile-rest-client.url
+              value: profile-service-cluster-ip:8200
+            - name: kafka.bootstrapServers
+              value: kafka-ssl-cluster-ip:9092
+            - name: kafka.ssl-keystore-location
+              value: /app/clientkeystore.jks
+            - name: kafka.ssl-truststore-location
+              value: /app/clienttruststore.jks

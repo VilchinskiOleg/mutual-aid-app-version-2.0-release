@@ -9,7 +9,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /api/auth-service/
+          - path: /api/auth-service
             pathType: Prefix
             backend:
               service:
@@ -23,3 +23,10 @@ spec:
                 name: profile-service-cluster-ip
                 port:
                   number: 8200
+          - path: /api/order-service
+            pathType: Prefix
+            backend:
+              service:
+                name: order-service-cluster-ip
+                port:
+                  number: 8300
