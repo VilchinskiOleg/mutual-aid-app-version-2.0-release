@@ -6,7 +6,7 @@ import static org.springframework.http.HttpStatus.OK;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import messagechat.messagechatservice.domain.service.MessageChatService;
-import messagechat.messagechatservice.domain.service.proessor.DialogService;
+import messagechat.messagechatservice.domain.service.DialogService;
 import messagechat.messagechatservice.rest.message.request.PageRequest;
 import messagechat.messagechatservice.rest.message.request.UpdateMessageRequest;
 import messagechat.messagechatservice.rest.message.response.DialogsPageResponse;
@@ -56,8 +56,8 @@ public class MessageChatRest {
      * from that chat (Dialog).
      *
      * @param pageRequest - how many messages you want to pull from DB.
-     * @param dialogId
-     * @return
+     * @param dialogId - dialog ID, which messages you mast show from.
+     * @return MessagesPageResponse - page of Messages.
      */
     @Api
     @ApiOperation(value = "${message-chat.operation.get-page-messages}",

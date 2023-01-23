@@ -8,7 +8,6 @@ import static org.springframework.data.domain.PageRequest.of;
 import messagechat.messagechatservice.domain.model.Dialog;
 import messagechat.messagechatservice.domain.model.Member;
 import messagechat.messagechatservice.domain.model.Message;
-import messagechat.messagechatservice.domain.service.proessor.DialogService;
 import messagechat.messagechatservice.domain.service.proessor.TranslateMessageService;
 import messagechat.messagechatservice.persistent.repository.MessageRepository;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
-import java.util.List;
 
 @Service
 public class MessageChatServiceImpl implements MessageChatService {

@@ -1,4 +1,4 @@
-package messagechat.messagechatservice.domain.service.proessor;
+package messagechat.messagechatservice.domain.service;
 
 import static java.util.Objects.isNull;
 import static messagechat.messagechatservice.domain.model.Dialog.Status.ACTIVE;
@@ -8,6 +8,9 @@ import static messagechat.messagechatservice.domain.model.Dialog.Type.FACE_TO_FA
 import static org.springframework.data.domain.PageRequest.of;
 
 import messagechat.messagechatservice.domain.model.Dialog;
+import messagechat.messagechatservice.domain.service.DialogService;
+import messagechat.messagechatservice.domain.service.proessor.IdGeneratorService;
+import messagechat.messagechatservice.domain.service.proessor.ProfileService;
 import messagechat.messagechatservice.persistent.repository.DialogRepository;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.mapper.autoconfiguration.mapper.Mapper;
@@ -17,7 +20,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 @Component
-public class DialogService {
+public class DialogServiceImpl implements DialogService {
 
     @Resource
     private DialogRepository dialogRepository;
@@ -28,6 +31,15 @@ public class DialogService {
     @Resource
     private Mapper mapper;
 
+
+    @Override
+    public Page<Dialog> getPageDialogsByMemberId(String memberId, Integer pageNumber, Integer size) {
+        PageRequest pageRequest = of(pageNumber, size);
+        var dataDialogsPage = dialogRepository.findAllByMemberId(memberId, pageRequest);
+        return dataDialogsPage.map(dialog -> mapper.map(dialog, Dialog.class));
+    }
+
+    @Override
     public Dialog getLinkedDialog(String dialogId, String authorId, String consumerId) {
         Dialog dialog = isNull(dialogId) ? createNewDialog(consumerId) : findDialogByInternalIdRequired(dialogId);
         checkDialogIsActive(dialog);
@@ -36,17 +48,13 @@ public class DialogService {
         return saveDialog(dialog);
     }
 
+    @Override
     public Dialog findDialogByInternalIdRequired(String dialogId) {
         var dataDialog = dialogRepository.findByInternalId(dialogId)
                                                 .orElseThrow(() -> new ConflictException("DIALOG_NOT_FOUND"));
         return mapper.map(dataDialog, Dialog.class);
     }
 
-    public Page<Dialog> getPageDialogsByMemberId(String memberId, Integer pageNumber, Integer size) {
-        PageRequest pageRequest = of(pageNumber, size);
-        var dataDialogsPage = dialogRepository.findAllByMemberId(memberId, pageRequest);
-        return dataDialogsPage.map(dialog -> mapper.map(dialog, Dialog.class));
-    }
 
     private Dialog createNewDialog(String consumerId){
         var dialog = new Dialog();
