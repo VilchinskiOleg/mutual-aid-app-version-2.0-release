@@ -3,8 +3,8 @@ ALIAS_VALUE=localhost
 # Client's description:
 D_NAME="CN=kafka, OU=Organisation, O=Organisation, L=City, ST=City, C=PL"
 
-TRUST_STORE_PASSWORD=34rtsTb290
-KEY_STORE_PASSWORD=34rtsTb290
+TRUST_STORE_PASSWORD="34rtsTb290"
+KEY_STORE_PASSWORD="34rtsTb290"
 
 
 
