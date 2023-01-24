@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: order-service-deployment
+  name: event-storage-service-deployment
 spec:
   replicas: 2
   selector:
     matchLabels:
-      component: order
+      component: event-storage
   template:
     metadata:
       labels:
-        component: order
+        component: event-storage
     spec:
       containers:
-        - name: order-service-container
-          image: alehvilchynski/order-service-boot
+        - name: event-storage-service-container
+          image: alehvilchynski/event-storage-service-boot
           ports:
-            - containerPort: 8300
+            - containerPort: 8400
             - containerPort: 5005
           env:
             - name: MONGO_DB_PASSWORD
@@ -24,10 +24,6 @@ spec:
                 secretKeyRef:
                   name: mongo-db-password
                   key: MONGO_DB_PASSWORD
-            - name: auth-rest-client.url
-              value: auth-service-cluster-ip:8100
-            - name: profile-rest-client.url
-              value: profile-service-cluster-ip:8200
             - name: kafka.bootstrapServers
               value: kafka-ssl-broker-cluster-ip:9092
             - name: kafka.ssl-keystore-location

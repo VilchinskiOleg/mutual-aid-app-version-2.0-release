@@ -30,3 +30,10 @@ spec:
                 name: order-service-cluster-ip
                 port:
                   number: 8300
+          - path: /api/event-storage-service
+            pathType: Prefix
+            backend:
+              service:
+                name: event-storage-service-cluster-ip
+                port:
+                  number: 8400
