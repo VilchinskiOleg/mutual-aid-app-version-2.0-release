@@ -24,7 +24,6 @@ public class ProfileToApiProfileConverter extends BaseConverter<Profile, org.tms
 
         destination.setCreateAt(source.getCreateAt());
         destination.setModifyAt(source.getModifyAt());
-        destination.setProfileId(source.getProfileId());
-        destination.setId(source.getId());
+        destination.setId(source.getProfileId());
     }
 }

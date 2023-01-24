@@ -23,4 +23,3 @@ public class PageToOrdersPageResponseConverter extends BaseConverter<Page<Order>
         destination.setSizeOfPage(source.getSizeOfPage());
     }
 }
-

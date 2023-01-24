@@ -10,6 +10,10 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+  jackson:
+    default-property-inclusion: non_null
+    parser:
+      allow-comments: true
 
 application:
   api-info:
@@ -29,7 +33,7 @@ feign:
         readTimeout: 10000
         loggerLevel: full
         requestInterceptors:
-          - order.orderservice.configuration.client.ProfileRestClientAuthInterceptor
+          - order.orderservice.configuration.client.profile.ProfileRestClientAuthInterceptor
   httpclient:
     enabled: true
 

@@ -1,8 +1,6 @@
 package order.orderservice.domain.service.processor;
 
-import static java.util.Objects.isNull;
 import static order.orderservice.util.Constant.Errors.EXECUTOR_SHOULD_BE_FROM_CANDIDATES;
-import static order.orderservice.util.Constant.Errors.MEMBER_NOT_FUND;
 
 import order.orderservice.domain.model.Member;
 import order.orderservice.domain.model.Order;
@@ -49,9 +47,6 @@ public class ProfileService {
 
     public Member retrieveMemberByIdRequired(String memberId) {
         Profile profile = profileClientService.getProfileById(memberId);
-        if (isNull(profile)) {
-            throw new ConflictException(MEMBER_NOT_FUND);
-        }
         return mapper.map(profile, Member.class);
     }
 

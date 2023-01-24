@@ -1,4 +1,4 @@
-package order.orderservice.configuration.client;
+package order.orderservice.configuration.client.profile;
 
 import static org.common.http.autoconfiguration.utils.Constant.LANG_HEADER;
 

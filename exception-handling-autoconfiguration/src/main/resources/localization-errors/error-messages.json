@@ -179,5 +179,12 @@
             "en": "Such profile doesn't exists.",
             "ru": "Такого профиля не существует."
         }
+    },
+    "did.not.manage.retrieve.profile": {
+        "code": "did.not.manage.retrieve.profile",
+        "messages": {
+            "en": "Didn't manage retrieve that profile. Check profileID and other parameters.",
+            "ru": "Не удалось получить этот профиль. Проверьте ID профиля и другие параметры."
+        }
     }
 }

@@ -23,7 +23,9 @@ public class Constant {
 
         public static final String KAFKA_PRODUCER_NOT_FUND = "kafka.producer.not.fund";
 
-        public static final String MEMBER_NOT_FUND = "member.not.fund";
+        public static final String DID_NOT_MANAGE_RETRIEVE_PROFILE = "did.not.manage.retrieve.profile";
+
+        public static final String PROFILE_ID_IS_BLANK = "profile.id.is.blank";
     }
 
     public static class MongoDb {
