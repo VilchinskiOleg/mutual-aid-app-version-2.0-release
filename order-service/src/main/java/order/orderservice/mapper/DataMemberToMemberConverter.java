@@ -1,6 +1,6 @@
 package order.orderservice.mapper;
 
-import order.orderservice.persistent.entity.Member;
+import order.orderservice.persistent.mongo.entity.Member;
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
 

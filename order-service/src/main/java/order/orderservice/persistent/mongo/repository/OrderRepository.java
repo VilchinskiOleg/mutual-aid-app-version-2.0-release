@@ -1,6 +1,6 @@
-package order.orderservice.persistent.repository;
+package order.orderservice.persistent.mongo.repository;
 
-import order.orderservice.persistent.entity.Order;
+import order.orderservice.persistent.mongo.entity.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.repository.MongoRepository;

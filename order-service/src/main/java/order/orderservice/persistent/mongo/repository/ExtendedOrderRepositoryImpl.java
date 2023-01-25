@@ -1,4 +1,4 @@
-package order.orderservice.persistent.repository;
+package order.orderservice.persistent.mongo.repository;
 
 import static java.util.Objects.nonNull;
 import static order.orderservice.util.Constant.MongoDb.*;
@@ -8,7 +8,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.support.PageableExecutionUtils.getPage;
 
 import order.orderservice.domain.model.search.SearchOrderDetails;
-import order.orderservice.persistent.entity.Order;
+import order.orderservice.persistent.mongo.entity.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;

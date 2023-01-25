@@ -37,6 +37,13 @@ feign:
   httpclient:
     enabled: true
 
+datasource:
+  api:
+    driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://localhost:5432/apiDB
+    username: admintest
+    password: postgres12345
+
 scheduler:
   remove-closed-orders-job:
     cron: 0 40 14 * * ?

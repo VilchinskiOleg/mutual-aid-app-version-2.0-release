@@ -8,8 +8,8 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 
 import lombok.extern.slf4j.Slf4j;
 import order.orderservice.domain.service.OrderService;
-import order.orderservice.persistent.entity.Order;
-import order.orderservice.persistent.repository.OrderRepository;
+import order.orderservice.persistent.mongo.entity.Order;
+import order.orderservice.persistent.mongo.repository.OrderRepository;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;

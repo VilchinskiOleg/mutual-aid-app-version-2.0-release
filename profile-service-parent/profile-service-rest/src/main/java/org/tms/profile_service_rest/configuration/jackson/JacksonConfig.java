@@ -12,12 +12,13 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
  * spring.jackson.default-property-inclusion=always, non_null, non_absent, non_default, non_empty
  */
 @Configuration
-public class JacksonConfiguration {
+public class JacksonConfig {
 
     @Bean
     public Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder() {
         return new Jackson2ObjectMapperBuilder()
 //                .serializers(LOCAL_DATETIME_SERIALIZER)
+                .serializationInclusion(JsonInclude.Include.NON_EMPTY)
                 .serializationInclusion(JsonInclude.Include.NON_NULL);
     }
 }

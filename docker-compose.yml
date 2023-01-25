@@ -27,6 +27,18 @@ services:
       KAFKA_SSL_KEYSTORE_PASSWORD: '34rtsTb290'
       KAFKA_SSL_TRUSTSTORE_LOCATION: '/servertruststore.jks'
       KAFKA_SSL_TRUSTSTORE_PASSWORD: '34rtsTb290'
+  postgres:
+    image: postgres
+    container_name: 'postgres'
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_DB=apiDB
+      - POSTGRES_USER=admintest
+      - POSTGRES_PASSWORD=postgres12345
+    volumes:
+      - ./postgres/backup:/var/lib/postgresql/data
+#       It's going to work for Linux properly, but for Windows you must accomplish more other steps.
   auth-service:
     build:
       dockerfile: Dockerfile
@@ -74,6 +86,7 @@ services:
       - '5035:5005'
     depends_on:
       - 'kafka'
+      - 'postgres'
       - 'auth-service'
       - 'profile-service'
     environment:
@@ -82,6 +95,9 @@ services:
       - kafka.bootstrapServers=kafka:9092
       - kafka.ssl-keystore-location=/app/clientkeystore.jks
       - kafka.ssl-truststore-location=/app/clienttruststore.jks
+      - datasource.api.username=admintest
+      - datasource.api.password=postgres12345
+      - datasource.api.jdbc-url=jdbc:postgresql://postgres:5432/apiDB
       - auth-rest-client.url=http://auth-service:8100
       - profile-rest-client.url=http://profile-service:8200
   event-storage-service:

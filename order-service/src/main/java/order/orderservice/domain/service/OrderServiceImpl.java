@@ -1,6 +1,5 @@
 package order.orderservice.domain.service;
 
-import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
@@ -14,14 +13,15 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 
 import lombok.extern.slf4j.Slf4j;
 import order.orderservice.configuration.kafka.message.KafkaOrderEvent.OperationType;
-import order.orderservice.domain.model.Member;
 import order.orderservice.domain.model.Order;
 import order.orderservice.domain.model.page.Page;
 import order.orderservice.domain.model.search.SearchOrderDetails;
 import order.orderservice.domain.service.processor.EventManagerService;
 import order.orderservice.domain.service.processor.IdGeneratorService;
 import order.orderservice.domain.service.processor.ProfileService;
-import order.orderservice.persistent.repository.OrderRepository;
+import order.orderservice.persistent.jpa.entity.TestModel;
+import order.orderservice.persistent.jpa.repository.TestModelRepository;
+import order.orderservice.persistent.mongo.repository.OrderRepository;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.common.http.autoconfiguration.model.CommonData;
 import org.mapper.autoconfiguration.mapper.Mapper;
@@ -120,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
 //                e.printStackTrace();
 //            }
 
-            var orderData = mapper.map(order, order.orderservice.persistent.entity.Order.class);
+            var orderData = mapper.map(order, order.orderservice.persistent.mongo.entity.Order.class);
             orderRepository.delete(orderData);
             eventManagerService.sendEvent(OperationType.DELETE, order);
 
@@ -131,7 +131,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order saveOrder(Order order) {
-        var orderData = mapper.map(order, order.orderservice.persistent.entity.Order.class);
+        var orderData = mapper.map(order, order.orderservice.persistent.mongo.entity.Order.class);
         var savedOrderData = orderRepository.save(orderData);
         return mapper.map(savedOrderData, Order.class);
     }
@@ -150,7 +150,7 @@ public class OrderServiceImpl implements OrderService {
         return order;
     }
 
-    private Page<Order> buildPageOrders(org.springframework.data.domain.Page<order.orderservice.persistent.entity.Order> pageOrdersDetails) {
+    private Page<Order> buildPageOrders(org.springframework.data.domain.Page<order.orderservice.persistent.mongo.entity.Order> pageOrdersDetails) {
         return Page
                 .<Order>builder()
                 .payload(mapper.map(pageOrdersDetails.getContent(), new ArrayList<>(), Order.class))
