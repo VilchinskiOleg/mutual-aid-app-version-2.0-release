@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import javax.persistence.EntityManagerFactory;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * In order to add additional persistent unit (configuration) with other entity set and DB connection properties ->

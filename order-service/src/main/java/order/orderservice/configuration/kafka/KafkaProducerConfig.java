@@ -13,6 +13,8 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 @Configuration
 public class KafkaProducerConfig {
 
@@ -26,14 +28,17 @@ public class KafkaProducerConfig {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 
-        props.put("security.protocol", "SSL");
-        props.put("ssl.client.auth", "required");
-        props.put("ssl.enabled.protocols", "TLSv1,TLSv1.2,TLSv1.1,TLSv1.3");
-        props.put("ssl.key.password", kafkaProperties.getSslKeyPassword());
-        props.put("ssl.keystore.location", kafkaProperties.getSslKeystoreLocation());
-        props.put("ssl.keystore.password", kafkaProperties.getSslKeystorePassword());
-        props.put("ssl.truststore.location", kafkaProperties.getSslTruststoreLocation());
-        props.put("ssl.truststore.password", kafkaProperties.getSslTruststorePassword());
+        if (isNotBlank(kafkaProperties.getSslKeystoreLocation())
+                || isNotBlank(kafkaProperties.getSslTruststoreLocation())) {
+            props.put("security.protocol", "SSL");
+            props.put("ssl.client.auth", "required");
+            props.put("ssl.enabled.protocols", "TLSv1,TLSv1.2,TLSv1.1,TLSv1.3");
+            props.put("ssl.key.password", kafkaProperties.getSslKeyPassword());
+            props.put("ssl.keystore.location", kafkaProperties.getSslKeystoreLocation());
+            props.put("ssl.keystore.password", kafkaProperties.getSslKeystorePassword());
+            props.put("ssl.truststore.location", kafkaProperties.getSslTruststoreLocation());
+            props.put("ssl.truststore.password", kafkaProperties.getSslTruststorePassword());
+        }
 
         return new DefaultKafkaProducerFactory<>(props);
     }

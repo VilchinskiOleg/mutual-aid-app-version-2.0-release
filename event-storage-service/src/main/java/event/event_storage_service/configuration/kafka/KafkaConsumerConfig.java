@@ -2,6 +2,7 @@ package event.event_storage_service.configuration.kafka;
 
 import static event.event_storage_service.util.Constant.Kafka.*;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import event.event_storage_service.configuration.kafka.deserializer.KafkaOrderEventDeserializer;
@@ -37,14 +38,16 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, LATEST);
 
-        props.put("security.protocol", "SSL");
-        props.put("ssl.client.auth", "required");
-        props.put("ssl.enabled.protocols", "TLSv1,TLSv1.2,TLSv1.1,TLSv1.3");
-        props.put("ssl.key.password", properties.getSslKeyPassword());
-        props.put("ssl.keystore.location", properties.getSslKeystoreLocation());
-        props.put("ssl.keystore.password", properties.getSslKeystorePassword());
-        props.put("ssl.truststore.location", properties.getSslTruststoreLocation());
-        props.put("ssl.truststore.password", properties.getSslTruststorePassword());
+        if (isNotBlank(properties.getSslKeystoreLocation()) || isNotBlank(properties.getSslTruststoreLocation())) {
+            props.put("security.protocol", "SSL");
+            props.put("ssl.client.auth", "required");
+            props.put("ssl.enabled.protocols", "TLSv1,TLSv1.2,TLSv1.1,TLSv1.3");
+            props.put("ssl.key.password", properties.getSslKeyPassword());
+            props.put("ssl.keystore.location", properties.getSslKeystoreLocation());
+            props.put("ssl.keystore.password", properties.getSslKeystorePassword());
+            props.put("ssl.truststore.location", properties.getSslTruststoreLocation());
+            props.put("ssl.truststore.password", properties.getSslTruststorePassword());
+        }
 
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new KafkaOrderEventDeserializer(objectMapper));
     }

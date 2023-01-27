@@ -26,7 +26,7 @@ spec:
                   key: MONGO_DB_PASSWORD
             - name: kafka.bootstrapServers
               value: kafka-ssl-broker-cluster-ip:9092
-            - name: kafka.ssl-keystore-location
-              value: /app/clientkeystore.jks
-            - name: kafka.ssl-truststore-location
-              value: /app/clienttruststore.jks
+#            - name: kafka.ssl-keystore-location
+#              value: /app/clientkeystore.jks
+#            - name: kafka.ssl-truststore-location
+#              value: /app/clienttruststore.jks
