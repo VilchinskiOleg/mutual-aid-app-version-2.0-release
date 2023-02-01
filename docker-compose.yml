@@ -39,9 +39,10 @@ services:
       - POSTGRES_USER=admintest
       - POSTGRES_PASSWORD=postgres12345
     volumes:
+      # For Windows:
       - ${pwd}/postgres/backup:/var/lib/postgresql/data
-#       $(pwd) for Linux.
-#       It's going to work for Linux properly, but for Windows you must accomplish more other steps.
+      # For Linux:
+#      - $(pwd)/postgres/backup:/var/lib/postgresql/data
   auth-service:
     build:
       dockerfile: Dockerfile
