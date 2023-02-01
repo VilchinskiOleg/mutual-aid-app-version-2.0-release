@@ -25,9 +25,15 @@ spec:
             - name: POSTGRES_DB
               value: apiDB
             - name: POSTGRES_USER
-              value: admintest
+              valueFrom:
+                secretKeyRef:
+                  name: pg-username
+                  key: PG_USERNAME
             - name: POSTGRES_PASSWORD
-              value: "postgres12345"
+              valueFrom:
+                secretKeyRef:
+                  name: pg-password
+                  key: PG_PASSWORD
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgres-storage

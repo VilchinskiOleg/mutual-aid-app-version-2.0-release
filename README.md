@@ -58,4 +58,17 @@ In order to set up _all project_ LOCALLY by _Docker_ you have to do:
 * Go to the `kafka-ssl` directory and build and install into your remote Docker repo CA SSL image by commands `docker build -t [your_docker_id]/kafka-ca-ssl -f Dockerfile.CA.SSL .` and `docker push [your_docker_id]/kafka-ca-ssl` . 
 * Replace into docker files from modules: **order** , **event-storage** and into file **Dockerfile.Kafka.SSL** line `FROM alehvilchynski/kafka-ca-ssl as ssl_ca_container` to line with your docker ID like: `FROM [your_docker_id]/kafka-ca-ssl as ssl_ca_container` .
 * Run command `docker-compose up` from root directory in order to build and run all containers.
-* [OPTIONAL] Set up remote debug for every module by ports to be copied from **docker-compose.yml** file from root directory (every port overrides 5005). 
+* [OPTIONAL] Set up remote debug for every module using ports should be copied from **docker-compose.yml** file from root directory (every port overrides 5005). 
+
+In order to set up 
+* Prepare necessary Docker images in your remote repo (build images for every service and push them to the DockerHub).
+* Replace my Docker ID to your for image of every deployment file.
+* Install Kubernetes to your computer.
+* Install Ingress Nginx project by command:
+  `kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml`
+* Write secret env variables like: MONGO_DB_PASSWORD , EMAIL_SENDER_API_TOKEN , TRANSLATE_API_TOKEN , PG_PASSWORD , PG_USERNAME as a **Secret** object to your local Kubernetes by command:
+  `kubectl create secret generic [secret_name] --from-literal [key]=[value]`
+* Feed all files in dir **'k8s'** for **kubctl** by running command:
+  `kubectl apply -f k8s`
+* [*] Run requests without port value in order to test locally.
+* [OPTIONAL] Set up remote debug for every module using ports should be copied from appropriate **\*-node-port.yaml** file from k8s directory.

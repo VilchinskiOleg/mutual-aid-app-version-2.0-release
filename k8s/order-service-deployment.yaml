@@ -37,6 +37,12 @@ spec:
             - name: datasource.api.jdbc-url
               value: jdbc:postgresql://postgres-cluster-ip:5432/apiDB
             - name: datasource.api.username
-              value: admintest
+              valueFrom:
+                secretKeyRef:
+                  name: pg-username
+                  key: PG_USERNAME
             - name: datasource.api.password
-              value: "postgres12345"
+              valueFrom:
+                secretKeyRef:
+                  name: pg-password
+                  key: PG_PASSWORD
