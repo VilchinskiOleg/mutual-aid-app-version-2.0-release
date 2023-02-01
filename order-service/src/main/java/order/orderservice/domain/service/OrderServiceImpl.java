@@ -2,6 +2,7 @@ package order.orderservice.domain.service;
 
 import static java.lang.Thread.sleep;
 import static java.time.LocalDateTime.now;
+import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static order.orderservice.domain.model.Order.Status.*;
@@ -19,8 +20,6 @@ import order.orderservice.domain.model.search.SearchOrderDetails;
 import order.orderservice.domain.service.processor.EventManagerService;
 import order.orderservice.domain.service.processor.IdGeneratorService;
 import order.orderservice.domain.service.processor.ProfileService;
-import order.orderservice.persistent.jpa.entity.TestModel;
-import order.orderservice.persistent.jpa.repository.TestModelRepository;
 import order.orderservice.persistent.mongo.repository.OrderRepository;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.common.http.autoconfiguration.model.CommonData;
