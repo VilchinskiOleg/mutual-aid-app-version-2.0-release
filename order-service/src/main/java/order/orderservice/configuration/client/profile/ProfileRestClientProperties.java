@@ -1,4 +1,4 @@
-package order.orderservice.configuration.client;
+package order.orderservice.configuration.client.profile;
 
 import lombok.Getter;
 import lombok.Setter;

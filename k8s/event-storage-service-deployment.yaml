@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-storage-service-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      component: event-storage
+  template:
+    metadata:
+      labels:
+        component: event-storage
+    spec:
+      containers:
+        - name: event-storage-service-container
+          image: alehvilchynski/event-storage-service-boot
+          ports:
+            - containerPort: 8400
+            - containerPort: 5005
+          env:
+            - name: MONGO_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-db-password
+                  key: MONGO_DB_PASSWORD
+            - name: kafka.bootstrapServers
+              value: kafka-ssl-broker-cluster-ip:9092
+#            - name: kafka.ssl-keystore-location
+#              value: /app/clientkeystore.jks
+#            - name: kafka.ssl-truststore-location
+#              value: /app/clienttruststore.jks

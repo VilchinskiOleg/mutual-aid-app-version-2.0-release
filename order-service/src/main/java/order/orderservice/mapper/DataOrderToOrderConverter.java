@@ -7,7 +7,7 @@ import static order.orderservice.domain.model.Order.Priority;
 
 import order.orderservice.domain.model.Location;
 import order.orderservice.domain.model.Member;
-import order.orderservice.persistent.entity.Order;
+import order.orderservice.persistent.mongo.entity.Order;
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
 import java.util.HashSet;

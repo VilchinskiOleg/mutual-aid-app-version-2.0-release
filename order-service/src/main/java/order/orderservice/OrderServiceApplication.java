@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @SpringBootApplication()
 @EnableFeignClients(basePackages = "order.orderservice.configuration.client")
-@EnableMongoRepositories(basePackages = "order.orderservice.persistent")
+@EnableMongoRepositories(basePackages = "order.orderservice.persistent.mongo")
 public class OrderServiceApplication {
 
 	public static void main(String[] args) {

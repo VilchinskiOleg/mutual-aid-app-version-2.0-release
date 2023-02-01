@@ -31,7 +31,6 @@ public class ProfileToSoapProfileConverter extends BaseConverter<Profile, org.tm
         if (nonNull(source.getModifyAt())) {
             destination.setModifyAt(newInstance().newXMLGregorianCalendar(source.getModifyAt().toString()));
         }
-        destination.setProfileId(source.getProfileId());
-        destination.setId(source.getId());
+        destination.setId(source.getProfileId());
     }
 }

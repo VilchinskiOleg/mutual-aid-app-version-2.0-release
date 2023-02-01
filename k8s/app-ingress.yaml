@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-service
+  annotations:
+    kubernetes.io/ingress.class: 'nginx'
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /api/auth-service
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service-cluster-ip
+                port:
+                  number: 8100
+          - path: /api/profile-service
+            pathType: Prefix
+            backend:
+              service:
+                name: profile-service-cluster-ip
+                port:
+                  number: 8200
+          - path: /api/order-service
+            pathType: Prefix
+            backend:
+              service:
+                name: order-service-cluster-ip
+                port:
+                  number: 8300
+          - path: /api/event-storage-service
+            pathType: Prefix
+            backend:
+              service:
+                name: event-storage-service-cluster-ip
+                port:
+                  number: 8400

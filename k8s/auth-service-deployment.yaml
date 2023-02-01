@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      component: auth
+  template:
+    metadata:
+      labels:
+        component: auth
+    spec:
+      containers:
+        - name: auth-service-container
+          image: alehvilchynski/auth-service-boot
+          ports:
+            - containerPort: 8100
+            - containerPort: 5005
+          env:
+            - name: MONGO_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-db-password
+                  key: MONGO_DB_PASSWORD
+            - name: EMAIL_SENDER_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: email-sender-api-token
+                  key: EMAIL_SENDER_API_TOKEN

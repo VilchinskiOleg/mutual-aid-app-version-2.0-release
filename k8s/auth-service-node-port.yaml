@@ -1,3 +1,4 @@
+#Only for debug:
 apiVersion: v1
 kind: Service
 metadata:
@@ -5,8 +6,8 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 8150
-      targetPort: 8100
+    - port: 5015
+      targetPort: 5005
       nodePort: 31515
   selector:
     component: auth

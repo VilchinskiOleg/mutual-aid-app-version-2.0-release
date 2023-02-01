@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: profile-service-cluster-ip
+spec:
+  type: ClusterIP
+  selector:
+    component: profile
+  ports:
+    - port: 8200
+      targetPort: 8200

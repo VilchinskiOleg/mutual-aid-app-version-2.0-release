@@ -7,5 +7,5 @@ spec:
   selector:
     component: auth
   ports:
-    - port: 8150
+    - port: 8100
       targetPort: 8100

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile-service-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      component: profile
+  template:
+    metadata:
+      labels:
+        component: profile
+    spec:
+      containers:
+        - name: profile-service-container
+          image: alehvilchynski/profile-service-boot
+          ports:
+            - containerPort: 8200
+            - containerPort: 5005
+          env:
+            - name: MONGO_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-db-password
+                  key: MONGO_DB_PASSWORD
+            - name: auth-rest-client.url
+              value: auth-service-cluster-ip:8100

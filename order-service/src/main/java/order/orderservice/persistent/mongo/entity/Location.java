@@ -1,4 +1,4 @@
-package order.orderservice.persistent.entity;
+package order.orderservice.persistent.mongo.entity;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -5,15 +5,15 @@ import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LocationToDataLocationConverter extends BaseConverter<Location, order.orderservice.persistent.entity.Location> {
+public class LocationToDataLocationConverter extends BaseConverter<Location, order.orderservice.persistent.mongo.entity.Location> {
 
     @Override
-    protected order.orderservice.persistent.entity.Location getDestination() {
-        return new order.orderservice.persistent.entity.Location();
+    protected order.orderservice.persistent.mongo.entity.Location getDestination() {
+        return new order.orderservice.persistent.mongo.entity.Location();
     }
 
     @Override
-    public void convert(Location source, order.orderservice.persistent.entity.Location destination) {
+    public void convert(Location source, order.orderservice.persistent.mongo.entity.Location destination) {
         destination.setCountry(source.getCountry());
         destination.setCity(source.getCity());
         destination.setStreet(source.getStreet());

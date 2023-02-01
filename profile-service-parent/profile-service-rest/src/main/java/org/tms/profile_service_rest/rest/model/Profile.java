@@ -21,8 +21,6 @@ import java.util.List;
 public class Profile {
 
     private String id;
-
-    private String profileId;
     @Valid
     @ValidNames(message = PROFILE_NAMES_RULE)
     private List<Name> names;

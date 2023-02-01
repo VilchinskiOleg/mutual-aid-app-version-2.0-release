@@ -1,7 +1,7 @@
 version: '3'
 services:
   zookeeper:
-    image: 'ubuntu/zookeeper'
+    image: 'wurstmeister/zookeeper'
     container_name: 'zookeeper'
     ports:
       - '2181:2181'
@@ -19,6 +19,8 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENERS: SSL://kafka:9092
       KAFKA_ADVERTISED_LISTENERS: SSL://kafka:9092
+      # I explicitly defined protocol for communicate broker between each other:
+      # I have to define it and change default value (PLAINTEXT) because I didn't define any PLAINTEXT listeners before.
       KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SSL
       SSL_ENABLED_PROTOCOLS: 'TLSv1,TLSv1.1,TLSv1.2,TLSv1.3'
       KAFKA_SSL_CLIENT_AUTH: 'required'
@@ -27,6 +29,20 @@ services:
       KAFKA_SSL_KEYSTORE_PASSWORD: '34rtsTb290'
       KAFKA_SSL_TRUSTSTORE_LOCATION: '/servertruststore.jks'
       KAFKA_SSL_TRUSTSTORE_PASSWORD: '34rtsTb290'
+  postgres:
+    image: postgres
+    container_name: 'postgres'
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_DB=apiDB
+      - POSTGRES_USER=${PG_USERNAME}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+    volumes:
+      # For Windows:
+      - ${pwd}/postgres/backup:/var/lib/postgresql/data
+      # For Linux:
+#      - $(pwd)/postgres/backup:/var/lib/postgresql/data
   auth-service:
     build:
       dockerfile: Dockerfile
@@ -74,14 +90,18 @@ services:
       - '5035:5005'
     depends_on:
       - 'kafka'
+      - 'postgres'
       - 'auth-service'
       - 'profile-service'
     environment:
       - MONGO_DB_PASSWORD
+      - PG_PASSWORD
+      - PG_USERNAME
       # It must be internal Port and Name of containers:
       - kafka.bootstrapServers=kafka:9092
       - kafka.ssl-keystore-location=/app/clientkeystore.jks
       - kafka.ssl-truststore-location=/app/clienttruststore.jks
+      - datasource.api.jdbc-url=jdbc:postgresql://postgres:5432/apiDB
       - auth-rest-client.url=http://auth-service:8100
       - profile-rest-client.url=http://profile-service:8200
   event-storage-service:
