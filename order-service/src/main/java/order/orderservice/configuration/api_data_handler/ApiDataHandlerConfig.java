@@ -19,7 +19,7 @@ import java.util.Map;
  * you need just create other new the similar config (like this) with necessary other details.
  *
  * In order to test only that service without docker-compose file -> just run that command in docker CLI:
- * docker run --name postgres-container -e POSTGRES_DB=apiDB -e POSTGRES_USER=admintest -e POSTGRES_PASSWORD=postgres12345 -p 5432:5432 -it postgres
+ * docker run --name postgres-container -e POSTGRES_DB=apiDB -e POSTGRES_USER=[PG_USERNAME] -e POSTGRES_PASSWORD=[PG_PASSWORD] -p 5432:5432 -it postgres
  */
 @Configuration
 @EnableJpaRepositories(basePackages = "order.orderservice.persistent.jpa.repository")

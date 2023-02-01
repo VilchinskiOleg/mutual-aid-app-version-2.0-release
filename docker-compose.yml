@@ -36,8 +36,8 @@ services:
       - '5432:5432'
     environment:
       - POSTGRES_DB=apiDB
-      - POSTGRES_USER=admintest
-      - POSTGRES_PASSWORD=postgres12345
+      - POSTGRES_USER=${PG_USERNAME}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
     volumes:
       # For Windows:
       - ${pwd}/postgres/backup:/var/lib/postgresql/data
@@ -95,12 +95,12 @@ services:
       - 'profile-service'
     environment:
       - MONGO_DB_PASSWORD
+      - PG_PASSWORD
+      - PG_USERNAME
       # It must be internal Port and Name of containers:
       - kafka.bootstrapServers=kafka:9092
       - kafka.ssl-keystore-location=/app/clientkeystore.jks
       - kafka.ssl-truststore-location=/app/clienttruststore.jks
-      - datasource.api.username=admintest
-      - datasource.api.password=postgres12345
       - datasource.api.jdbc-url=jdbc:postgresql://postgres:5432/apiDB
       - auth-rest-client.url=http://auth-service:8100
       - profile-rest-client.url=http://profile-service:8200
