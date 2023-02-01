@@ -60,7 +60,7 @@ In order to set up _all project_ LOCALLY by _Docker_ you have to do:
 * Run command `docker-compose up` from root directory in order to build and run all containers.
 * [OPTIONAL] Set up remote debug for every module using ports should be copied from **docker-compose.yml** file from root directory (every port overrides 5005). 
 
-In order to set up 
+In order to set up _all project_ LOCALLY by _Kubernetes_ you have to do:
 * Prepare necessary Docker images in your remote repo (build images for every service and push them to the DockerHub).
 * Replace my Docker ID to your for image of every deployment file.
 * Install Kubernetes to your computer.
