@@ -1,4 +1,4 @@
-package kafka;
+package kafka.spring;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -49,8 +49,13 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers
 @DirtiesContext
 
-@Disabled // only because they are global test end we can skip them during build project.
-public class EssentialCasesKafkaTest extends BaseKafkaComponentTest {
+/**
+ * Tests Disabled only because they are global tests (in order to investigate abilities of Kafka),
+ * they don't apply particularly to this project.
+ * So, we can skip them during build project:
+ */
+@Disabled
+public class EssentialKafkaTest extends BaseKafkaComponentTest {
 
   @Container
   static KafkaContainer kafkaContainer =

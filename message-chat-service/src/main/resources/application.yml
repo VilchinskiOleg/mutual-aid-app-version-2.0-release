@@ -2,9 +2,6 @@ server:
   port: 8500
 
 spring:
-  data:
-    mongodb:
-      uri: mongodb+srv://admin:${MONGO_DB_PASSWORD}@cluster0.lme5y.mongodb.net/mutual-aid-app?retryWrites=true&w=majority
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
@@ -26,8 +23,8 @@ feign:
         connectTimeout: 5000
         readTimeout: 10000
         loggerLevel: full
-#        requestInterceptors:
-#          - com.example.FooRequestInterceptor
+        requestInterceptors:
+          - messagechat.messagechatservice.configuration.client.profile.ProfileRestClientAuthInterceptor
       googleTranslateApiClient:
         connectTimeout: 10000
         readTimeout: 15000
@@ -42,10 +39,4 @@ google-translate-open-api:
   encoding: application/gzip
 
 profile-rest-client:
-  url: http://localhost:8200
-  user: message-chat-service-client
-  password:
-
-message-chat-properties:
-  translation-message:
-    enabled: true
+  username: message-chat-service-client

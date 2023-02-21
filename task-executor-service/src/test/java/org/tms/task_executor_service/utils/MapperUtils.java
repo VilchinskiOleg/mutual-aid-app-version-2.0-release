@@ -1,5 +1,7 @@
 package org.tms.task_executor_service.utils;
 
+import static java.util.List.of;
+
 import java.util.Arrays;
 import java.util.List;
 import org.mapper.autoconfiguration.converter.BaseConverter;
@@ -12,8 +14,9 @@ import org.tms.task_executor_service.mapper.payload.CreateProfilePayloadToDataCr
 import org.tms.task_executor_service.mapper.payload.DataCreateProfilePayloadToCreateProfilePayloadConverterVisitor;
 import org.tms.task_executor_service.mapper.service.PayloadMappingManager;
 
-import static java.util.List.of;
-
+/**
+ * Util class for interacting with @mapper and @converters beyond Spring.
+ */
 public class MapperUtils {
 
     public static Mapper getMapper() {
@@ -31,8 +34,12 @@ public class MapperUtils {
     public static Mapper initDefaultTaskMapper(Mapper mapper, PayloadMappingManager payloadMappingManager, BaseConverter  ... taskConverters) {
         List<BaseConverter> payloadConverters = of( new CreateProfilePayloadToDataCreateProfilePayloadConverter(),
                                                     new DataCreateProfilePayloadToCreateProfilePayloadConverterVisitor());
+        /**
+         * Register @payloadConverters to @payloadMappingManager manually:
+         */
         payloadConverters.forEach(payloadConverter -> payloadMappingManager.registerDestinationType(payloadConverter.getSourceType(),
                                                                                                     payloadConverter.getDestinationType()));
+
         List<BaseConverter> metaConverters = of(new DataMetaToMetaConverter(), new MetaToDataMetaConverter());
 
         registerConverter(mapper, Arrays.asList(taskConverters));

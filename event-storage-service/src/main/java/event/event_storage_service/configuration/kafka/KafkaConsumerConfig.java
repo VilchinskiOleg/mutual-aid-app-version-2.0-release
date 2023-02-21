@@ -1,14 +1,18 @@
 package event.event_storage_service.configuration.kafka;
 
 import static event.event_storage_service.util.Constant.Kafka.*;
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import event.event_storage_service.configuration.kafka.deserializer.KafkaOrderEventDeserializer;
 import event.event_storage_service.configuration.kafka.message.KafkaOrderEvent;
+import event.event_storage_service.configuration.kafka.properties.KafkaBaseProperties;
+import event.event_storage_service.configuration.kafka.properties.KafkaSSLProperties;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -17,12 +21,15 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Configuration
 public class KafkaConsumerConfig {
 
     @Resource
-    private KafkaProperties properties;
+    private KafkaBaseProperties properties;
+    @Autowired(required = false)
+    private KafkaSSLProperties sslProperties;
     @Resource
     private ObjectMapper objectMapper;
 
@@ -38,15 +45,15 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, LATEST);
 
-        if (isNotBlank(properties.getSslKeystoreLocation()) || isNotBlank(properties.getSslTruststoreLocation())) {
+        if (nonNull(sslProperties)) {
             props.put("security.protocol", "SSL");
             props.put("ssl.client.auth", "required");
             props.put("ssl.enabled.protocols", "TLSv1,TLSv1.2,TLSv1.1,TLSv1.3");
-            props.put("ssl.key.password", properties.getSslKeyPassword());
-            props.put("ssl.keystore.location", properties.getSslKeystoreLocation());
-            props.put("ssl.keystore.password", properties.getSslKeystorePassword());
-            props.put("ssl.truststore.location", properties.getSslTruststoreLocation());
-            props.put("ssl.truststore.password", properties.getSslTruststorePassword());
+            props.put("ssl.key.password", sslProperties.getSslKeyPassword());
+            props.put("ssl.keystore.location", sslProperties.getSslKeystoreLocation());
+            props.put("ssl.keystore.password", sslProperties.getSslKeystorePassword());
+            props.put("ssl.truststore.location", sslProperties.getSslTruststoreLocation());
+            props.put("ssl.truststore.password", sslProperties.getSslTruststorePassword());
         }
 
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new KafkaOrderEventDeserializer(objectMapper));

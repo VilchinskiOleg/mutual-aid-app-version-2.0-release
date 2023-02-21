@@ -8,8 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "profile-service-client")
+@ConfigurationProperties(prefix = "profile-rest-client")
 public class ProfileRestClientProperties {
 
     private String url;
+    private String username;
+    private String password;
 }

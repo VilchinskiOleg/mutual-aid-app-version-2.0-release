@@ -2,9 +2,6 @@ server:
   port: 8100
 
 spring:
-  data:
-    mongodb:
-      uri: mongodb+srv://admin:${MONGO_DB_PASSWORD}@cluster0.lme5y.mongodb.net/mutual-aid-app?retryWrites=true&w=majority
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
@@ -18,12 +15,6 @@ application:
       name: OLEG
       url: https://mail.google.com
       email: vilchinskioleg@gmail.com
-
-auth:
-  jwt:
-    secret: secret_key
-    issuer: auth.service.issuer
-    live: 5
 
 feign:
   client:
