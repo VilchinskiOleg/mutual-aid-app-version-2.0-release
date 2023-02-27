@@ -1,0 +1,35 @@
+{
+  "orderId": "54321",
+  "title": "Order Three",
+  "description":  "Some description for Order Three.",
+  "location": {
+
+  },
+  "price": 25.3,
+
+  "type": "PAID",
+  "status": "AWAITING_APPROVAL",
+  "priority": null,
+
+  "createAt": null,
+  "modifyAt": null,
+
+  "owner": {
+    "memberId": "1q2w3e",
+    "firstName": "Jack",
+    "lastName": "Daniels"
+  },
+  "candidates": [
+    {
+      "memberId": "4r5t6y",
+      "firstName": "Henry",
+      "lastName": "Ford"
+    },
+    {
+      "memberId": "7u8i9o",
+      "firstName": "Mahatma",
+      "lastName": "Gandhi"
+    }
+  ],
+  "executor": null
+}

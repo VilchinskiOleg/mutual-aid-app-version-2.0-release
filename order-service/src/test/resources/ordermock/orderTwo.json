@@ -1,0 +1,28 @@
+{
+  "orderId": "76890",
+  "title": "Order Two",
+  "description":  "Some description for Order Two.",
+  "location": {
+
+  },
+  "price": null,
+
+  "type": "UNPAID",
+  "status": "IN_WORK",
+  "priority": "NOT_CRITICAL",
+
+  "createAt": null,
+  "modifyAt": null,
+
+  "owner": {
+    "memberId": "1a3d4f",
+    "firstName": "Jon",
+    "lastName": "Smith"
+  },
+  "candidates": null,
+  "executor": {
+    "memberId": "5s6h7d",
+    "firstName": "Sarah",
+    "lastName": "Carter"
+  }
+}
