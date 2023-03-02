@@ -1,0 +1,25 @@
+{
+  "orderId": "12345",
+  "title": "Order One",
+  "description":  "Some description for Order One.",
+  "location": {
+    "country": "PL",
+    "city": "Warsaw",
+    "street": "Mirabelki",
+    "home" : "4"
+  },
+  "price": 14.5,
+
+  "type": "PAID",
+  "status": null,
+  "priority": null,
+
+  "createAt": null,
+  "modifyAt": null,
+
+  "owner" : {
+    "memberId": "7h8k9l"
+  },
+  "candidates" : null,
+  "executor" : null
+}

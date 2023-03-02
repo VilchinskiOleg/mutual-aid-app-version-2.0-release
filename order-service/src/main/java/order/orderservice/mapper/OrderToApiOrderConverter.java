@@ -37,7 +37,7 @@ public class OrderToApiOrderConverter extends BaseConverter<Order, order.orderse
         destination.setOwner(mapper.map(source.getOwner(), Member.class));
         destination.setCandidates(mapper.map(source.getCandidates(), new HashSet<>(), Member.class));
         if (nonNull(source.getExecutor())) {
-            destination.setOwner(mapper.map(source.getExecutor(), Member.class));
+            destination.setExecutor(mapper.map(source.getExecutor(), Member.class));
         }
     }
 }

@@ -64,13 +64,6 @@ public class Order {
         return candidates;
     }
 
-    public Member getExecutor() {
-        if (isNull(executor)) {
-            executor = new Member();
-        }
-        return executor;
-    }
-
     public void addCandidate(Member candidate) {
         if (nonNull(candidate)) {
             getCandidates().add(candidate);

@@ -31,7 +31,7 @@ public class OrderRepositoryTest {
 
     @Container
     private static MongoDBContainer mongoDB = new MongoDBContainer("mongo:5.0.12");
-    private static String RESOURCE_PREFIX_PATH = "ordermock/";
+    private static String RESOURCE_PREFIX_PATH = "ordermock/data/";
 
     @Resource
     private OrderRepository orderRepository;
