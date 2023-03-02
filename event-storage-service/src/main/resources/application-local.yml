@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://admin:${MONGO_DB_PASSWORD}@cluster0.lme5y.mongodb.net/mutual-aid-app?retryWrites=true&w=majority
+
+kafka:
+  bootstrapServers: 127.0.0.1:9093
+  listenTopics: mutual-aid-order-topic
+  groupId: event-storage-service

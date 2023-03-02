@@ -37,5 +37,14 @@
         "roles": [
             "GET_PROFILE_BY_ID"
         ]
+    },
+
+    {
+        "name": "message-chat-service-client",
+        "password": "$2a$12$VT97rbO9jQHBlx3b28nDi.rHbe675ChLP1pSI4qCW8Ty8xvyLfpFi",
+        "description": "42voRTvk_wEle!76",
+        "roles": [
+            "GET_PROFILE_BY_ID"
+        ]
     }
 ]

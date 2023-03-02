@@ -1,4 +1,4 @@
-package kafka;
+package kafka.spring;
 
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.awaitility.Awaitility.await;

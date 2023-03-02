@@ -4,18 +4,17 @@ import static java.time.LocalDateTime.now;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.spy;
-import static org.mockito.MockitoAnnotations.initMocks;
 import static org.tms.task_executor_service.domain.model.Task.Type.CREATE_PROFILE;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.tms.task_executor_service.config.client.ProfileRestClient;
 import org.tms.task_executor_service.domain.model.Task;
 import org.tms.task_executor_service.domain.model.payload.CreateProfilePayload;
@@ -24,15 +23,14 @@ import org.tms.task_executor_service.domain.service.client.ProfileClientService;
 import org.tms.task_executor_service.domain.service.client.TaskExecutionProvider;
 import org.tms.task_executor_service.domain.service.command.Command;
 
-import javax.annotation.Resource;
-
 @TestInstance(PER_CLASS)
+@ExtendWith(MockitoExtension.class)
 public class CommandManagerTest {
 
     @InjectMocks
     private CommandManager commandManager;
     @Spy
-    private final List<TaskExecutionProvider> executionProviders = new ArrayList<>();
+    private final List<TaskExecutionProvider> executionProviders = spy(ArrayList.class);
     @InjectMocks
     private final TaskExecutionProvider profileTaskExecutionProvider = spy(ProfileClientService.class);
     @Mock
@@ -42,7 +40,6 @@ public class CommandManagerTest {
 
     @BeforeAll
     void initAll() {
-        initMocks(this);
         executionProviders.add(profileTaskExecutionProvider);
     }
 

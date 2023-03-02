@@ -1,4 +1,4 @@
-package org.tms.common.auth.configuration.global;
+package org.tms.common.auth.configuration.global.jackson;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;

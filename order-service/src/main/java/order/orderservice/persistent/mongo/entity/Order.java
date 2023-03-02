@@ -5,6 +5,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -22,6 +24,7 @@ public class Order {
     private String title;
     private String description;
     private Location location;
+    @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal price;
 
     private String type;

@@ -2,12 +2,19 @@ server:
   port: 8600
 
 spring:
-  data:
-    mongodb:
-      uri: mongodb+srv://admin:${MONGO_DB_PASSWORD}@cluster0.lme5y.mongodb.net/mutual-aid-app?retryWrites=true&w=majority
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+
+application:
+  api-info:
+    version: 2.0
+    title: TASK
+    description: Task SERVICE
+    contact:
+      name: OLEG
+      url: https://mail.google.com
+      email: vilchinskioleg@gmail.com
 
 feign:
   client:
@@ -22,19 +29,7 @@ feign:
     enabled: true
 
 profile-rest-client:
-  url: http://localhost:8200
   user: task-executor-service-client
-  password:
-
-application:
-  api-info:
-    version: 2.0
-    title: TASK
-    description: Task SERVICE
-    contact:
-      name: OLEG
-      url: https://mail.google.com
-      email: vilchinskioleg@gmail.com
 
 task-execution-props:
   date:

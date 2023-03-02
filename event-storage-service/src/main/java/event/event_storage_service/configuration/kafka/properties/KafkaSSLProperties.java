@@ -1,18 +1,18 @@
-package order.orderservice.configuration.kafka;
+package event.event_storage_service.configuration.kafka.properties;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "kafka")
 @Getter
 @Setter
-public class KafkaProperties {
-
-    private String bootstrapServers;
+@Profile(value = {"qa, prod"})
+public class KafkaSSLProperties {
 
     @Value("ssl-key-password")
     private String sslKeyPassword;

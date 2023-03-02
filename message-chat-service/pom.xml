@@ -47,28 +47,23 @@
         <dependency>
             <groupId>org.tms.mapper</groupId>
             <artifactId>model-mapper-autoconfiguration</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.tms.exception.handling</groupId>
             <artifactId>exception-handling-autoconfiguration</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.tms.common.http</groupId>
             <artifactId>common-http-autoconfiguration</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.tms</groupId>
             <artifactId>profile-service-client</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <!-- COMMON AUTH CONFIGURATION: -->
         <dependency>
             <groupId>org.tms.common.auth</groupId>
             <artifactId>auth-configuration</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

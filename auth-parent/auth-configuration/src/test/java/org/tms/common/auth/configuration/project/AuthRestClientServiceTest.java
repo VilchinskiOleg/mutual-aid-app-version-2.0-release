@@ -1,4 +1,4 @@
-package org.tms.common.auth.configuration;
+package org.tms.common.auth.configuration.project;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;

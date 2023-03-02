@@ -1,4 +1,4 @@
-package kafka.custom_listener;
+package kafka.core;
 
 import static org.awaitility.Awaitility.await;
 

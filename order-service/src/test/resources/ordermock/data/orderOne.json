@@ -1,0 +1,24 @@
+{
+  "orderId": "12345",
+  "title": "Order One",
+  "description":  "Some description for Order One.",
+  "location": {
+
+  },
+  "price": 14.5,
+
+  "type": "PAID",
+  "status": "ACTIVE",
+  "priority": null,
+
+  "createAt": null,
+  "modifyAt": null,
+
+  "owner" : {
+    "memberId": "7h8k9l",
+    "firstName": "Kim",
+    "lastName": "Wilson"
+  },
+  "candidates" : null,
+  "executor" : null
+}

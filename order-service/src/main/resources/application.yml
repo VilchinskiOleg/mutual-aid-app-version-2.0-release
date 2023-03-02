@@ -2,16 +2,12 @@ server:
   port: 8300
 
 spring:
-  data:
-    mongodb:
-      uri: mongodb+srv://admin:${MONGO_DB_PASSWORD}@cluster0.lme5y.mongodb.net/mutual-aid-app?retryWrites=true&w=majority
-      # for connection to local DB. In my case for connection to docker mongoDB container:
-      # uri: mongodb://${MONGO_USERNAME}:${MONGO_PWD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}?authSource=admin
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
   jackson:
-    default-property-inclusion: non_null
+    # something like 'non_null' included in 'non_empty' prop-value:
+    default-property-inclusion: non_empty
     parser:
       allow-comments: true
 
@@ -40,9 +36,6 @@ feign:
 datasource:
   api:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://localhost:5432/apiDB
-    username: ${PG_USERNAME}
-    password: ${PG_PASSWORD}
 
 scheduler:
   remove-closed-orders-job:
@@ -50,23 +43,10 @@ scheduler:
     closed-order-live-hours: 72
     page-size: 10
 
-kafka:
-  bootstrapServers: 127.0.0.1:9093
-  # for SSL security:
-  ssl-key-password: 34rtsTb290
-  ssl-keystore-location:
-  ssl-keystore-password: 34rtsTb290
-  ssl-truststore-location:
-  ssl-truststore-password: 34rtsTb290
-
 profile-rest-client:
-  url: http://localhost:8200
   user: order-service-client
-  password: 42vovk_wEle!76
 
 auth-rest-client:
-  url: http://localhost:8100
+  user: order-service-client
   read-timeout: 10000
   connection-timeout: 10000
-  user: order-service-client
-  password: 42vovk_wEle!76

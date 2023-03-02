@@ -1,0 +1,29 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://admin:${MONGO_DB_PASSWORD}@cluster0.lme5y.mongodb.net/mutual-aid-app?retryWrites=true&w=majority
+      # for connection to local DB. In my case for connection to docker mongoDB container:
+      # uri: mongodb://${MONGO_USERNAME}:${MONGO_PWD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}?authSource=admin
+
+datasource:
+  api:
+    jdbc-url: jdbc:postgresql://localhost:5432/apiDB
+    username: ${PG_USERNAME}
+    password: ${PG_PASSWORD}
+
+kafka:
+  bootstrapServers: 127.0.0.1:9093
+  # for SSL security:
+  ssl-key-password: 34rtsTb290
+  ssl-keystore-location:
+  ssl-keystore-password: 34rtsTb290
+  ssl-truststore-location:
+  ssl-truststore-password: 34rtsTb290
+
+profile-rest-client:
+  url: http://localhost:8200
+  password: 42vovk_wEle!76
+
+auth-rest-client:
+  url: http://localhost:8100
+  password: 42vovk_wEle!76
