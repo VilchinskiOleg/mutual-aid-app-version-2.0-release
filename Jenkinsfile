@@ -6,6 +6,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+               sh ''' echo "Inside dir = ${pwd}" '''
+               sh ''' echo "Have dirs = ${ls}" '''
                sh 'mvn -P qa clean install'
             }
         }
