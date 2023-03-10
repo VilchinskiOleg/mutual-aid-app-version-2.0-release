@@ -1,11 +1,12 @@
 pipeline {
     agent any
+    tools {
+        maven 'maven 3.9.0'
+    }
     stages {
         stage('Build') {
             steps {
-               maven('3.9.0') {
-                   sh '''mvn -P qa clean install'''
-               }
+               sh 'mvn -P qa clean install'
             }
         }
     }
