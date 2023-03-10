@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    stages {
+//     stages {
         stage('Fetch') {
 
 //             steps {
@@ -25,5 +25,5 @@ pipeline {
 //             }
 
         }
-    }
+//     }
 }
