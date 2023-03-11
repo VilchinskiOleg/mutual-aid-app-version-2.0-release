@@ -30,7 +30,12 @@ jobs:
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  mutual-aid-app-deploy: # This is the name of the workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  # Name of the workflow:
+  mutual-aid-app-deploy:
+    # Inside the workflow, you define the jobs you want to run:
     jobs:
       - build-and-test
+    # Also, inside the workflow, you can define the filters like with branches you want to run flow for:
+    filters:
+      branches:
+        only: master
