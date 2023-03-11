@@ -24,7 +24,6 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 
-@Disabled //TODO: Only for a short wile, during Jenkins deploy testing. Drop that annotation after!
 @Testcontainers
 @DirtiesContext
 
