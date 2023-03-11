@@ -43,8 +43,9 @@ jobs:
               $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
             sudo apt-get update
             sudo apt-get --assume-yes install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-            sudo service docker start
             docker -v
+            sudo ulimit -n 65536 in /etc/init.d/docker
+            sudo service docker start
             docker ps
       # Then run your tests
       - run:
