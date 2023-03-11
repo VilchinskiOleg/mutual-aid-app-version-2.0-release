@@ -34,8 +34,8 @@ workflows:
   mutual-aid-app-deploy:
     # Inside the workflow, you define the jobs you want to run:
     jobs:
-      - build-and-test
-    # Also, inside the workflow, you can define the filters like with branches you want to run flow for:
-    filters:
-      branches:
-        only: master
+      - build-and-test:
+          # Inside the job, you can define the filters like with branches you want to run flow for:
+          filters:
+            branches:
+              only: master
