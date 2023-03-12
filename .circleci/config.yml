@@ -2,10 +2,6 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
-#orbs:
-#  maven: circleci/maven@1.4.1
-#  docker: circleci/docker@2.2.0
-
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
@@ -16,7 +12,7 @@ jobs:
     # Be sure to update the Docker image tag below to openjdk version of your application.
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/openjdk
     docker:
-      - image: cimg/openjdk:11.0
+      - image: cimg/openjdk:11.0.18-browsers
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
@@ -26,27 +22,6 @@ jobs:
       - run:
           name: Build
           command: mvn -DskipTests -P qa clean install
-      # Install Docker to run tests
-      - run:
-          name: Install Docker
-          command: |
-            sudo apt-get update
-            sudo apt-get install \
-                ca-certificates \
-                curl \
-                gnupg \
-                lsb-release
-            sudo mkdir -m 0755 -p /etc/apt/keyrings
-            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-            echo \
-              "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-              $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-            sudo apt-get update
-            sudo apt-get --assume-yes install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-            docker -v
-            sudo ulimit -n 65536 in /etc/init.d/docker
-            sudo service docker start
-            docker ps
       # Then run your tests
       - run:
           name: Test
