@@ -30,6 +30,7 @@ jobs:
           name: Push images
           command: |
             echo "${DOCKER_PASSWORD}" | sudo docker login -u "${DOCKER_ID}" --password-stdin
+            echo "OK"
             sudo docker build -t alehvilchynski/kafka-ca-ssl -f ./kafka-ssl/Dockerfile.CA.SSL ./kafka-ssl
             echo "OK"
             sudo docker push alehvilchynski/kafka-ca-ssl
