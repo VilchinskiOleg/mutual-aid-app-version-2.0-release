@@ -6,7 +6,7 @@ version: 2.1
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  build-and-test:
+  build-and-test-and-push:
     # These next lines define a Docker executor: https://circleci.com/docs/2.0/executor-types/
     # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # Be sure to update the Docker image tag below to openjdk version of your application.
@@ -18,27 +18,30 @@ jobs:
     steps:
       # Checkout the code as the first step.
       - checkout
+      # Set up Docker
+      - setup_remote_docker:
+          version: 20.10.14
       # Use mvn clean and install as the standard maven build phase
       - run:
           name: Build
           command: mvn -DskipTests -P qa clean install
       # Then run your tests
-#      - run:
-#          name: Test
-#          command: mvn test
-      - setup_remote_docker:
-          version: 20.10.14
+      - run:
+          name: Test
+          command: mvn test
       - run:
           name: Push images
           command: |
             echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_ID}" --password-stdin
-            echo "OK"
+            
             docker build -t alehvilchynski/kafka-ca-ssl -f ./kafka-ssl/Dockerfile.CA.SSL ./kafka-ssl
-            echo "OK"
             docker push alehvilchynski/kafka-ca-ssl
-#            echo "OK"
-#            sudo docker build -t alehvilchynski/order-service-boot ./auth-parent/auth-service-rest
-#            sudo docker push alehvilchynski/order-service-boot
+            
+            docker build -t alehvilchynski/order-service-boot ./auth-parent/auth-service-rest
+            docker push alehvilchynski/order-service-boot
+            
+            docker build -t alehvilchynski/order-service-boot ./auth-parent/auth-service-rest
+            docker push alehvilchynski/order-service-boot
       # Install AWS CLI
 #      - run:
 #          name: Install AWS CLI
@@ -55,7 +58,7 @@ workflows:
   mutual-aid-app-deploy:
     # Inside the workflow, you define the jobs you want to run:
     jobs:
-      - build-and-test:
+      - build-and-test-and-push:
           # Inside the job, you can define the filters like with branches you want to run flow for:
           filters:
             branches:
