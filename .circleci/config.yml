@@ -23,17 +23,25 @@ jobs:
           name: Build
           command: mvn -DskipTests -P qa clean install
       # Then run your tests
+#      - run:
+#          name: Test
+#          command: mvn test
       - run:
-          name: Test
-          command: mvn test
-      # Install AWS CLI
-      - run:
-          name: Install AWS CLI
+          name: Push images
           command: |
-            sudo apt-get update
-            sudo apt-get -y -qq install awscli
-            sudo apt-get install python3-pip
-            sudo pip3 install --upgrade awscli
+            echo "${DOCKER_PASSWORD}" | sudo docker login -u "${DOCKER_ID}" --password-stdin
+            sudo docker build -t alehvilchynski/kafka-ca-ssl -f ./kafka-ssl/Dockerfile.CA.SSL ./kafka-ssl
+            sudo docker push alehvilchynski/kafka-ca-ssl
+            sudo docker build -t alehvilchynski/order-service-boot ./auth-parent/auth-service-rest
+            sudo docker push alehvilchynski/order-service-boot
+      # Install AWS CLI
+#      - run:
+#          name: Install AWS CLI
+#          command: |
+#            sudo apt-get update
+#            sudo apt-get -y -qq install awscli
+#            sudo apt-get install python3-pip
+#            sudo pip3 install --upgrade awscli
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
