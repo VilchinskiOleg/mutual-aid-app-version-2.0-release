@@ -31,7 +31,9 @@ jobs:
           command: |
             echo "${DOCKER_PASSWORD}" | sudo docker login -u "${DOCKER_ID}" --password-stdin
             sudo docker build -t alehvilchynski/kafka-ca-ssl -f ./kafka-ssl/Dockerfile.CA.SSL ./kafka-ssl
+            echo "OK"
             sudo docker push alehvilchynski/kafka-ca-ssl
+            echo "OK"
             sudo docker build -t alehvilchynski/order-service-boot ./auth-parent/auth-service-rest
             sudo docker push alehvilchynski/order-service-boot
       # Install AWS CLI
