@@ -26,17 +26,19 @@ jobs:
 #      - run:
 #          name: Test
 #          command: mvn test
+      - setup_remote_docker:
+          version: 20.10.14
       - run:
           name: Push images
           command: |
-            echo "${DOCKER_PASSWORD}" | sudo docker login -u "${DOCKER_ID}" --password-stdin
+            echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_ID}" --password-stdin
             echo "OK"
-            sudo docker build -t alehvilchynski/kafka-ca-ssl -f ./kafka-ssl/Dockerfile.CA.SSL ./kafka-ssl
+            docker build -t alehvilchynski/kafka-ca-ssl -f ./kafka-ssl/Dockerfile.CA.SSL ./kafka-ssl
             echo "OK"
-            sudo docker push alehvilchynski/kafka-ca-ssl
-            echo "OK"
-            sudo docker build -t alehvilchynski/order-service-boot ./auth-parent/auth-service-rest
-            sudo docker push alehvilchynski/order-service-boot
+            docker push alehvilchynski/kafka-ca-ssl
+#            echo "OK"
+#            sudo docker build -t alehvilchynski/order-service-boot ./auth-parent/auth-service-rest
+#            sudo docker push alehvilchynski/order-service-boot
       # Install AWS CLI
 #      - run:
 #          name: Install AWS CLI
