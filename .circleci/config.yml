@@ -37,11 +37,20 @@ jobs:
             docker build -t alehvilchynski/kafka-ca-ssl -f ./kafka-ssl/Dockerfile.CA.SSL ./kafka-ssl
             docker push alehvilchynski/kafka-ca-ssl
             
-            docker build -t alehvilchynski/order-service-boot ./auth-parent/auth-service-rest
+            docker build -t alehvilchynski/kafka-ssl-broker1 -f ./kafka-ssl/Dockerfile.Kafka.SSL ./kafka-ssl
+            docker push alehvilchynski/kafka-ssl-broker1
+            
+            docker build -t alehvilchynski/auth-service-boot ./auth-parent/auth-service-rest
+            docker push alehvilchynski/auth-service-boot
+            
+            docker build -t alehvilchynski/profile-service-boot ./profile-service-parent/profile-service-rest
+            docker push alehvilchynski/profile-service-boot
+            
+            docker build -t alehvilchynski/order-service-boot ./order-service
             docker push alehvilchynski/order-service-boot
             
-            docker build -t alehvilchynski/order-service-boot ./auth-parent/auth-service-rest
-            docker push alehvilchynski/order-service-boot
+            docker build -t alehvilchynski/event-storage-service-boot ./event-storage-service
+            docker push alehvilchynski/event-storage-service-boot
       # Install AWS CLI
 #      - run:
 #          name: Install AWS CLI
