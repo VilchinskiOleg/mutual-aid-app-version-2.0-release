@@ -15,5 +15,6 @@ COPY --from=builder /app/application/ ./
 COPY --from=ssl_ca_container /certs/ca-key.key .
 COPY --from=ssl_ca_container /certs/ca-cert.crt .
 COPY ./kafka-ssl/secret/*.sh script.sh
+RUN chmod 777 script.sh
 RUN ./script.sh
 CMD ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-Dspring.profiles.active=qa", "org.springframework.boot.loader.JarLauncher"]
