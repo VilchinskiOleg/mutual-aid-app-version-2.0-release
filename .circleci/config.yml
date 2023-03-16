@@ -57,10 +57,10 @@ jobs:
     steps:
       - run:
           name: Deploy Over SSH
-          command: |
-            ssh $SSH_USER@$SSH_HOST "sudo docker run -p 8100:8100 -it alehvilchynski/auth-service-boot"
-            ssh $SSH_USER@$SSH_HOST "echo '${DOCKER_PASSWORD}' | sudo docker login -u '${DOCKER_ID}' --password-stdin"
-            ssh $SSH_USER@$SSH_HOST "sudo docker run -p 8100:8100 -it alehvilchynski/auth-service-boot"
+          command: ssh $SSH_USER@$SSH_HOST "echo ok"
+#            ssh $SSH_USER@$SSH_HOST "sudo docker run -p 8100:8100 -it alehvilchynski/auth-service-boot"
+#            ssh $SSH_USER@$SSH_HOST "echo '${DOCKER_PASSWORD}' | sudo docker login -u '${DOCKER_ID}' --password-stdin"
+#            ssh $SSH_USER@$SSH_HOST "sudo docker run -p 8100:8100 -it alehvilchynski/auth-service-boot"
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
