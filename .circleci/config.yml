@@ -55,6 +55,8 @@ jobs:
     machine:
       enabled: true
     steps:
+      # Checkout the code as the first step.
+      - checkout
       - run:
           name: Transfer launch file
           command: scp docker-compose.yml $SSH_USER@$SSH_HOST:/home/ubuntu/docker-compose.yml
