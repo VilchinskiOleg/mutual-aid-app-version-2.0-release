@@ -1,0 +1,10 @@
+version: 0.0
+os: linux
+files:
+  - source: /app
+    destination: /var/www/mutual-aid-app
+hooks:
+  AfterInstall:
+    - location: runApp.sh
+      timeout: 180
+      runas: root

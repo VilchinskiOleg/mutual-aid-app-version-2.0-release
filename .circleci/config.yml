@@ -51,6 +51,11 @@ jobs:
             
             docker build -t alehvilchynski/event-storage-service-boot ./event-storage-service
             docker push alehvilchynski/event-storage-service-boot
+      - run:
+          name: Deploy Over SSH
+          command: |
+            ssh $SSH_USER@$SSH_HOST "echo '${DOCKER_PASSWORD}' | sudo docker login -u '${DOCKER_ID}' --password-stdin"
+            ssh $SSH_USER@$SSH_HOST "sudo docker run -p 8100:8100 -it alehvilchynski/auth-service-boot"
       # Install AWS CLI
 #      - run:
 #          name: Install AWS CLI
