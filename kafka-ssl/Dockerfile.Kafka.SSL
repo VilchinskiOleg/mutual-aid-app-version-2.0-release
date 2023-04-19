@@ -10,4 +10,4 @@ COPY kafka-broker-SSL-script.sh ./script.sh
 RUN chmod 777 script.sh
 RUN ./script.sh
 # RUN cd /
-# don't declare 'CMD' command, that command will be provided by parent image, we don't want to override it.
+# don't declare 'CMD' abstractCommand, that abstractCommand will be provided by parent image, we don't want to override it.

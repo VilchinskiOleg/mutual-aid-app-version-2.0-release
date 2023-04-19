@@ -1,12 +1,12 @@
 package event.event_storage_service.mapper;
 
-import static event.event_storage_service.domain.model.OrderEvent.OperationType;
-import static java.util.Objects.nonNull;
-
+import com.mongodb.client.model.changestream.OperationType;
 import event.event_storage_service.domain.model.OrderDetails;
 import event.event_storage_service.persistent.entity.OrderEvent;
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
+
+import static java.util.Objects.nonNull;
 
 @Component
 public class DataOrderEventToOrderEventConverter extends BaseConverter<OrderEvent, event.event_storage_service.domain.model.OrderEvent> {

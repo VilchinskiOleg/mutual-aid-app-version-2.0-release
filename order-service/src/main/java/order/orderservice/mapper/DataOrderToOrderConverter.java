@@ -1,16 +1,15 @@
 package order.orderservice.mapper;
 
-import static java.util.Objects.nonNull;
-import static order.orderservice.domain.model.Order.Type;
-import static order.orderservice.domain.model.Order.Status;
-import static order.orderservice.domain.model.Order.Priority;
-
 import order.orderservice.domain.model.Location;
 import order.orderservice.domain.model.Member;
 import order.orderservice.persistent.mongo.entity.Order;
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
+
 import java.util.HashSet;
+
+import static java.util.Objects.nonNull;
+import static order.orderservice.domain.model.Order.*;
 
 @Component
 public class DataOrderToOrderConverter extends BaseConverter<Order, order.orderservice.domain.model.Order> {
@@ -22,7 +21,7 @@ public class DataOrderToOrderConverter extends BaseConverter<Order, order.orders
 
     @Override
     public void convert(Order source, order.orderservice.domain.model.Order destination) {
-        destination.setId(source.getId());
+        destination.setId(source.getId().toHexString());
         destination.setOrderId(source.getOrderId());
         destination.setTitle(source.getTitle());
         destination.setDescription(source.getDescription());

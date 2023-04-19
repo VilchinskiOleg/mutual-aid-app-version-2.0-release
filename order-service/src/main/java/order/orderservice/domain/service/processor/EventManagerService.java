@@ -1,18 +1,23 @@
 package order.orderservice.domain.service.processor;
 
-import static java.util.Optional.ofNullable;
-import static order.orderservice.configuration.kafka.message.KafkaOrderEvent.OperationType;
-import static java.util.stream.Collectors.toMap;
-import static order.orderservice.util.Constant.Errors.KAFKA_PRODUCER_NOT_FUND;
-
-import order.orderservice.domain.model.Order;
+import com.mongodb.client.model.changestream.ChangeStreamDocument;
+import com.mongodb.client.model.changestream.OperationType;
+import lombok.extern.slf4j.Slf4j;
 import order.orderservice.domain.service.kafka.producer.OrderEventProducer;
-import org.exception.handling.autoconfiguration.throwable.ConflictException;
+import order.orderservice.persistent.mongo.entity.Order;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toMap;
 
 @Component
+@Slf4j
 public class EventManagerService {
 
     private final Map<OperationType, OrderEventProducer> orderEventProducersByOperationType;
@@ -22,12 +27,23 @@ public class EventManagerService {
                 .collect(toMap(OrderEventProducer::getOperation, producer -> producer));
     }
 
-    public void sendEvent(OperationType operationType, Order order) {
-        getEventProducerByOperation(operationType).sendMessage(order);
+
+    public void processEvent(ChangeStreamDocument<Order> changeStreamDoc) {
+        final var operationType = changeStreamDoc.getOperationType();
+        final var order = changeStreamDoc.getFullDocument();
+        log.info("Process data change event:\n operationType ={},\n mongoOrderId ={},\n orderId ={},\n order ={}",
+                operationType,
+                requireNonNull(changeStreamDoc.getDocumentKey()).getFirstKey(),
+                nonNull(order) ? order.getOrderId() : null,
+                order);
+        fireProducerAccordingType(operationType, producer -> producer.sendMessage(changeStreamDoc));
     }
 
-    private OrderEventProducer getEventProducerByOperation(OperationType operationType) {
-        return ofNullable(orderEventProducersByOperationType.get(operationType))
-                .orElseThrow(() -> new ConflictException(KAFKA_PRODUCER_NOT_FUND));
+
+    private void fireProducerAccordingType(OperationType operationType, Consumer<OrderEventProducer> action) {
+        ofNullable(orderEventProducersByOperationType.get(operationType)).ifPresentOrElse(
+                action,
+                () -> log.warn("Didn't find appropriate producer for data change event ={}. So that, event was skipped.",
+                        operationType));
     }
 }

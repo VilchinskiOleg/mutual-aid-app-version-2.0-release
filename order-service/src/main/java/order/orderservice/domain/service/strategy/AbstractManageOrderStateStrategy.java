@@ -1,11 +1,11 @@
 package order.orderservice.domain.service.strategy;
 
-import javax.annotation.Resource;
-import order.orderservice.configuration.kafka.message.KafkaOrderEvent.OperationType;
 import order.orderservice.domain.model.Order;
 import order.orderservice.domain.service.OrderService;
 import order.orderservice.domain.service.processor.EventManagerService;
 import order.orderservice.domain.service.processor.ProfileService;
+
+import javax.annotation.Resource;
 
 public abstract class AbstractManageOrderStateStrategy implements ManageOrderStateStrategy {
 
@@ -22,9 +22,7 @@ public abstract class AbstractManageOrderStateStrategy implements ManageOrderSta
     Order currentOrder = orderService.findByOrderIdRequired(orderId);
     checkCurrentState(currentOrder);
     updateOrderState(currentOrder, args);
-    Order savedOrder = orderService.saveOrder(currentOrder);
-    eventManagerService.sendEvent(OperationType.UPDATE, savedOrder);
-    return savedOrder;
+    return orderService.saveOrder(currentOrder);
   }
 
   protected abstract void checkCurrentState(Order order);

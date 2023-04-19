@@ -1,0 +1,15 @@
+{
+     "type": "record",
+     "namespace": "org.tms.common.kafka.avro",
+     "name": "TaskEvent",
+     "version": "1",
+     "fields": [
+        { "name": "type", "type": "string" },
+
+        { "name": "flowId", "type": "string" },
+        { "name": "errorCode", "type": "string" },
+        { "name": "errorMessage", "type": "string" },
+
+        { "name": "payload", "type": "string" }
+     ]
+}

@@ -1,18 +1,20 @@
 package order.orderservice.domain.service.kafka.producer;
 
-import static java.time.LocalDateTime.now;
-import static order.orderservice.configuration.kafka.message.KafkaOrderEvent.OperationType;
-import static order.orderservice.util.Constant.Kafka.*;
-
+import com.mongodb.client.model.changestream.ChangeStreamDocument;
+import com.mongodb.client.model.changestream.OperationType;
 import lombok.extern.slf4j.Slf4j;
 import order.orderservice.configuration.kafka.message.KafkaOrderEvent;
-import order.orderservice.domain.model.Order;
+import order.orderservice.persistent.mongo.entity.Order;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
+
 import javax.annotation.Resource;
+
+import static java.time.LocalDateTime.now;
+import static order.orderservice.util.Constant.Kafka.*;
 
 @Slf4j
 public abstract class OrderEventProducer {
@@ -22,8 +24,8 @@ public abstract class OrderEventProducer {
     @Resource
     private Mapper mapper;
 
-    public void sendMessage(Order order) {
-        KafkaOrderEvent orderEvent = mapper.map(order, KafkaOrderEvent.class);
+    public void sendMessage(ChangeStreamDocument<Order> changeStreamDoc) {
+        KafkaOrderEvent orderEvent = mapper.map(changeStreamDoc.getFullDocument(), KafkaOrderEvent.class);
         send(orderEvent);
     }
 
@@ -56,6 +58,6 @@ public abstract class OrderEventProducer {
     private void populateMetaData(KafkaOrderEvent orderEvent) {
         orderEvent.setCreateAt(now());
         orderEvent.setCreateBy(ORDER_CLIENT_NAME);
-        orderEvent.setOperationType(getOperation());
+        orderEvent.setOperationType(getOperation().getValue());
     }
 }

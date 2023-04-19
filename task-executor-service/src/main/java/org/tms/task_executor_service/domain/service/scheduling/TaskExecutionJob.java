@@ -1,26 +1,26 @@
 package org.tms.task_executor_service.domain.service.scheduling;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.tms.task_executor_service.config.TaskExecutionProperties;
 import org.tms.task_executor_service.domain.service.TaskExecutionService;
-import javax.annotation.Resource;
 
 import static java.time.LocalDateTime.now;
 
 @Slf4j
 @Component
+@AllArgsConstructor
 public class TaskExecutionJob {
 
-    @Resource
+    @Value("${scheduling-props.tasks-amount}")
+    private static int TASKS_AMOUNT;
     private TaskExecutionService taskExecutionService;
-    @Resource
-    private TaskExecutionProperties properties;
 
     public void execute() {
         log.info("Start job = {}, dateTime = {}", jobName(), now());
         try {
-            var tasks = taskExecutionService.executeTasks(properties.getExecutionTasksAmountByJob());
+            taskExecutionService.executeTasks(TASKS_AMOUNT);
         } catch (Exception ex) {
             log.error("Unexpected error while execution job = {}", jobName(), ex);
         } finally {

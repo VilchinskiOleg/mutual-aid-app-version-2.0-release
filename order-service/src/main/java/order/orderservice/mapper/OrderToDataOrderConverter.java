@@ -1,13 +1,15 @@
 package order.orderservice.mapper;
 
-import static java.util.Objects.nonNull;
-
 import order.orderservice.domain.model.Order;
 import order.orderservice.persistent.mongo.entity.Location;
 import order.orderservice.persistent.mongo.entity.Member;
+import org.bson.types.ObjectId;
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
+
 import java.util.HashSet;
+
+import static java.util.Objects.nonNull;
 
 @Component
 public class OrderToDataOrderConverter extends BaseConverter<Order, order.orderservice.persistent.mongo.entity.Order> {
@@ -19,7 +21,9 @@ public class OrderToDataOrderConverter extends BaseConverter<Order, order.orders
 
     @Override
     public void convert(Order source, order.orderservice.persistent.mongo.entity.Order destination) {
-        destination.setId(source.getId());
+        if (nonNull(source.getId())) {
+            destination.setId(new ObjectId(source.getId())); // ignore for new instances.
+        }
         destination.setOrderId(source.getOrderId());
         destination.setTitle(source.getTitle());
         destination.setDescription(source.getDescription());

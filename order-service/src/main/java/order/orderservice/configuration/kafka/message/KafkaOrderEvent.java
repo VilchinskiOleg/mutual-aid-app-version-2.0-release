@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class KafkaOrderEvent implements Serializable {
 
-    private OperationType operationType;
+    private String operationType;
     private LocalDateTime createAt;
     private String createBy;
 
@@ -21,11 +21,5 @@ public class KafkaOrderEvent implements Serializable {
 
     public KafkaOrderEvent(String orderId) {
         this.orderId = orderId;
-    }
-
-    public enum OperationType {
-        CREATE,
-        UPDATE,
-        DELETE
     }
 }

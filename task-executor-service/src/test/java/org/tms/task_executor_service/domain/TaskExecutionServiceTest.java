@@ -1,117 +1,109 @@
 package org.tms.task_executor_service.domain;
 
-import static java.time.LocalDate.now;
-import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
-import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.tms.task_executor_service.utils.MapperUtils.*;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.Cleanup;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapper.autoconfiguration.ModelMapperConfig;
 import org.mapper.autoconfiguration.mapper.Mapper;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.tms.task_executor_service.domain.service.CommandExecutor;
-import org.tms.task_executor_service.domain.service.CommandManager;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.tms.mutual_aid.profile_service.client.model.Profile;
+import org.tms.task_executor_service.config.thread.RunListenersAsyncExecutorConfig;
+import org.tms.task_executor_service.domain.service.CommandsGroupListenerAsyncManager;
+import org.tms.task_executor_service.domain.service.EventPublisher;
+import org.tms.task_executor_service.domain.service.InitializationCommandManager;
 import org.tms.task_executor_service.domain.service.TaskExecutionServiceImp;
 import org.tms.task_executor_service.domain.service.client.ProfileClientService;
-import org.tms.task_executor_service.domain.service.command.Command;
-import org.tms.task_executor_service.domain.service.command.CreateProfileCommand;
+import org.tms.task_executor_service.domain.service.listener.ProfileCommandsGroupListener;
+import org.tms.task_executor_service.mapper.DataErrorToErrorConverter;
+import org.tms.task_executor_service.mapper.DataMetaToMetaConverter;
 import org.tms.task_executor_service.mapper.DataTaskToTaskConverter;
-import org.tms.task_executor_service.mapper.TaskToDataTaskConverter;
+import org.tms.task_executor_service.mapper.payload.DataCreateProfilePayloadToCreateProfilePayloadConverterVisitor;
+import org.tms.task_executor_service.mapper.payload.api_model.CreateProfilePayloadToApiProfileConverter;
 import org.tms.task_executor_service.mapper.service.PayloadMappingManager;
-import org.tms.task_executor_service.persistent.entity.Error;
-import org.tms.task_executor_service.persistent.entity.Meta;
 import org.tms.task_executor_service.persistent.entity.Task;
-import org.tms.task_executor_service.persistent.entity.payload.CreateProfilePayload;
-import org.tms.task_executor_service.persistent.entity.payload.profile.Contact;
-import org.tms.task_executor_service.persistent.entity.payload.profile.Name;
 import org.tms.task_executor_service.persistent.repository.TaskRepository;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.IntStream;
 
-@Disabled //TODO: That test doesn't work properly. Check it and fix the mistake!
-@ExtendWith(MockitoExtension.class)
+import javax.annotation.Resource;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(SpringExtension.class)
 @TestInstance(PER_CLASS)
+@ContextConfiguration(classes = {
+        // model mapping (Command):
+        ModelMapperConfig.class,
+        DataTaskToTaskConverter.class,
+        DataMetaToMetaConverter.class,
+        DataErrorToErrorConverter.class,
+        DataCreateProfilePayloadToCreateProfilePayloadConverterVisitor.class,
+        PayloadMappingManager.class,
+        // model mapping (Client Api):
+        CreateProfilePayloadToApiProfileConverter.class,
+        // services:
+        TaskExecutionServiceImp.class,
+        InitializationCommandManager.class,
+        CommandsGroupListenerAsyncManager.class,
+        RunListenersAsyncExecutorConfig.class,
+        // listeners:
+        ProfileCommandsGroupListener.class
+})
 public class TaskExecutionServiceTest {
 
-    public static final Integer TASKS_AMOUNT = 3;
+    private static final int TASKS_AMOUNT = 2;
 
-    @InjectMocks
+    @Resource
     private TaskExecutionServiceImp taskExecutionService;
-    @Mock
+    @Resource
+    private InitializationCommandManager initializationCommandManager;
+    @Resource
+    private EventPublisher eventPublisher;
+    @Resource
+    private Mapper mapper;
+
+    @MockBean
     private TaskRepository taskRepository;
-    @Mock
-    private CommandExecutor commandExecutor;
-    @Mock
-    private CommandManager commandManager;
-    @Spy
+    @MockBean
     private ProfileClientService profileClientService;
 
 
     /**
-     * Inject @payloadMappingManager to the task converter in order to use it for retrieving destination class for payload:
+     * Check executing some amount of tasks by Scheduling Job:
      */
-    @Spy
-    private PayloadMappingManager payloadMappingManager = new PayloadMappingManager();
-    @InjectMocks
-    private DataTaskToTaskConverter dataTaskToTaskConverter = new DataTaskToTaskConverter();
-    @InjectMocks
-    private TaskToDataTaskConverter taskToDataTaskConverter = new TaskToDataTaskConverter();
-
-
-    @Spy
-    private Mapper mapper = getMapper();
-    @Spy
-    private final ExecutorService asyncTaskExecutor = Executors.newFixedThreadPool(TASKS_AMOUNT);
-
-    @BeforeAll
-    void initAll() {
-        initDefaultTaskMapper(mapper, payloadMappingManager, dataTaskToTaskConverter, taskToDataTaskConverter);
-    }
-
     @Test
+    @SneakyThrows({FileNotFoundException.class, IOException.class})
     void execute_tasks_by_amount() {
-        when(taskRepository.findAll((Pageable) any())).thenReturn(new PageImpl<>(getTasks()));
-        when(taskRepository.removeTasks((List<String>) any())).thenReturn(0L);
+        @Cleanup var inStream = getClass().getClassLoader().getResourceAsStream("tasks.json");
+        var objectMapper = new ObjectMapper();
+        PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator
+                .builder()
+                .allowIfSubType("java.util.ArrayList")
+                .allowIfSubType("org.tms.task_executor_service.persistent.entity.payload")
+                .build();
+        objectMapper.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE, JsonTypeInfo.As.PROPERTY);
+        objectMapper.registerModule(new JavaTimeModule());
+        List<Task> tasks = objectMapper.readValue(inStream, new TypeReference<List<Task>>() {});
 
-        when(commandManager.retrieveCommand((org.tms.task_executor_service.domain.model.Task) any()))
-                .thenAnswer(args -> new CreateProfileCommand(args.getArgument(0), profileClientService, mapper));
+        when(taskRepository.findAll((Pageable) any())).thenReturn(new PageImpl<>(tasks));
+        when(profileClientService.createProfile((Profile) any())).thenAnswer(args -> args.getArgument(0));
 
         taskExecutionService.executeTasks(TASKS_AMOUNT);
-        verify(commandExecutor, times(TASKS_AMOUNT)).execute((Command) any());
-    }
-
-    private List<Task> getTasks() {
-        return IntStream.range(INTEGER_ZERO, TASKS_AMOUNT)
-                        .boxed()
-                        .map(index -> getTask())
-                        .collect(toList());
-    }
-
-    private Task getTask() {
-        var task = new Task();
-        task.setType("CREATE_PROFILE");
-        task.setPayload(new CreateProfilePayload("male", now(), List.of(new Name()), List.of(new Contact())));
-        task.setMeta(getMeta());
-        return task;
-    }
-
-    private Meta getMeta() {
-        var meta = new Meta();
-        meta.setFlowId("flow_id");
-        meta.setErrorDetails(new Error());
-        return meta;
+        verify(profileClientService, times(TASKS_AMOUNT)).createProfile((Profile) any());
     }
 }

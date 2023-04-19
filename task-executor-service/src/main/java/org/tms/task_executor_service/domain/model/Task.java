@@ -1,17 +1,19 @@
 package org.tms.task_executor_service.domain.model;
 
-import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.tms.task_executor_service.domain.model.payload.Payload;
 import org.tms.task_executor_service.domain.service.command.CreateProfileCommand;
+import org.tms.task_executor_service.domain.service.listener.AbstractCommandsGroupListener;
+import org.tms.task_executor_service.domain.service.listener.ProfileCommandsGroupListener;
+
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.util.Comparator;
 
 @Getter
 @Setter
 @ToString
-public class Task {
+public class Task implements Comparable<Task> {
 
     private String id;
     private String internalId;
@@ -22,13 +24,29 @@ public class Task {
     private Meta meta;
     private Payload payload;
 
+    @Override
+    public int compareTo(@NotNull Task obj) {
+        return Comparator
+                .comparingInt(task -> ((Task) task).getType().getPriority())
+                .thenComparing(task -> ((Task) task).getId())
+                .compare(this, obj);
+    }
+
     @AllArgsConstructor
     @Getter
-    public enum Type {
+    public enum Type{
 
-        CREATE_PROFILE(1, CreateProfileCommand.class);
+        CREATE_PROFILE(
+                1,
+                CreateProfileCommand.class,
+                null,
+                ProfileCommandsGroupListener.class);
 
         private final int priority;
+        @NonNull
         private final Class<?> commandImplClass;
+        private final Class<?> commandImplMethodMarker;
+        @NonNull
+        private final Class<? extends AbstractCommandsGroupListener<?>> commandsGroupListenerImplClass;
     }
 }

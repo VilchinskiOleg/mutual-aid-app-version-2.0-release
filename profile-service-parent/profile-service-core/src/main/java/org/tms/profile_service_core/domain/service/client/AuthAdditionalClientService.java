@@ -27,12 +27,13 @@ public class AuthAdditionalClientService {
     @Resource
     private Mapper mapper;
 
-    public void createAuth(Profile profile) {
+    public boolean createAuth(Profile profile) {
         final var request = createRequest(profile);
         Response response = authRestFeignClient.create(request);
 
         CreateProfileResponse authResponse = deserializeResponse(response.body());
         checkResponse(response.status(), authResponse, profile.getProfileId());
+        return true;
     }
 
     private CreateProfileRequest createRequest(Profile profile) {
@@ -54,7 +55,8 @@ public class AuthAdditionalClientService {
 
     private void checkResponse(int statusCode, CreateProfileResponse authResponse, String profileId) {
         if (statusCode != OK_HTTP_CODE) {
-            log.error("The request for create auth profile by resourceId={} is failed: \n\tstatus = {} \n\terror = {}", profileId, statusCode, authResponse.getError());
+            log.error("The request for create auth profile by resourceId={} is failed: \n\tstatus = {} \n\terror = {}",
+                    profileId, statusCode, authResponse.getError());
             throw new ConflictException(FAIL_CREATING_AUTH_PROFILE);
         }
     }

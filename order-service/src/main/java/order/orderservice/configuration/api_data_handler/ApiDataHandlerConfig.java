@@ -54,7 +54,8 @@ public class ApiDataHandlerConfig {
         return Map.of(
                 "hibernate.dialect", "org.hibernate.dialect.PostgreSQL10Dialect",
                 "hibernate.hbm2ddl.auto", "update",
-                "hibernate.show_sql", "true"
+                "hibernate.show_sql", "true",
+                "hibernate.format_sql", "true"
         );
     }
 }

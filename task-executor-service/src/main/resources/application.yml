@@ -31,8 +31,12 @@ feign:
 profile-rest-client:
   user: task-executor-service-client
 
-task-execution-props:
-  date:
-  period: 1
-  poolSize: 10
-  tasksAmount: 10
+scheduling-props:
+  # period (min) before next scheduled iteration to run TaskExecutionService:
+  period: 150
+  # how many task to run for one scheduled iteration:
+  tasks-amount: 10
+
+kafka:
+  bootstrap-servers: localhost:9092
+  schema-registry-url: http://localhost:8081

@@ -5,10 +5,10 @@
         "description": "123welcome!45",
         "roles": [
             "CREATE_AUTH_PROFILE",
-
             "UPDATE_ORDER_AS_OWNER",
-
-            "GET_PROFILE_BY_ID"
+            "GET_PROFILE_BY_ID",
+            "UPDATE_ORDER_AS_OWNER",
+            "CHOOSE_ORDER_AS_WORKER"
         ]
     },
 
@@ -43,6 +43,15 @@
         "name": "message-chat-service-client",
         "password": "$2a$12$VT97rbO9jQHBlx3b28nDi.rHbe675ChLP1pSI4qCW8Ty8xvyLfpFi",
         "description": "42voRTvk_wEle!76",
+        "roles": [
+            "GET_PROFILE_BY_ID"
+        ]
+    },
+
+    {
+        "name": "task-executor-service-client",
+        "password": "$2a$12$VT97rbO9jQHBlx3b28nDi.rHbe675ChLP1pSI4qCW8Ty8xvyLfpFi",
+        "description": "42vosdfgT567k_w",
         "roles": [
             "GET_PROFILE_BY_ID"
         ]
