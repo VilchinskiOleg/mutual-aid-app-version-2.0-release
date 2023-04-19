@@ -11,9 +11,8 @@ import java.util.Map;
 public class CommonData {
 
     private Locale locale;
+    private String flowId;
+
     private HttpSession httpSession;
     private Map<String, String> headers;
-
-    //TODO: for my experiment (remove before PROD).
-    private String threadName;
 }

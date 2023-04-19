@@ -1,7 +1,5 @@
 package order.orderservice.configuration.kafka;
 
-import static java.util.Objects.nonNull;
-
 import order.orderservice.configuration.kafka.message.KafkaOrderEvent;
 import order.orderservice.configuration.kafka.properties.KafkaBaseProperties;
 import order.orderservice.configuration.kafka.properties.KafkaSSLProperties;
@@ -14,9 +12,12 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.util.Objects.nonNull;
 
 @Configuration
 public class KafkaProducerConfig {

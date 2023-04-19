@@ -16,7 +16,7 @@ jobs:
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
-      # Checkout the code as the first step.
+      # Checkout the code as the first step. Fetching your code from the GitHub.
       - checkout
       # Set up Docker
       - setup_remote_docker:
@@ -55,7 +55,7 @@ jobs:
     machine:
       enabled: true
     steps:
-      # Checkout the code as the first step.
+      # Checkout the code as the first step. Fetching your code from the GitHub.
       - checkout
       - run:
           name: Transfer launch file
@@ -65,8 +65,8 @@ jobs:
           command: |
             ssh $SSH_USER@$SSH_HOST "pwd"
             
-#            ssh $SSH_USER@$SSH_HOST "echo '${DOCKER_PASSWORD}' | sudo docker login -u '${DOCKER_ID}' --password-stdin"
-#            ssh $SSH_USER@$SSH_HOST "sudo docker ru  n -p 8100:8100 -it alehvilchynski/auth-service-boot"
+            ssh $SSH_USER@$SSH_HOST "echo '${DOCKER_PASSWORD}' | sudo docker login -u '${DOCKER_ID}' --password-stdin"
+#            ssh $SSH_USER@$SSH_HOST "sudo docker-compose up --build"
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows

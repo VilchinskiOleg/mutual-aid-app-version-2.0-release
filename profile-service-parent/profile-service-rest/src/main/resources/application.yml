@@ -25,9 +25,27 @@ feign:
         loggerLevel: full
         requestInterceptors:
           - org.tms.profile_service_core.configuration.client.auth.AuthRestClientAuthInterceptor
+      emailSenderApiClient:
+        connectTimeout: 10000
+        readTimeout: 15000
+        loggerLevel: full
+        requestInterceptors:
+          - org.tms.profile_service_core.configuration.client.email.RapidEmailSenderApiInterceptor
 
 auth-rest-client:
   user: profile-service-rest-client
   # for common auth config:
   read-timeout: 15000
   connection-timeout: 10000
+
+email-sender-open-api:
+  url: https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send
+  host: rapidprod-sendgrid-v1.p.rapidapi.com
+  token: ${EMAIL_SENDER_API_TOKEN}
+
+kafka:
+  bootstrap-servers: localhost:9092
+  schema-registry-url: http://localhost:8081
+  # for SSL security:
+
+enable-task-retry: true

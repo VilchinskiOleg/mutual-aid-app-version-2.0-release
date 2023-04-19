@@ -19,13 +19,25 @@
 
     <properties>
         <java.version>11</java.version>
+        <avro.version>1.11.1</avro.version>
+        <confluent.version>5.5.5</confluent.version>
     </properties>
 
+    <!-- For inclusion some other particular repositories, and to use not only maven central: -->
+    <repositories>
+        <repository>
+            <id>confluent</id>
+            <url>http://packages.confluent.io/maven/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
+
         <!-- FEIGN CLOUD CLIENT: -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -36,7 +48,34 @@
             <artifactId>feign-httpclient</artifactId>
         </dependency>
 
+        <!-- KAFKA: -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.tms.common.kafka</groupId>
+            <artifactId>avro-schema</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+            <version>${avro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-avro-serializer</artifactId>
+            <version>${confluent.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.zookeeper</groupId>
+                    <artifactId>zookeeper</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
+        <!-- STARTERS: -->
         <dependency>
             <groupId>org.tms.mapper</groupId>
             <artifactId>model-mapper-autoconfiguration</artifactId>
@@ -49,11 +88,13 @@
             <groupId>org.tms.common.http</groupId>
             <artifactId>common-http-autoconfiguration</artifactId>
         </dependency>
+
         <!-- COMMON AUTH CONFIGURATION: -->
         <dependency>
             <groupId>org.tms.common.auth</groupId>
             <artifactId>auth-configuration</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>

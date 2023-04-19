@@ -1,16 +1,8 @@
 package order.orderservice.data;
 
-import static com.mongodb.assertions.Assertions.assertTrue;
-import static java.math.BigDecimal.valueOf;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Stream.of;
-import static order.orderservice.domain.model.search.SearchOrderDetails.builder;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import order.orderservice.persistent.mongo.entity.Order;
 import order.orderservice.persistent.mongo.repository.OrderRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
@@ -20,9 +12,17 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
+
+import static com.mongodb.assertions.Assertions.assertTrue;
+import static java.math.BigDecimal.valueOf;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.of;
+import static order.orderservice.domain.model.search.SearchOrderDetails.builder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Testcontainers
 @DirtiesContext
@@ -44,6 +44,9 @@ public class OrderRepositoryTest {
         registry.add("spring.data.mongodb.uri", mongoDB::getReplicaSetUrl);
     }
 
+    /**
+     * Check search filter for Orders to work properly:
+     */
     @Test
     void find_orders_by_price_limit() {
         final var savedOrderIds = orderRepository.saveAll(getOrders()).stream()

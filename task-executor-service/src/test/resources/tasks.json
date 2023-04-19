@@ -1,0 +1,51 @@
+[
+  "java.util.ArrayList",
+  [
+    {
+      "id": "test-sdf6-d74gh",
+      "internalId": "123",
+      "type": "CREATE_PROFILE",
+      "createdAt": "2023-03-01T15:23:29",
+      "meta": {
+        "flowId": "test-sdh3345s-sdf-t5sd",
+        "client": "profile-service",
+        "errorDetails": {
+          "code": "test",
+          "message": "test"
+        },
+        "requestDetails": "test"
+      },
+      "payload":
+      {
+        "@class": "org.tms.task_executor_service.persistent.entity.payload.CreateProfilePayload",
+        "gender": "MAIL",
+        "birthday": "1993-11-29",
+        "names": null,
+        "contacts": null
+      }
+    },
+
+    {
+      "id": "test-sdew4f6-d7sdfd68",
+      "internalId": "456",
+      "type": "CREATE_PROFILE",
+      "createdAt": "2023-03-06T15:45:19",
+      "meta": {
+        "flowId": "test-3345s-sd26dsdf-sdfs",
+        "client": "profile-service",
+        "errorDetails": {
+          "code": "test",
+          "message": "test"
+        },
+        "requestDetails": "test"
+      },
+      "payload": {
+        "@class": "org.tms.task_executor_service.persistent.entity.payload.CreateProfilePayload",
+        "gender": "MAIL",
+        "birthday": "1993-11-29",
+        "names": null,
+        "contacts": null
+      }
+    }
+  ]
+]

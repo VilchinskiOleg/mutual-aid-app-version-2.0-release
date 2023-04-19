@@ -6,3 +6,8 @@ spring:
 profile-rest-client:
   url: http://localhost:8200
   password:
+
+logging:
+  level:
+    root: warn
+    org.tms.task_executor_service.domain.service.kafka.consumer.TaskForRetryingListener: warn

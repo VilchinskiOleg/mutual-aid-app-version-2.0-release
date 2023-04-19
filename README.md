@@ -47,30 +47,30 @@ That project is C2C application. One of user (Customer) can publish certain Job.
 * [Don't need to do, if use kubernetes approach] You have to put on your OS some environment variables like: EMAIL_SENDER_API_TOKEN (need account for open API) , TRANSLATE_API_TOKEN (need account for open API) , PG_PASSWORD , PG_USERNAME . Restart your computer after.
 
 ##### In order to set up _some single service_ LOCALLY you need to take care about:
-* Run command `mvn -P local clean install` or `mvn clean install` in current directory in order to build project.
+* Run abstractCommand `mvn -P local clean install` or `mvn clean install` in current directory in order to build project.
 * Install Java 11 on your machine.
-* [OPTIONAL. Only for appropriate service] Run PostgreSQL DB on your local machine by command `docker run --name postgres-container -e POSTGRES_DB=apiDB -e POSTGRES_USER=[PG_USERNAME] -e POSTGRES_PASSWORD=[PG_PASSWORD] -p 5432:5432 -it postgres` .
+* [OPTIONAL. Only for appropriate service] Run PostgreSQL DB on your local machine by abstractCommand `docker run --name postgres-container -e POSTGRES_DB=apiDB -e POSTGRES_USER=[PG_USERNAME] -e POSTGRES_PASSWORD=[PG_PASSWORD] -p 5432:5432 -it postgres` .
 * [OPTIONAL. Only for appropriate service] Run Kafka service on your local machine (as an option you can run Kafka brokers by Docker image, in this case you need to have Docker installed) or cloud service (if you try to deploy it in the cloud).
-* Go to the necessary service (root directory) and run it by command `java -jar target/[artifactId]-[version].jar [fully.qualified.package.Application]` (for instance 'java -jar target/auth-service-rest-0.0.1-SNAPSHOT.jar org.tms.authservicerest.AuthServiceRestApplication') or 'mvn spring-boot:run'.
+* Go to the necessary service (root directory) and run it by abstractCommand `java -Dspring.profiles.active=qa -jar target/[artifactId]-[version].jar [fully.qualified.package.Application]` (for instance 'java -Dspring.profiles.active=qa -jar target/auth-service-rest-0.0.1-SNAPSHOT.jar org.tms.authservicerest.AuthServiceRestApplication') or 'mvn spring-boot:run'.
 
 ##### In order to set up _all project_ LOCALLY by _Docker_ you have to do:
-* Run command `mvn -P qa clean install` in current directory in order to build project.
+* Run abstractCommand `mvn -P qa clean install` in current directory in order to build project.
 * Install Docker on your machine.
-* Go to the `kafka-ssl` directory and build and install into your remote Docker repo CA SSL image by commands `docker build -t [your_docker_id]/kafka-ca-ssl -f Dockerfile.CA.SSL .` and `docker push [your_docker_id]/kafka-ca-ssl` . 
+* Go to the `kafka-ssl` directory and build and install into your remote Docker repo CA SSL image by abstractCommands `docker build -t [your_docker_id]/kafka-ca-ssl -f Dockerfile.CA.SSL .` and `docker push [your_docker_id]/kafka-ca-ssl` . 
 * Replace into docker files from modules: **order** , **event-storage** and into file **Dockerfile.Kafka.SSL** line `FROM alehvilchynski/kafka-ca-ssl as ssl_ca_container` to line with your docker ID like: `FROM [your_docker_id]/kafka-ca-ssl as ssl_ca_container` .
-* Run command `docker-compose up` from root directory in order to build and run all containers.
+* Run abstractCommand `docker-compose up --build` from root directory in order to build and run all containers.
 * [OPTIONAL] Set up remote debug for every module using ports should be copied from **docker-compose.yml** file from root directory (every port overrides 5005). 
 
 ##### In order to set up _all project_ LOCALLY by _Kubernetes_ you have to do:
-* Run command `mvn -P qa clean install` in current directory in order to build project.
+* Run abstractCommand `mvn -P qa clean install` in current directory in order to build project.
 * Prepare necessary Docker images in your remote repo (build images for every service and push them to the DockerHub).
 * Replace my Docker ID to your for image of every deployment file.
 * Install Kubernetes to your computer.
-* Install Ingress Nginx project by command:
+* Install Ingress Nginx project by abstractCommand:
   `kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml`
-* Write secret env variables like: MONGO_DB_PASSWORD , EMAIL_SENDER_API_TOKEN , TRANSLATE_API_TOKEN , PG_PASSWORD , PG_USERNAME as a **Secret** object to your local Kubernetes by command:
+* Write secret env variables like: MONGO_DB_PASSWORD , EMAIL_SENDER_API_TOKEN , TRANSLATE_API_TOKEN , PG_PASSWORD , PG_USERNAME as a **Secret** object to your local Kubernetes by abstractCommand:
   `kubectl create secret generic [secret_name] --from-literal [key]=[value]`
-* Feed all files in dir **'k8s'** for **kubctl** by running command:
+* Feed all files in dir **'k8s'** for **kubctl** by running abstractCommand:
   `kubectl apply -f k8s`
 * [*] Run requests without port value in order to test locally.
 * [OPTIONAL] Set up remote debug for every module using ports should be copied from appropriate **\*-node-port.yaml** file from k8s directory.

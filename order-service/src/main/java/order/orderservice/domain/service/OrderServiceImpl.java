@@ -1,19 +1,6 @@
 package order.orderservice.domain.service;
 
-import static java.lang.Thread.sleep;
-import static java.time.LocalDateTime.now;
-import static java.time.format.DateTimeFormatter.ofPattern;
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
-import static order.orderservice.domain.model.Order.Status.*;
-import static order.orderservice.util.Constant.Errors.*;
-import static order.orderservice.util.Constant.ModelMapper.CREATE;
-import static order.orderservice.util.Constant.ModelMapper.UPDATE;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
-import static org.springframework.util.CollectionUtils.isEmpty;
-
 import lombok.extern.slf4j.Slf4j;
-import order.orderservice.configuration.kafka.message.KafkaOrderEvent.OperationType;
 import order.orderservice.domain.model.Order;
 import order.orderservice.domain.model.page.Page;
 import order.orderservice.domain.model.search.SearchOrderDetails;
@@ -21,14 +8,25 @@ import order.orderservice.domain.service.processor.EventManagerService;
 import order.orderservice.domain.service.processor.IdGeneratorService;
 import order.orderservice.domain.service.processor.ProfileService;
 import order.orderservice.persistent.mongo.repository.OrderRepository;
-import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.common.http.autoconfiguration.model.CommonData;
+import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.time.LocalDateTime.now;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
+import static order.orderservice.domain.model.Order.Status.ACTIVE;
+import static order.orderservice.util.Constant.Errors.ORDER_NOT_FUND;
+import static order.orderservice.util.Constant.ModelMapper.CREATE;
+import static order.orderservice.util.Constant.ModelMapper.UPDATE;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Slf4j
 @Component
@@ -51,14 +49,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order createOrder(Order orderDetails) {
-        // build new order:
         var order = createNewOrder();
         mapper.map(orderDetails, order, CREATE);
         order.setOwner(profileService.retrieveMemberByIdRequired(orderDetails.getOwner().getMemberId()));
-        // save oder:
-        Order savedOrder = saveOrder(order);
-        eventManagerService.sendEvent(OperationType.CREATE, savedOrder);
-        return savedOrder;
+        return saveOrder(order);
     }
 
     @Override
@@ -69,9 +63,7 @@ public class OrderServiceImpl implements OrderService {
             profileService.changeOrderExecutor(order, orderDetails.getExecutor());
         }
         order.setModifyAt(now());
-        Order savedOrder = saveOrder(order);
-        eventManagerService.sendEvent(OperationType.UPDATE, savedOrder);
-        return savedOrder;
+        return saveOrder(order);
     }
 
     @Override
@@ -121,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
 
             var orderData = mapper.map(order, order.orderservice.persistent.mongo.entity.Order.class);
             orderRepository.delete(orderData);
-            eventManagerService.sendEvent(OperationType.DELETE, order);
+//            eventManagerService.processEvent(???); //TODO: it may be usefull later [*]
 
 //            log.info("{} - finished!", currentThread().getName());
         }));

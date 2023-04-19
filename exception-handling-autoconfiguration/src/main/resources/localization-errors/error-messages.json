@@ -186,5 +186,19 @@
             "en": "Didn't manage retrieve that profile. Check profileID and other parameters.",
             "ru": "Не удалось получить этот профиль. Проверьте ID профиля и другие параметры."
         }
+    },
+    "fail.creating.new.profile": {
+        "code": "fail.creating.new.profile",
+        "messages": {
+            "en": "Fail creating new profile. Try to create later.",
+            "ru": "Не удалось создать новый профиль. Попробуйте создать позже."
+        }
+    },
+    "fail.creating.new.profile.retryable": {
+        "code": "fail.creating.new.profile.retryable",
+        "messages": {
+            "en": "Fail creating new profile because of issues with network connections. Your profile will be created automatically little beat later. You will be sent notification by email about it.",
+            "ru": "Не удалось создать новый профиль из-за проблем с сетевыми подключениями. Ваш профиль будет создан автоматически чуть позже. Вам будет отправлено уведомление по электронной почте об этом."
+        }
     }
 }

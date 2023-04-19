@@ -12,16 +12,10 @@ import java.time.LocalDateTime;
 @ToString
 public class KafkaOrderEvent implements Serializable {
 
-    private OperationType operationType;
+    private String operationType;
     private LocalDateTime createAt;
     private String createBy;
 
     private String orderId;
     private String status;
-
-    public enum OperationType {
-        CREATE,
-        UPDATE,
-        DELETE
-    }
 }

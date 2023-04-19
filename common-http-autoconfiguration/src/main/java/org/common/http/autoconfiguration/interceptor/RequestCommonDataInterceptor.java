@@ -1,27 +1,32 @@
 package org.common.http.autoconfiguration.interceptor;
 
-import static java.util.Objects.isNull;
-import static org.common.http.autoconfiguration.utils.Constant.DEFAULT_LANG;
-import static org.common.http.autoconfiguration.utils.Constant.LANG_HEADER;
-
 import lombok.AllArgsConstructor;
 import org.common.http.autoconfiguration.model.CommonData;
+import org.common.http.autoconfiguration.service.IdGeneratorService;
 import org.springframework.web.servlet.HandlerInterceptor;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import static java.util.Objects.isNull;
+import static org.common.http.autoconfiguration.utils.Constant.DEFAULT_LANG;
+import static org.common.http.autoconfiguration.utils.Constant.LANG_HEADER;
+
 @AllArgsConstructor
 public class RequestCommonDataInterceptor implements HandlerInterceptor {
 
     private CommonData commonData;
+    private IdGeneratorService idGeneratorService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         commonData.setLocale(new Locale(extractLang(request)));
-//        setFlowIdToHider_If_itIsNull;
+        if (isNull(commonData.getFlowId())) {
+            commonData.setFlowId(idGeneratorService.generate());
+        }
         commonData.setHttpSession(request.getSession());
         commonData.setHeaders(extractHeaders(request));
         return true;
