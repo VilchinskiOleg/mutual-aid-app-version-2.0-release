@@ -1,5 +1,5 @@
 # only use as a container for CA:
-FROM alehvilchynski/kafka-ca-ssl as ssl_ca_container
+FROM "${DOCKER_ID}"/kafka-ca-ssl as ssl_ca_container
 
 FROM wurstmeister/kafka
 RUN mkdir -p etc/kafka/secret/certs

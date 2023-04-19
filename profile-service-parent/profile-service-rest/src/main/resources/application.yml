@@ -48,4 +48,4 @@ kafka:
   schema-registry-url: http://localhost:8081
   # for SSL security:
 
-enable-task-retry: true
+enable-task-retry: false

@@ -29,34 +29,23 @@ jobs:
       - run:
           name: Test
           command: mvn test
+      # Then run build docker images and push them to dockerhub
       - run:
           name: Push images
-          command: |
-            echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_ID}" --password-stdin
-            
-            docker build -t alehvilchynski/kafka-ca-ssl -f ./kafka-ssl/Dockerfile.CA.SSL ./kafka-ssl
-            docker push alehvilchynski/kafka-ca-ssl
-            
-            docker build -t alehvilchynski/kafka-ssl-broker1 -f ./kafka-ssl/Dockerfile.Kafka.SSL ./kafka-ssl
-            docker push alehvilchynski/kafka-ssl-broker1
-            
-            docker build -t alehvilchynski/auth-service-boot ./auth-parent/auth-service-rest
-            docker push alehvilchynski/auth-service-boot
-            
-            docker build -t alehvilchynski/profile-service-boot ./profile-service-parent/profile-service-rest
-            docker push alehvilchynski/profile-service-boot
-            
-            docker build -t alehvilchynski/order-service-boot ./order-service
-            docker push alehvilchynski/order-service-boot
-            
-            docker build -t alehvilchynski/event-storage-service-boot ./event-storage-service
-            docker push alehvilchynski/event-storage-service-boot
+          command: ./docker-images-preparation-script.sh
   deploy-to-aws:
     machine:
       enabled: true
     steps:
       # Checkout the code as the first step. Fetching your code from the GitHub.
       - checkout
+      - run:
+          name: Clean previous project version
+          command: |
+            ssh $SSH_USER@$SSH_HOST "sudo docker stop $(sudo docker ps -q)"
+            ssh $SSH_USER@$SSH_HOST "sudo docker system prune -a -f"
+            ssh $SSH_USER@$SSH_HOST "rm docker-compose.yml"
+            ssh $SSH_USER@$SSH_HOST "ls"
       - run:
           name: Transfer launch file
           command: scp docker-compose.yml $SSH_USER@$SSH_HOST:/home/ubuntu/docker-compose.yml
@@ -66,7 +55,7 @@ jobs:
             ssh $SSH_USER@$SSH_HOST "pwd"
             
             ssh $SSH_USER@$SSH_HOST "echo '${DOCKER_PASSWORD}' | sudo docker login -u '${DOCKER_ID}' --password-stdin"
-#            ssh $SSH_USER@$SSH_HOST "sudo docker-compose up --build"
+            ssh $SSH_USER@$SSH_HOST "sudo docker-compose up --build"
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows

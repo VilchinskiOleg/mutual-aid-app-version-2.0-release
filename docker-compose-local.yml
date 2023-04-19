@@ -1,0 +1,152 @@
+version: '3'
+services:
+  zookeeper:
+    image: 'wurstmeister/zookeeper'
+    container_name: 'zookeeper'
+    ports:
+      - '2181:2181'
+  kafka:
+    build:
+      dockerfile: Dockerfile.Kafka.SSL
+      context: ./kafka-ssl
+    container_name: 'kafka'
+    image: 'kafka-ssl'
+    ports:
+      - '9092:9092'
+    depends_on:
+      - 'zookeeper'
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: SSL://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: SSL://kafka:9092
+      # I explicitly defined protocol for communicate broker between each other:
+      # I have to define it and change default value (PLAINTEXT) because I didn't define any PLAINTEXT listeners before.
+      KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SSL
+      SSL_ENABLED_PROTOCOLS: 'TLSv1,TLSv1.1,TLSv1.2,TLSv1.3'
+      KAFKA_SSL_CLIENT_AUTH: 'required'
+      KAFKA_SSL_KEY_PASSWORD: '34rtsTb290'
+      KAFKA_SSL_KEYSTORE_LOCATION: '/serverkeystore.jks'
+      KAFKA_SSL_KEYSTORE_PASSWORD: '34rtsTb290'
+      KAFKA_SSL_TRUSTSTORE_LOCATION: '/servertruststore.jks'
+      KAFKA_SSL_TRUSTSTORE_PASSWORD: '34rtsTb290'
+  postgres:
+    image: postgres
+    container_name: 'postgres'
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_DB=apiDB
+      - POSTGRES_USER=${PG_USERNAME}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+    volumes:
+      # For Windows:
+      - ${pwd}/postgres/backup:/var/lib/postgresql/data
+      # For Linux:
+#      - $(pwd)/postgres/backup:/var/lib/postgresql/data
+  auth-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./auth-parent/auth-service-rest
+    container_name: 'auth-service'
+    ports:
+      - '8100:8100'
+      - '5015:5005'
+    environment:
+      - MONGO_DB_PASSWORD
+      - EMAIL_SENDER_API_TOKEN
+  profile-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./profile-service-parent/profile-service-rest
+    container_name: 'profile-service'
+    ports:
+      - '8200:8200'
+      - '5025:5005'
+    depends_on:
+      - 'auth-service'
+    environment:
+      - MONGO_DB_PASSWORD
+      - auth-rest-client.url=http://auth-service:8100
+  profile-soap-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./profile-service-parent/profile-service-soap
+    container_name: 'profile-soap-service'
+    ports:
+      - '8250:8250'
+      - '5225:5005'
+    depends_on:
+      - 'auth-service'
+    environment:
+      - MONGO_DB_PASSWORD
+      - auth-rest-client.url=http://auth-service:8100
+  order-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./order-service
+    container_name: 'order-service'
+    ports:
+      - '8300:8300'
+      - '5035:5005'
+    depends_on:
+      - 'kafka'
+      - 'postgres'
+      - 'auth-service'
+      - 'profile-service'
+    environment:
+      - MONGO_DB_PASSWORD
+      - PG_PASSWORD
+      - PG_USERNAME
+      # It must be internal Port and Name of containers:
+      - kafka.bootstrapServers=kafka:9092
+      - kafka.ssl-keystore-location=/app/clientkeystore.jks
+      - kafka.ssl-truststore-location=/app/clienttruststore.jks
+      - datasource.api.jdbc-url=jdbc:postgresql://postgres:5432/apiDB
+      - auth-rest-client.url=http://auth-service:8100
+      - profile-rest-client.url=http://profile-service:8200
+  event-storage-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./event-storage-service
+    container_name: 'event-storage-service'
+    ports:
+      - '8400:8400'
+      - '5045:5005'
+    depends_on:
+      - 'auth-service'
+      - 'order-service'
+      - 'kafka'
+    environment:
+      - MONGO_DB_PASSWORD
+      - kafka.bootstrapServers=kafka:9092
+      - kafka.ssl-keystore-location=/app/clientkeystore.jks
+      - kafka.ssl-truststore-location=/app/clienttruststore.jks
+  message-chat-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./message-chat-service
+    container_name: 'message-chat-service'
+    ports:
+      - '8500:8500'
+      - '5055:5005'
+    depends_on:
+      - 'auth-service'
+      - 'profile-service'
+    environment:
+      - MONGO_DB_PASSWORD
+      - TRANSLATE_API_TOKEN
+      - profile-rest-client.url=http://profile-service:8200
+  task-executor-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./task-executor-service
+    container_name: 'task-executor-service'
+    ports:
+      - '8600:8600'
+      - '5065:5005'
+    depends_on:
+      - 'auth-service'
+      - 'profile-service'
+    environment:
+      - MONGO_DB_PASSWORD
+      - profile-rest-client.url=http://profile-service:8200
