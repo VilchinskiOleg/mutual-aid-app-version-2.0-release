@@ -6,7 +6,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.tms.task_executor_service.domain.dto.Event;
 import org.tms.task_executor_service.domain.model.Task;
-import org.tms.task_executor_service.domain.service.listener.AbstractCommandsGroupListener;
 import org.tms.task_executor_service.persistent.repository.TaskRepository;
 import org.tms.thread_save.thread_save_api.annotation.ThreadSaveMethod;
 import org.tms.thread_save.thread_save_api.marker.ThreadSaveResource;
@@ -75,7 +74,7 @@ public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSave
                 ));
         return commandByListener.entrySet().stream()
                 .map(entry -> new Event(
-                        (Class<? extends AbstractCommandsGroupListener<?>>) entry.getKey(),
+                        entry.getKey(),
                         new TreeSet<>(entry.getValue())
                 ))
                 .collect(toList());

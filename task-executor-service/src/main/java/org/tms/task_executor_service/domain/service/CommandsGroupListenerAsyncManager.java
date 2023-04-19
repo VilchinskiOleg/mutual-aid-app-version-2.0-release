@@ -15,15 +15,15 @@ import static java.util.stream.Collectors.toMap;
 @Component
 public class CommandsGroupListenerAsyncManager implements EventPublisher {
 
-    private final Map<Class<? extends AbstractCommandsGroupListener>, ? extends AbstractCommandsGroupListener<?>> listenersByClazz;
+    private final Map<Class<?>, ? extends AbstractCommandsGroupListener<?>> listenersByClazz;
 
     public CommandsGroupListenerAsyncManager(List<? extends AbstractCommandsGroupListener<?>> listeners) {
         this.listenersByClazz = listeners.stream()
-                .collect(toMap(listener -> listener.getClass(), listener -> listener));
+                .collect(toMap(Object::getClass, listener -> listener));
     }
 
     @Override
-    //todo: have problem with @Async:
+    //todo: have problem with @Async (only for dev testing). Investigate and fix!
 //    @Async
     public void sendEvent(Event event) {
 //        try {
@@ -37,7 +37,7 @@ public class CommandsGroupListenerAsyncManager implements EventPublisher {
         });
     }
 
-    public boolean isContainAppropriateListener(Class<? extends AbstractCommandsGroupListener> listenerImplClazz) {
+    public boolean isContainAppropriateListener(Class<?> listenerImplClazz) {
         return listenersByClazz.containsKey(listenerImplClazz);
     }
 }
