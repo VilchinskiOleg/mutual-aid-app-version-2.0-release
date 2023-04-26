@@ -1,14 +1,15 @@
 package messagechat.messagechatservice.domain.model;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
-
 import lombok.Getter;
 import lombok.Setter;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 
 @Getter
 @Setter
@@ -60,7 +61,15 @@ public class Dialog {
     }
 
     public enum Type {
+
+        /**
+         * Can have as meany as you want members.
+         */
         CHANNEL,
+
+        /**
+         * Must have only two members.
+         */
         FACE_TO_FACE_DIALOG
     }
 }

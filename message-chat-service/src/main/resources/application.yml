@@ -5,6 +5,11 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+  jackson:
+    # something like 'non_null' included in 'non_empty' prop-value:
+    default-property-inclusion: non_empty
+    parser:
+      allow-comments: true
 
 application:
   api-info:
@@ -15,6 +20,13 @@ application:
       name: OLEG
       url: https://mail.google.com
       email: vilchinskioleg@gmail.com
+
+datasource:
+  message-chat:
+    driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://localhost:5432/messageChatService
+    username: ${PG_USERNAME}
+    password: ${PG_PASSWORD}
 
 feign:
   client:
@@ -40,3 +52,7 @@ google-translate-open-api:
 
 profile-rest-client:
   username: message-chat-service-client
+
+logging:
+  level:
+    root: info

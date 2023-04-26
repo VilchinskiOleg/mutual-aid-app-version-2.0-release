@@ -8,5 +8,7 @@ import java.util.List;
 @Setter
 public class MessagesPageResponse extends PageResponse {
 
+    private String dialogId;
+    private String dialogName;
     private List<Message> messages;
 }

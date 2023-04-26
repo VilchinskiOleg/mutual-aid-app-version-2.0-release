@@ -1,22 +1,24 @@
 package messagechat.messagechatservice.rest.service;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
-
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import messagechat.messagechatservice.domain.service.MessageChatService;
 import messagechat.messagechatservice.domain.service.DialogService;
+import messagechat.messagechatservice.domain.service.MessageChatService;
+import messagechat.messagechatservice.rest.message.request.CreateDialogRequest;
+import messagechat.messagechatservice.rest.message.request.CreateMessageRequest;
 import messagechat.messagechatservice.rest.message.request.PageRequest;
 import messagechat.messagechatservice.rest.message.request.UpdateMessageRequest;
 import messagechat.messagechatservice.rest.message.response.DialogsPageResponse;
-import messagechat.messagechatservice.rest.message.request.CreateMessageRequest;
 import messagechat.messagechatservice.rest.message.response.MessagesPageResponse;
 import org.common.http.autoconfiguration.annotation.Api;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import javax.validation.Valid;
+
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping(path = "/api/massages-chat-service")
@@ -35,7 +37,7 @@ public class MessageChatRest {
      *
      * @param pageRequest - how many dialogs you want to pull from DB.
      * @param memberId - user ID, who must be provided by dialogs.
-     * @return DialogsPageResponse - page of Dialogs.
+     * @return DialogsPageResponse - set of Dialogs.
      */
     @Api
     @ApiOperation(value = "${message-chat.operation.get-dialog}",
@@ -52,12 +54,12 @@ public class MessageChatRest {
 
     /**
      * Step 2:
-     * User chooses certain particular message-chat and must be provided by all messages (within received pageRequest)
+     * User chooses certain particular chat (Dialog) and must be provided by all messages (within received pageRequest)
      * from that chat (Dialog).
      *
      * @param pageRequest - how many messages you want to pull from DB.
      * @param dialogId - dialog ID, which messages you mast show from.
-     * @return MessagesPageResponse - page of Messages.
+     * @return MessagesPageResponse - list of Messages with current dialog id and name.
      */
     @Api
     @ApiOperation(value = "${message-chat.operation.get-page-messages}",
@@ -72,6 +74,19 @@ public class MessageChatRest {
         return mapper.map(pageMessages, MessagesPageResponse.class);
     }
 
+    /**
+     * Step 3.1:
+     * User writes messages.
+     *
+     * He can do it within 3 different context:
+     * - 1. New message for particular user-consumer (FACE_TO_FACE_DIALOG, dialogId == null, consumerId != null)
+     * - 2. Message for particular user-consumer within existed dialog (FACE_TO_FACE_DIALOG, dialogId != null, consumerId != null)
+     * - 3. Message to the chanel within existed dialog (CHANNEL, dialogId != null, consumerId == null)
+     *
+     * @param createMessageRequest - create message request details.
+     * @param consumerId - member (user) id who you want to send a message (must be null if you send message to the chanel).
+     * @return MessagesPageResponse - list of Messages with current dialog id and name.
+     */
     @Api
     @ApiOperation(value = "${message-chat.operation.create-message}",
                   nickname = "createMessage")
@@ -85,6 +100,23 @@ public class MessageChatRest {
                                                                                        createMessageRequest.getSize(),
                                                                                        message.getDialogId());
         return mapper.map(pageMessages, MessagesPageResponse.class);
+    }
+
+    /**
+     * Step 3.2:
+     * User wants to create chanel for group of people.
+     *
+     * @param createDialogRequest -
+     * @return MessagesPageResponse -
+     */
+    @Api
+    @ApiOperation(value = "${message-chat.operation.create-dialog}",
+            nickname = "createDialog")
+    @PostMapping(path = "/create-dialog")
+    @ResponseStatus(CREATED)
+    public MessagesPageResponse createDialog(@RequestBody @Valid CreateDialogRequest createDialogRequest) {
+        //TODO:..
+        return null;
     }
 
     @Api

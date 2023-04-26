@@ -1,10 +1,8 @@
 package com.example.testcontainertests;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.example.testcontainertests.entity.MemberItemAutoIncrement;
 import com.example.testcontainertests.repo.MemberItemAutoIncrementRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +17,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * In this test we initial DB only by JPA auto DDL.
  * For that we add prop for auto generation : spring.jpa.hibernate.ddl-auto=create.
@@ -32,11 +33,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @DirtiesContext
 
 @Disabled // only because they are global test end we can skip them during build project.
+@Slf4j
 public class MemberItemContainerTestInitDbJpaDDL {
 
   @Container
   public static PostgreSQLContainer<?> postgresDB = new PostgreSQLContainer<>
-      ("postgres:13.2")
+      ("postgres")
       .withDatabaseName("testDB")
       .withUsername("postgres")
       .withPassword("postgres");
@@ -46,6 +48,7 @@ public class MemberItemContainerTestInitDbJpaDDL {
 
   @Test
   void saveAndReadEntity() {
+    log.info("\n\nUse test DB by URL ={}\n", postgresDB.getJdbcUrl());
 
     // create and check saved items:
     var firstMember = new MemberItemAutoIncrement();
@@ -78,5 +81,6 @@ public class MemberItemContainerTestInitDbJpaDDL {
     registry.add("spring.datasource.password", postgresDB::getPassword);
     registry.add("spring.jpa.hibernate.ddl-auto", () -> "create");
     registry.add("spring.jpa.show-sql", () -> "true");
+    registry.add("spring.jpa.format-sql", () -> "true");
   }
 }
