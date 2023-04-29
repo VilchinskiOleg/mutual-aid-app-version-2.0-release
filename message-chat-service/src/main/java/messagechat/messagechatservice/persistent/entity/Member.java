@@ -19,7 +19,7 @@ public class Member {
     @Column(unique = true, nullable = false)
     private String profileId;
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     private MemberInfo memberInfo;
 
 

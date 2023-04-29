@@ -5,13 +5,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Cleanup;
 import lombok.NonNull;
 import messagechat.messagechatservice.configuration.data.MessageChatJpaConfig;
-import messagechat.messagechatservice.persistent.entity.Dialog;
-import messagechat.messagechatservice.persistent.entity.Member;
-import messagechat.messagechatservice.persistent.entity.MemberInfo;
-import messagechat.messagechatservice.persistent.entity.Message;
+import messagechat.messagechatservice.persistent.entity.*;
 import messagechat.messagechatservice.persistent.repository.DialogRepository;
 import messagechat.messagechatservice.persistent.repository.MessageRepository;
 import org.hibernate.Session;
+import org.hibernate.graph.GraphSemantic;
+import org.hibernate.graph.RootGraph;
+import org.hibernate.graph.SubGraph;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,7 +69,9 @@ public class MessageChatRepositoryTest extends DatabaseSourceTestConfig {
     void save_and_read_dialog_test() {
         createDialog("test-dialog-1");
 
-        Dialog savedDialog = readDialogByDialogId("test-dialog-1");
+        Dialog savedDialog = hibernateEntityManagerImpl.createQuery("from Dialog d where d.dialogId = :dialogId", Dialog.class)
+                .setParameter("dialogId", "test-dialog-1")
+                .getSingleResult();
         //validate:
         assertNotNull(savedDialog);
 
@@ -79,7 +81,7 @@ public class MessageChatRepositoryTest extends DatabaseSourceTestConfig {
     /**
      * First SQL request will fetch only Message entity. Other entities which have fetch type EAGER
      * will be fetched by additional SQL request to DB automatically. Lazy entities will be fetched by
-     * the same way during their initialization.
+     * the same way during their initialization (by additional SQL request).
      */
     @Test
     void get_all_messages_by_dialogId_query_Have_issue_with_additional_requests_to_db_Test() {
@@ -92,6 +94,7 @@ public class MessageChatRepositoryTest extends DatabaseSourceTestConfig {
                         "order by  m.createAt", Message.class)
                 .setParameter("dialogId",DIALOG_ID)
                 .getResultList();
+        messages.forEach(message -> System.out.println(message.getAuthor().getMemberInfo().getNickName()));
         hibernateEntityManagerImpl.clear();
 
         //validate:
@@ -102,7 +105,13 @@ public class MessageChatRepositoryTest extends DatabaseSourceTestConfig {
 
     /**
      * First SQL request will fetch Message, Member, MemberInfo entities.
-     * So, all EAGER entities will be fetched by only one SQL request to DB.
+     * So, all marked entities will be fetched by only one SQL request to DB.
+     *
+     * Thanks to @MeanyToOne relation Message-Member(author) we will not be provided by 'cartesian product'
+     * and, as result, we can use pagination for request like this.
+     *
+     * But also fetching entities by that way will break Lazy initialisation (Proxy) for them.
+     * Marked entities will be initialized even if they are Lazy.
      */
     @Test
     void get_all_messages_by_dialogId_query_Fix_issue_with_additional_requests_to_db_by_fetch_Test() {
@@ -117,6 +126,38 @@ public class MessageChatRepositoryTest extends DatabaseSourceTestConfig {
                                 "order by  m.createAt", Message.class)
                 .setParameter("dialogId",DIALOG_ID)
                 .getResultList();
+        messages.forEach(message -> System.out.println(message.getAuthor().getMemberInfo().getNickName()));
+        hibernateEntityManagerImpl.clear();
+
+        //validate:
+        assertEquals(2, messages.size());
+
+        cleanDb();
+    }
+
+    /**
+     * First SQL request will fetch Message, Member, MemberInfo entities.
+     * So, all marked in a Graph entities will be fetched by only one SQL request to DB
+     * like previous Test as well.
+     */
+    @Test
+    void get_all_messages_by_dialogId_query_Fix_issue_with_additional_requests_to_db_by_entity_graph_Test() {
+        createDialog("test-dialog-1");
+
+        RootGraph<Message> messageGraph = hibernateEntityManagerImpl.createEntityGraph(Message.class);
+        messageGraph.addAttributeNodes("author");
+        SubGraph<Member> memberSubGraph = messageGraph.addSubgraph("author", Member.class);
+        memberSubGraph.addAttributeNodes("memberInfo");
+
+        List<Message> messages = hibernateEntityManagerImpl.createQuery(
+                        "select m from Message m " +
+                                "join m.dialog d " +
+                                "where d.dialogId = :dialogId " +
+                                "order by  m.createAt", Message.class)
+                .setParameter("dialogId",DIALOG_ID)
+                .setHint(GraphSemantic.LOAD.getJpaHintName(), messageGraph)
+                .getResultList();
+        messages.forEach(message -> System.out.println(message.getAuthor().getMemberInfo().getNickName()));
         hibernateEntityManagerImpl.clear();
 
         //validate:
@@ -178,7 +219,7 @@ public class MessageChatRepositoryTest extends DatabaseSourceTestConfig {
     @Test
     void add_new_message_to_dialog_and_Read_updated_dialog_Use_only_ids_of_author_and_existed_dialog() {
         createDialog("test-dialog-1");
-        Dialog dialog = readDialogByDialogId("test-dialog-1");
+        Dialog dialog = readDialogByDialogIdWithFetchedMembers("test-dialog-1");
         final Integer MOCK_RETRIEVED_AUTHOR_ID = dialog.getMembers().get(0).getId();
         final Integer MOCK_RETRIEVED_DIALOG_ID = dialog.getId();
 
@@ -288,11 +329,17 @@ public class MessageChatRepositoryTest extends DatabaseSourceTestConfig {
         }
     }
 
-    private Dialog readDialogByDialogId(@NonNull String dialogId) {
+    private Dialog readDialogByDialogIdWithFetchedMembers(@NonNull String dialogId) {
+        RootGraph<Dialog> dialogGraph = hibernateEntityManagerImpl.createEntityGraph(Dialog.class);
+        dialogGraph.addAttributeNodes("dialogByMemberDetails");
+        SubGraph<DialogByMember> dialogByMemberDetailsSubGraph = dialogGraph.addSubgraph("dialogByMemberDetails", DialogByMember.class);
+        dialogByMemberDetailsSubGraph.addAttributeNodes("member");
+
         Dialog result = hibernateEntityManagerImpl.createQuery("from Dialog d where d.dialogId = :dialogId", Dialog.class)
                 .setParameter("dialogId", dialogId)
+                .setHint(GraphSemantic.LOAD.getJpaHintName(), dialogGraph)
                 .getSingleResult();
-        //todo: fix N+1 issue!
+        result.getMembers().forEach(member -> System.out.println(member.getProfileId()));
         hibernateEntityManagerImpl.clear();
         return result;
     }
