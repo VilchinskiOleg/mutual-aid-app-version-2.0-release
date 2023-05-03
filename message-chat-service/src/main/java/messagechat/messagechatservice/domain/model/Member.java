@@ -1,11 +1,11 @@
 package messagechat.messagechatservice.domain.model;
 
-import static lombok.EqualsAndHashCode.Include;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import static lombok.EqualsAndHashCode.Include;
 
 @Getter
 @Setter
@@ -13,8 +13,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Member {
 
+    private Integer id;
     @Include
     private String profileId;
+
     private String firstName;
     private String lastName;
     private String nickName;

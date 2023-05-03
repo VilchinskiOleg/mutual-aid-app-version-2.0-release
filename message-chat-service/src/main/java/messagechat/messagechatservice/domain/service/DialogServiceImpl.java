@@ -1,23 +1,23 @@
 package messagechat.messagechatservice.domain.service;
 
+import messagechat.messagechatservice.domain.model.Dialog;
+import messagechat.messagechatservice.domain.service.proessor.IdGeneratorService;
+import messagechat.messagechatservice.persistent.repository.DialogRepository;
+import org.exception.handling.autoconfiguration.throwable.ConflictException;
+import org.jetbrains.annotations.Nullable;
+import org.mapper.autoconfiguration.mapper.Mapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+
 import static java.util.Objects.isNull;
 import static messagechat.messagechatservice.domain.model.Dialog.Status.ACTIVE;
 import static messagechat.messagechatservice.domain.model.Dialog.Status.NOT_ACTIVE;
 import static messagechat.messagechatservice.domain.model.Dialog.Type.CHANNEL;
 import static messagechat.messagechatservice.domain.model.Dialog.Type.FACE_TO_FACE_DIALOG;
 import static org.springframework.data.domain.PageRequest.of;
-
-import messagechat.messagechatservice.domain.model.Dialog;
-import messagechat.messagechatservice.domain.service.DialogService;
-import messagechat.messagechatservice.domain.service.proessor.IdGeneratorService;
-import messagechat.messagechatservice.domain.service.proessor.ProfileService;
-import messagechat.messagechatservice.persistent.repository.DialogRepository;
-import org.exception.handling.autoconfiguration.throwable.ConflictException;
-import org.mapper.autoconfiguration.mapper.Mapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Component;
-import javax.annotation.Resource;
 
 @Component
 public class DialogServiceImpl implements DialogService {
@@ -27,7 +27,7 @@ public class DialogServiceImpl implements DialogService {
     @Resource
     private IdGeneratorService idGeneratorService;
     @Resource
-    private ProfileService profileService;
+    private MemberServiceImpl memberServiceImpl;
     @Resource
     private Mapper mapper;
 
@@ -48,15 +48,7 @@ public class DialogServiceImpl implements DialogService {
         return saveDialog(dialog);
     }
 
-    @Override
-    public Dialog findDialogByInternalIdRequired(String dialogId) {
-        var dataDialog = dialogRepository.findByInternalId(dialogId)
-                                                .orElseThrow(() -> new ConflictException("DIALOG_NOT_FOUND"));
-        return mapper.map(dataDialog, Dialog.class);
-    }
-
-
-    private Dialog createNewDialog(String consumerId){
+    public Dialog createNewDialog(@Nullable String consumerId){
         var dialog = new Dialog();
         dialog.setInternalId(idGeneratorService.generate());
         if (isNull(consumerId)) {
@@ -68,19 +60,43 @@ public class DialogServiceImpl implements DialogService {
         return dialog;
     }
 
+    @Override
+    public Dialog getLinkedDialog(String dialogId, String authorId, String receiverId) {
+        Dialog dialog = isNull(dialogId) ? createNewDialog(receiverId) : findDialogByInternalIdRequired(dialogId);
+        checkDialogIsActive(dialog);
+        if (populateMembersIfNeed(dialog, authorId, receiverId)) {
+            refreshChanges(dialog, authorId);
+            return saveDialog(dialog);
+        } else {
+            return dialog;
+        }
+    }
+
+    @Override
+    public Dialog findDialogByInternalIdRequired(String dialogId) {
+        var dataDialog = dialogRepository.findByDialogId(dialogId)
+                                                .orElseThrow(() -> new ConflictException("DIALOG_NOT_FOUND"));
+        return mapper.map(dataDialog, Dialog.class);
+    }
+
+
     private Dialog saveDialog(Dialog dialog) {
         var dataDialog = dialogRepository.save(mapper.map(dialog,
                 messagechat.messagechatservice.persistent.entity.Dialog.class));
         return mapper.map(dataDialog, Dialog.class);
     }
 
-    private void populateMembersIfNeed(Dialog dialog, String authorId, String consumerId) {
+    private boolean populateMembersIfNeed(Dialog dialog, String authorId, String consumerId) {
+        boolean anyMemberWasPopulated = false;
         if (dialog.hasNotMember(authorId)) {
-            dialog.addMember(profileService.getMemberByIdRequired(authorId));
+            dialog.addMember(memberServiceImpl.getMemberByIdRequired(authorId));
+            anyMemberWasPopulated = true;
         }
         if (FACE_TO_FACE_DIALOG == dialog.getType() && dialog.hasNotMember(consumerId)) {
-            dialog.addMember(profileService.getMemberByIdRequired(consumerId));
+            dialog.addMember(memberServiceImpl.getMemberByIdRequired(consumerId));
+            anyMemberWasPopulated = true;
         }
+        return anyMemberWasPopulated;
     }
 
     private void refreshChanges(Dialog dialog, String authorId) {

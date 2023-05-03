@@ -7,4 +7,5 @@ public class ExtendedMessageRepositoryImpl implements ExtendedMessageRepository 
 
     @Resource
     private EntityManager entityManager;
+
 }
