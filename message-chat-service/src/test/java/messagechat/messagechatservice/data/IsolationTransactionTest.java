@@ -38,7 +38,7 @@ public class IsolationTransactionTest extends AbstractTest {
 
     @Test
     void throw_exception_by_optimistic_lock_when_try_to_make_changes() {
-        createDialog((Session) entityManagerFactory.createEntityManager(), DIALOG_ID);
+        createDialogForCouple((Session) entityManagerFactory.createEntityManager(), DIALOG_ID);
 
         final String F_D_CH = "First dialog NAME changing";
         @Cleanup final Session session1 = (Session) entityManagerFactory.createEntityManager();
@@ -69,9 +69,9 @@ public class IsolationTransactionTest extends AbstractTest {
     }
 
     @Test
-    @Disabled
+    @Disabled //TODO: Remove annotation after fixing issue with deadlock.
     void pessimistic_lock_test() {
-        createDialog((Session) entityManagerFactory.createEntityManager(), DIALOG_ID);
+        createDialogForCouple((Session) entityManagerFactory.createEntityManager(), DIALOG_ID);
 
         final String F_M_CH = "First message DESCRIPTION changing";
         @Cleanup final Session session1 = (Session) entityManagerFactory.createEntityManager();

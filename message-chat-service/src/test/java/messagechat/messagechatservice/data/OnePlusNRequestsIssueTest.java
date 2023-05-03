@@ -48,7 +48,7 @@ public class OnePlusNRequestsIssueTest extends AbstractTest {
      */
     @Test
     void get_all_messages_by_dialogId_query_Have_issue_with_additional_requests_to_db_Test() {
-        createDialog(hibernateEntityManagerImpl, DIALOG_ID);
+        createDialogForCouple(hibernateEntityManagerImpl, DIALOG_ID);
 
         List<Message> messages = hibernateEntityManagerImpl.createQuery(
                         "select m from Message m " +
@@ -79,7 +79,7 @@ public class OnePlusNRequestsIssueTest extends AbstractTest {
      */
     @Test
     void get_all_messages_by_dialogId_query_Fix_issue_with_additional_requests_to_db_by_fetch_Test() {
-        createDialog(hibernateEntityManagerImpl, DIALOG_ID);
+        createDialogForCouple(hibernateEntityManagerImpl, DIALOG_ID);
 
         List<Message> messages = hibernateEntityManagerImpl.createQuery(
                         "select m from Message m " +
@@ -107,7 +107,7 @@ public class OnePlusNRequestsIssueTest extends AbstractTest {
      */
     @Test
     void get_all_messages_by_dialogId_query_Fix_issue_with_additional_requests_to_db_by_entity_graph_Test() {
-        createDialog(hibernateEntityManagerImpl, DIALOG_ID);
+        createDialogForCouple(hibernateEntityManagerImpl, DIALOG_ID);
 
         RootGraph<Message> messageGraph = hibernateEntityManagerImpl.createEntityGraph(Message.class);
         messageGraph.addAttributeNodes("author");

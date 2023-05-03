@@ -11,6 +11,7 @@ import org.hibernate.graph.RootGraph;
 import org.hibernate.graph.SubGraph;
 import org.junit.jupiter.api.BeforeEach;
 
+import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 
 import static java.time.LocalDateTime.now;
@@ -27,8 +28,25 @@ public abstract class AbstractTest extends DatabaseSourceTestConfig {
     }
 
 
-    protected void createDialog(@NonNull Session hibernateEntityManagerImpl,
-                                String dialogId) {
+    protected void createDialogForCouple(@NonNull Session hibernateEntityManagerImpl,
+                                         String dialogId) {
+        createDialogImpl(
+                hibernateEntityManagerImpl,
+                dialogId,
+                messagechat.messagechatservice.domain.model.Dialog.Type.FACE_TO_FACE_DIALOG.name());
+    }
+
+    protected void createChanel(@NonNull Session hibernateEntityManagerImpl,
+                                         String dialogId) {
+        createDialogImpl(
+                hibernateEntityManagerImpl,
+                dialogId,
+                messagechat.messagechatservice.domain.model.Dialog.Type.CHANNEL.name());
+    }
+
+    private void createDialogImpl(@NonNull Session hibernateEntityManagerImpl,
+                                  @NotBlank String dialogId,
+                                  @NotBlank String dialogType) {
         var transaction = hibernateEntityManagerImpl.beginTransaction();
         try {
             var usrInfo1 = MemberInfo.builder()
@@ -47,7 +65,7 @@ public abstract class AbstractTest extends DatabaseSourceTestConfig {
                     .dialogId(dialogId)
                     .name("name of " + dialogId)
                     .status("ACTIVE")
-                    .type("FACE_TO_FACE_DIALOG")
+                    .type(dialogType)
                     .createAt(now())
                     .createByMemberId("creator of " + dialogId).build();
             dialog.addMember(usr1);

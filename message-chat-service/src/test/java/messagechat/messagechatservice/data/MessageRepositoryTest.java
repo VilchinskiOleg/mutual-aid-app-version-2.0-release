@@ -24,7 +24,7 @@ import static org.springframework.data.domain.PageRequest.of;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = {MessageChatJpaConfig.class, ExtendedMessageRepositoryImpl.class})
-public class RepositoryTest extends AbstractTest {
+public class MessageRepositoryTest extends AbstractTest {
 
     private static final String DIALOG_ID = "test-dialog-1";
 
@@ -41,7 +41,7 @@ public class RepositoryTest extends AbstractTest {
     @Test
     void get_all_messages_by_dialogId_repository_test() {
         @Cleanup var sesson = (Session) entityManagerFactory.createEntityManager();
-        createDialog(sesson, DIALOG_ID);
+        createDialogForCouple(sesson, DIALOG_ID);
 
         List<Message> messages1 = messageRepository.findAllByDialogIdOrName(
                 of(0, 2),
