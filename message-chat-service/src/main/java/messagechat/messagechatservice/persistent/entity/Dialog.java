@@ -1,6 +1,8 @@
 package messagechat.messagechatservice.persistent.entity;
 
 import lombok.*;
+import org.hibernate.annotations.OptimisticLockType;
+import org.hibernate.annotations.OptimisticLocking;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -21,6 +23,7 @@ import static java.util.stream.Collectors.toList;
 
 @Entity
 @Table(name = "dialog")
+@OptimisticLocking(type = OptimisticLockType.VERSION)
 public class Dialog {
 
     @Id
@@ -31,6 +34,9 @@ public class Dialog {
     private String dialogId;
 
     private String name;
+
+    @Version
+    private Long version;
 
     @ToString.Exclude
     @Builder.Default // Will initialize field by inline '= new ArrayList<>()' below if I use builder:

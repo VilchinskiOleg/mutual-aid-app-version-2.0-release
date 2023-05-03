@@ -12,6 +12,7 @@ public class CreateMessageRequest extends PageRequest {
     @NotBlank
     private String authorId;
     private String dialogId;
+    private String dialogName;
     @NotBlank
     @ApiModelProperty(dataType = "string", value = "Hello World!", example = "Hello World!")
     private String description;

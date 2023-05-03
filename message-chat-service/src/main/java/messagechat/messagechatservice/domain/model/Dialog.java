@@ -18,6 +18,10 @@ public class Dialog {
     private String id;
 
     private String internalId;
+
+    // Name of Group if there are more than two members, or default generated name (like: member1_member2):
+    private String name;
+
     private Set<Member> members;
     private Status status;
     private Type type;
