@@ -25,5 +25,11 @@ public interface MessageRepository extends JpaRepository<Message, Integer>, Exte
     )
     Page<Message> findAllByDialogIdOrName(PageRequest request, String dialogId, @Nullable String dialogName);
 
-    Optional<Message> findByMessageId(String messageId);
+    /**
+     * Get Message without any related (inner) entities info.
+     *
+     * @param messageId - message ID.
+     * @return Message entity.
+     */
+    Optional<Message> findByMessageId(String messageId); // improve N+1 performance?
 }

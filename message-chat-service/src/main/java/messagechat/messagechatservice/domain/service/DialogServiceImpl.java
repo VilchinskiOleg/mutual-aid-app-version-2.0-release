@@ -9,6 +9,7 @@ import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -71,6 +72,7 @@ public class DialogServiceImpl implements DialogService {
      * @return Dialog -
      */
     @Override
+    @Transactional
     public Dialog getLinkedDialog(String dialogId, String authorId, String receiverId) {
         Dialog dialog = isNull(dialogId) ? createNewDialog(receiverId) : findDialogByInternalIdRequired(dialogId);
         checkDialogIsActive(dialog);

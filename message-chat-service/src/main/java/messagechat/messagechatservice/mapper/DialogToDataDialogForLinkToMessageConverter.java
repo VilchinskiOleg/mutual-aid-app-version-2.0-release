@@ -16,6 +16,7 @@ public class DialogToDataDialogForLinkToMessageConverter extends BaseConverter<D
     @Override
     public void convert(Dialog source, messagechat.messagechatservice.persistent.entity.Dialog destination) {
         destination.setId(source.getId());
+        destination.setVersion(source.getVersion());
         destination.setDialogId(source.getInternalId());
     }
 }

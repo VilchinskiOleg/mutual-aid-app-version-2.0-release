@@ -18,7 +18,7 @@ public interface MessageChatService {
      */
     Page<Message> getPageMessagesFromDialog(Integer pageNumber, Integer size, String dialogId,@Nullable String dialogName);
 
-    Message addMessageToDialog(Message massage, String receiverId);
+    void addMessageToDialog(Message massage, String receiverId);
 
     Message updateMessage(Message massage);
 }

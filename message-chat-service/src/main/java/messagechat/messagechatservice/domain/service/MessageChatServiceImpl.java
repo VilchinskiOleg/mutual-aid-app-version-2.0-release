@@ -1,5 +1,6 @@
 package messagechat.messagechatservice.domain.service;
 
+import lombok.RequiredArgsConstructor;
 import messagechat.messagechatservice.domain.model.Dialog;
 import messagechat.messagechatservice.domain.model.Member;
 import messagechat.messagechatservice.domain.model.Message;
@@ -11,38 +12,34 @@ import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static messagechat.messagechatservice.util.Constant.Errors.MESSAGE_NOT_FOUND;
 import static org.springframework.data.domain.PageRequest.of;
 
-@Service
+@Component
+@RequiredArgsConstructor
 public class MessageChatServiceImpl implements MessageChatService {
 
-    @Resource
-    private MessageRepository messageRepository;
-    @Resource
-    private DialogService dialogService;
-    @Resource
-    private TranslateMessageService translateMessageService;
-    @Resource
-    private IdGeneratorService idGeneratorService;
-    @Resource
-    private Mapper mapper;
+    private final MessageRepository messageRepository;
+    private final DialogService dialogService;
+    private final TranslateMessageService translateMessageService;
+    private final IdGeneratorService idGeneratorService;
+    private final Mapper mapper;
 
-    @Transactional
+
     @Override
-    public Message addMessageToDialog(Message message, String receiverId) {
+    // All inner Transactions will be merged into one:
+    @Transactional
+    public void addMessageToDialog(Message message, String receiverId) {
         message.setInternalId(idGeneratorService.generate());
         linkDialogToMessage(message, receiverId);
         linkAuthorToMessage(message);
         translateMessageService.translateSavedMessage(message);
-        return saveMessage(message);
+        saveMessage(message);
     }
 
     @Override
@@ -50,7 +47,8 @@ public class MessageChatServiceImpl implements MessageChatService {
         Message currentMessage = getMessageByIdRequired(message.getInternalId());
         translateMessageService.translateSavedMessage(message);
         mapper.map(message, currentMessage);
-        return saveMessage(currentMessage);
+        saveMessage(currentMessage);
+        return getMessageByIdRequired(message.getInternalId());
     }
 
     @Override
@@ -65,7 +63,7 @@ public class MessageChatServiceImpl implements MessageChatService {
         return messagesPage;
     }
 
-    private void    linkDialogToMessage(Message message, String receiverId) {
+    private void linkDialogToMessage(Message message, String receiverId) {
         Dialog linkedDialog = dialogService.getLinkedDialog(message.getDialogId(), message.getAuthorId(), receiverId);
         message.setDialog(linkedDialog);
     }
@@ -76,17 +74,22 @@ public class MessageChatServiceImpl implements MessageChatService {
         message.setAuthor(retrievedAuthor);
     }
 
-    private Message saveMessage(Message message) {
+    private void saveMessage(Message message) {
         if (isNull(message.getCreateAt())) {
             message.setCreateAt(now());
         } else {
             message.setModifyAt(now());
         }
-        var dataMessage = messageRepository.save(mapper.map(message,
-                messagechat.messagechatservice.persistent.entity.Message.class));
-        return mapper.map(dataMessage, Message.class);
+        var dataMessage = mapper.map(message, messagechat.messagechatservice.persistent.entity.Message.class);
+        messageRepository.save(dataMessage);
     }
 
+    /**
+     * Get Message without any related (inner) entities info.
+     *
+     * @param massageId - message ID.
+     * @return 'messagechat.messagechatservice.domain.model.Message'.
+     */
     private Message getMessageByIdRequired(String massageId) {
         return mapper.map(messageRepository.findByMessageId(massageId)
                                            .orElseThrow(() -> new ConflictException(MESSAGE_NOT_FOUND)),

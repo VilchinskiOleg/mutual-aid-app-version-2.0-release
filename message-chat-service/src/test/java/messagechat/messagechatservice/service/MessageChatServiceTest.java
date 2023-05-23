@@ -1,10 +1,18 @@
 package messagechat.messagechatservice.service;
 
 import messagechat.messagechatservice.MessageChatServiceApplication;
+import messagechat.messagechatservice.domain.model.Dialog;
 import messagechat.messagechatservice.domain.model.Member;
 import messagechat.messagechatservice.domain.model.Message;
+import messagechat.messagechatservice.domain.service.DialogService;
 import messagechat.messagechatservice.domain.service.MessageChatService;
 import messagechat.messagechatservice.domain.service.client.ProfileClientService;
+import messagechat.messagechatservice.persistent.repository.DialogRepository;
+import messagechat.messagechatservice.persistent.repository.MessageRepository;
+import messagechat.messagechatservice.service.hibernate_listener.PostInsertDialogListener;
+import org.hibernate.event.service.spi.EventListenerRegistry;
+import org.hibernate.event.spi.EventType;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,14 +24,19 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.tms.mutual_aid.profile_service.client.model.Name;
 import org.tms.mutual_aid.profile_service.client.model.Profile;
+import org.mockito.internal.verification.Times;
 
 import javax.annotation.Resource;
-
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
-import static java.lang.Math.*;
+import static java.lang.Math.abs;
+import static java.lang.Math.random;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.data.domain.PageRequest.of;
 
 @ActiveProfiles("local")
 @SpringBootTest(
@@ -33,6 +46,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 public class MessageChatServiceTest extends DatabaseSourceTestConfig {
 
+    public static String DIALOG_ID;
     private static final String[] PROFILE_FIRST_NAMES = {"John", "Sarah", "Jeims", "Rik", "Jesika", "Piter"};
     private static final String[] PROFILE_LAST_NAMES = {"Smith", "Parker", "Malfoy", "Potter", "Stark", "Gibson"};
 
@@ -47,6 +61,14 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig {
 
     @Resource
     private MessageChatService messageChatService;
+    @Resource
+    private DialogService dialogService;
+    @Resource
+    private DialogRepository dialogRepository;
+    @Resource
+    private MessageRepository messageRepository;
+    @Resource
+    private EntityManagerFactory entityManagerFactory;
     @MockBean
     private ProfileClientService profileClientService;
 
@@ -58,19 +80,32 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig {
 
 
     @Test
-    void test() {
-        final String authorId = "1296234-assdfgsdf-230914";
-        final String receiverId = "1231234-asdfsdf-234";
+    void add_new_messages_to_dialog_successfully() {
+        final String firstUserId = "1296234-assdfgsdf-230914";
+        final String secondUserId = "1231234-asdfsdf-234sd637";
+        registerAdditionalHibernateListenersForTests();
 
-        var newMessage = Message.builder()
-                .author(Member.builder().profileId(authorId).build())
-                .description("Some test message description.")
-                .build();
-
+        // Create new Dialog (automatically) and fetch Members from profile-service(MOCK):
         when(profileClientService.getProfileById((String) any())).thenAnswer(args -> generateProfile(args.getArgument(0)));
-        var message = messageChatService.addMessageToDialog(newMessage, receiverId);
+        var newMessage_1 = Message.builder()
+                .author(Member.builder().profileId(firstUserId).build())
+                .description("Some test message description. (From firstUser)")
+                .build();
+        messageChatService.addMessageToDialog(newMessage_1, secondUserId);
 
-        System.out.println("OK");
+        // Find and update existed Dialog and read existed Members from DB:
+        var newMessage_2 = Message.builder()
+                .author(Member.builder().profileId(secondUserId).build())
+                .dialog(Dialog.builder().internalId(DIALOG_ID).build())
+                .description("Some test message description. (From secondUser)")
+                .build();
+        messageChatService.addMessageToDialog(newMessage_2, firstUserId);
+
+        // Verify:
+        var dialog = dialogRepository.findByDialogId(DIALOG_ID).orElseThrow();
+        var messages = messageRepository.findAllByDialogIdOrName(of(0,2), DIALOG_ID, null).getContent();
+        assertEquals(2, messages.size());
+        verify(profileClientService, new Times(2)).getProfileById((String) any());
     }
 
     private Profile generateProfile(String profileId) {
@@ -82,5 +117,13 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig {
         name.setLocale("en");
         profile.setNames(List.of(name));
         return profile;
+    }
+
+    private void registerAdditionalHibernateListenersForTests() {
+        var sessionFactory = entityManagerFactory.unwrap(SessionFactoryImpl.class);
+        var registry = sessionFactory.getServiceRegistry().getService(EventListenerRegistry.class);
+
+        // Register required Listeners:
+        registry.getEventListenerGroup(EventType.POST_INSERT).appendListener(new PostInsertDialogListener());
     }
 }
