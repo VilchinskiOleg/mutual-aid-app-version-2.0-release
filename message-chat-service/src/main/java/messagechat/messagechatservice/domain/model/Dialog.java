@@ -1,7 +1,6 @@
 package messagechat.messagechatservice.domain.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -13,9 +12,15 @@ import static org.apache.commons.lang3.BooleanUtils.isFalse;
 
 @Getter
 @Setter
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Dialog {
 
-    private String id;
+    // ID in DB:
+    private Integer id;
+    private Long version;
 
     private String internalId;
 

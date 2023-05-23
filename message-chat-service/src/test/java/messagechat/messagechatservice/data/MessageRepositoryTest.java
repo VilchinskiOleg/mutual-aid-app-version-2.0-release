@@ -40,8 +40,8 @@ public class MessageRepositoryTest extends AbstractTest {
      */
     @Test
     void get_all_messages_by_dialogId_repository_test() {
-        @Cleanup var sesson = (Session) entityManagerFactory.createEntityManager();
-        createDialogForCouple(sesson, DIALOG_ID);
+        @Cleanup var session = (Session) entityManagerFactory.createEntityManager();
+        createDialogForCouple(session, DIALOG_ID);
 
         List<Message> messages1 = messageRepository.findAllByDialogIdOrName(
                 of(0, 2),
@@ -55,6 +55,6 @@ public class MessageRepositoryTest extends AbstractTest {
                 null).getContent();
         assertEquals(1, messages2.size());
 
-        cleanDb(sesson);
+        cleanDb(session);
     }
 }

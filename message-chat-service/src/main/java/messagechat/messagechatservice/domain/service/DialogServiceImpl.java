@@ -60,6 +60,16 @@ public class DialogServiceImpl implements DialogService {
         return dialog;
     }
 
+    /**
+     * That method have to ensure NON_REPEATABLE_READING level of isolation.
+     * Otherwise, if several NEW users try to write messages in one chanel simultaneously,
+     * we might lose some of them (as a Member) during update 'DialogByMember.class' because of Last Commit Win behavior.
+     *
+     * @param dialogId -
+     * @param authorId -
+     * @param receiverId -
+     * @return Dialog -
+     */
     @Override
     public Dialog getLinkedDialog(String dialogId, String authorId, String receiverId) {
         Dialog dialog = isNull(dialogId) ? createNewDialog(receiverId) : findDialogByInternalIdRequired(dialogId);

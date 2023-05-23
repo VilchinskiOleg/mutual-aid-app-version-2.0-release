@@ -23,6 +23,7 @@
         <swagger-models.version>1.5.21</swagger-models.version>
         <swagger-plugin.version>2.4.29</swagger-plugin.version>
         <feign-client.version>10.11</feign-client.version>
+        <test.container.version>1.16.2</test.container.version>
     </properties>
 
     <modules>
@@ -136,6 +137,18 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${test.container.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${test.container.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

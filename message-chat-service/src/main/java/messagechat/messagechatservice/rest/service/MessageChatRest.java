@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import java.util.ArrayList;
+
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -64,14 +66,18 @@ public class MessageChatRest {
     @Api
     @ApiOperation(value = "${message-chat.operation.get-page-messages}",
             nickname = "getPageMessages")
-    @PostMapping(path = "/get-page-messages/{dialog-id}")
+    @PostMapping(path = "/get-page-messages/{dialog-id}/{dialog-name}")
     @ResponseStatus(OK)
     public MessagesPageResponse getPageMassagesFromDialog(@RequestBody @Valid PageRequest pageRequest,
-                                                          @PathVariable("dialog-id") String dialogId) {
-        var pageMessages = messageChatService.getPageMessagesFromDialog(pageRequest.getPageNumber(),
+                                                          @PathVariable("dialog-id") String dialogId,
+                                                          @PathVariable(value = "dialog-name", required = false) String dialogName) {
+        var pageMessages = messageChatService.getPageMessagesFromDialog(
+                pageRequest.getPageNumber(),
                 pageRequest.getSize(),
-                dialogId);
-        return mapper.map(pageMessages, MessagesPageResponse.class);
+                dialogId,
+                dialogName);
+        var messages = mapper.map(pageMessages.getContent(), new ArrayList<>(), messagechat.messagechatservice.rest.model.Message.class);
+        return new MessagesPageResponse(dialogId, dialogName, messages);
     }
 
     /**
@@ -83,23 +89,21 @@ public class MessageChatRest {
      * - 2. Message for particular user-consumer within existed dialog (FACE_TO_FACE_DIALOG, dialogId != null, consumerId != null)
      * - 3. Message to the chanel within existed dialog (CHANNEL, dialogId != null, consumerId == null)
      *
-     * @param createMessageRequest - create message request details.
-     * @param consumerId - member (user) id who you want to send a message (must be null if you send message to the chanel).
+     * @param request - create message request details.
      * @return MessagesPageResponse - list of Messages with current dialog id and name.
      */
     @Api
     @ApiOperation(value = "${message-chat.operation.create-message}",
                   nickname = "createMessage")
-    @PostMapping(path = "/create-massage/{consumer-id}")
+    @PostMapping(path = "/create-massage")
     @ResponseStatus(CREATED)
-    public MessagesPageResponse createMassage(@RequestBody @Valid CreateMessageRequest createMessageRequest,
-                                              @PathVariable(value = "consumer-id", required = false) String consumerId) {
-        var message = mapper.map(createMessageRequest, messagechat.messagechatservice.domain.model.Message.class);
-        message = messageChatService.addMessageToDialog(message, consumerId);
-        var pageMessages = messageChatService.getPageMessagesFromDialog(createMessageRequest.getPageNumber(),
-                                                                                       createMessageRequest.getSize(),
-                                                                                       message.getDialogId());
-        return mapper.map(pageMessages, MessagesPageResponse.class);
+    public MessagesPageResponse createMassage(@RequestBody @Valid CreateMessageRequest request) {
+        var message = mapper.map(request, messagechat.messagechatservice.domain.model.Message.class);
+        messageChatService.addMessageToDialog(message, request.getReceiverId());
+        return getPageMassagesFromDialog(
+                new PageRequest(request.getPageNumber(), request.getSize()),
+                request.getDialogId(),
+                request.getDialogName());
     }
 
     /**

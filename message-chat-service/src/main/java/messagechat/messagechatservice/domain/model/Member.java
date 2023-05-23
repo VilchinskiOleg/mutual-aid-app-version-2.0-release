@@ -1,18 +1,19 @@
 package messagechat.messagechatservice.domain.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import static lombok.EqualsAndHashCode.Include;
 
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Member {
 
+    // ID in DB:
     private Integer id;
     @Include
     private String profileId;

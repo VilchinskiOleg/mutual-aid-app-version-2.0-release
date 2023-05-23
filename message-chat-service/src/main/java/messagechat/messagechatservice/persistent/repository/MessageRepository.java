@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.Nullable;
 
+import java.util.Optional;
+
 public interface MessageRepository extends JpaRepository<Message, Integer>, ExtendedMessageRepository {
 
     @Query( value = "select m from Message m " +
@@ -22,4 +24,6 @@ public interface MessageRepository extends JpaRepository<Message, Integer>, Exte
                     "where d.dialogId = :dialogId or d.name = :dialogName "
     )
     Page<Message> findAllByDialogIdOrName(PageRequest request, String dialogId, @Nullable String dialogName);
+
+    Optional<Message> findByMessageId(String messageId);
 }

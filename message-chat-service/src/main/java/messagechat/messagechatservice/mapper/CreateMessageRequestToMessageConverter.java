@@ -1,5 +1,6 @@
 package messagechat.messagechatservice.mapper;
 
+import messagechat.messagechatservice.domain.model.Dialog;
 import messagechat.messagechatservice.domain.model.Member;
 import messagechat.messagechatservice.domain.model.Message;
 import messagechat.messagechatservice.rest.message.request.CreateMessageRequest;
@@ -17,7 +18,7 @@ public class CreateMessageRequestToMessageConverter extends BaseConverter<Create
     @Override
     public void convert(CreateMessageRequest source, Message destination) {
         destination.setAuthor(new Member(source.getAuthorId()));
-        destination.setDialogId(source.getDialogId());
+        destination.setDialog(Dialog.builder().internalId(source.getDialogId()).build());
         destination.setDescription(source.getDescription());
     }
 }

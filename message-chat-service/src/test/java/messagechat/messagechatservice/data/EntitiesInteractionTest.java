@@ -112,7 +112,7 @@ public class EntitiesInteractionTest extends AbstractTest {
         final Integer MOCK_RETRIEVED_AUTHOR_ID = dialog.getMembers().get(0).getId();
         final Integer MOCK_RETRIEVED_DIALOG_ID = dialog.getId();
         // If we use optimistic lock with OptimisticLockType = 'version', we will have to retrieve and add current version to (inner entity) Dialog.
-        // Otherwise, Hibernate will consider that it's not a existed entity Dialog but new one.
+        // Otherwise, Hibernate will consider that it's not an existed entity Dialog but new one.
         final Long MOCK_RETRIEVED_DIALOG_VERSION = dialog.getVersion();
 
         var transaction = hibernateEntityManagerImpl.beginTransaction();
@@ -243,6 +243,56 @@ public class EntitiesInteractionTest extends AbstractTest {
                 .getSingleResult();
         assertEquals(3, updatedDialog.getMembers().size());
         hibernateEntityManagerImpl.clear();
+
+        cleanDb(hibernateEntityManagerImpl);
+    }
+
+    /**
+     * Changes will not spread to the Dialog if we try save them as internal changes in Message,
+     * because of missing cascade under 'dialog' field.
+     */
+    @Test
+    void we_cannot_add_new_Member_through_the_Message_because_of_missing_cascade_for_Dialog_in_Message_entity() {
+        createChanel(hibernateEntityManagerImpl, DIALOG_ID);
+
+        var m = hibernateEntityManagerImpl.createQuery(
+                        "select msg " +
+                                "from Message msg " +
+                                "join fetch msg.dialog d " +
+                                "join fetch msg.author a " +
+                                "join fetch d.dialogByMemberDetails d_by_md " +
+                                "join fetch  d_by_md.member mbr " +
+                                "where msg.messageId = 'test-message-1'", Message.class)
+                .getSingleResult();
+        hibernateEntityManagerImpl.clear();
+        assertEquals(DIALOG_ID, m.getDialog().getDialogId());
+        assertEquals(2,m.getDialog().getMembers().size());
+
+        hibernateEntityManagerImpl.beginTransaction();
+        try {
+            String userId = "test-user-3";
+            var usrInfo3 = MemberInfo.builder()
+                    .firstName("firstname of " + userId)
+                    .lastName("lastname of " + userId)
+                    .nickName("nickname of " + userId).build();
+            var usr3 = new Member(userId, usrInfo3);
+            m.getDialog().addMember(usr3);
+
+            hibernateEntityManagerImpl.merge(m);
+            hibernateEntityManagerImpl.getTransaction().commit();
+            hibernateEntityManagerImpl.clear();
+        } catch (Exception ex) {
+            hibernateEntityManagerImpl.getTransaction().rollback();
+        }
+
+        var updatedDialog = hibernateEntityManagerImpl.createQuery(
+                        "from Dialog d " +
+                                "join fetch d.dialogByMemberDetails d_by_m " +
+                                "where d.dialogId = :dialogId", Dialog.class)
+                .setParameter("dialogId", DIALOG_ID)
+                .getSingleResult();
+        // verify: amount of members in the chanel wasn't changed:
+        assertEquals(2, updatedDialog.getMembers().size());
 
         cleanDb(hibernateEntityManagerImpl);
     }

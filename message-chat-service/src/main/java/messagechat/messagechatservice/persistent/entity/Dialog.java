@@ -57,7 +57,8 @@ public class Dialog {
 
 
     /**
-     * Don't use it in your client code. Add new message to Dialog by 'message.setDialog()'.
+     * Don't use it in your client code.
+     * Add new message to Dialog by 'message.setDialog()'.
      * That method was created to call from related Message entity during initialization.
      *
      * @param message - related Message entity.
@@ -88,7 +89,7 @@ public class Dialog {
     /**
      * Provide you with most convenient way to retrieve all Members to belong to current Dialog.
      *
-     * @return - Members.
+     * @return - empty or full list of Members. Never provide you with null.
      */
     public List<Member> getMembers() {
         return dialogByMemberDetails.stream()

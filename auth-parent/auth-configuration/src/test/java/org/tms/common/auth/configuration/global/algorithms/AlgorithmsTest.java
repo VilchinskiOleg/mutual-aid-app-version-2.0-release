@@ -1,21 +1,23 @@
 package org.tms.common.auth.configuration.global.algorithms;
 
-import static java.lang.String.format;
-import static java.util.Objects.isNull;
-import static org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher.Node;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.tms.common.auth.configuration.global.algorithms.model.FastSorter;
 import org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher;
-import org.junit.jupiter.api.Test;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TreeSet;
+
+import static java.lang.String.format;
+import static java.util.Objects.isNull;
+import static org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher.Node;
 
 @Slf4j
 public class AlgorithmsTest {
@@ -36,12 +38,25 @@ public class AlgorithmsTest {
         int[] array = {2,33,5,11,7,23,3,45};
         System.out.println(Arrays.toString(array));
 
-        for(int i = array.length - 1; i > 0; --i) {
-            for(int n = 0; n < i; ++n) {
+        //ASC:
+        // for(int i = array.length - 1; i > 0; --i) {
+        //     for(int n = 0; n < i; ++n) {
 
-                if(array[n] > array[n+1]) {
-                    int temp = array[n+1];
-                    array[n+1] = array[n];
+        //         if(array[n] > array[n+1]) {
+        //             int temp = array[n+1];
+        //             array[n+1] = array[n];
+        //             array[n] = temp;
+        //         }
+        //     }
+        // }
+
+        //DESC:
+        for(int i = 0; i < array.length - 1; ++i) {
+
+            for(int n = array.length - 1; n > i; --n ) {
+                if(array[n] > array[n - 1]) {
+                    int temp = array[n-1];
+                    array[n-1] = array[n];
                     array[n] = temp;
                 }
             }
@@ -66,6 +81,11 @@ public class AlgorithmsTest {
 
         int [] left = {1, 5, 7, 8, 16, 21};
         int [] right = {3, 13, 14, 15, 17, 23}; // bigger
+
+        List<Integer> lt = List.of(3, 13, 14, 15, 17, 23);
+        TreeSet<Integer> set = new TreeSet(lt);
+        int b = set.last();
+        int prB = set.floor(b);
 
         int [] res = new int[left.length + right.length];
 

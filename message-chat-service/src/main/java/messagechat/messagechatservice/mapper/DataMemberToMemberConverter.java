@@ -14,9 +14,11 @@ public class DataMemberToMemberConverter extends BaseConverter<Member, messagech
 
     @Override
     public void convert(Member source, messagechat.messagechatservice.domain.model.Member destination) {
+        destination.setId(source.getId());
         destination.setProfileId(source.getProfileId());
-        destination.setFirstName(source.getFirstName());
-        destination.setLastName(source.getLastName());
-        destination.setNickName(source.getNickName());
+        var memberInfo = source.getMemberInfo();
+        destination.setFirstName(memberInfo.getFirstName());
+        destination.setLastName(memberInfo.getLastName());
+        destination.setNickName(memberInfo.getNickName());
     }
 }

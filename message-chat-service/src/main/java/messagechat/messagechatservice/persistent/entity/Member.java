@@ -25,11 +25,15 @@ public class Member {
 
     public Member(String profileId, MemberInfo memberInfo) {
         this.profileId = profileId;
-        this.memberInfo = memberInfo;
-        memberInfo.setMember(this);
+        setMemberInfo(memberInfo);
     }
 
     public Member(Integer id) {
         this.id = id;
+    }
+
+    public void setMemberInfo(MemberInfo memberInfo) {
+        this.memberInfo = memberInfo;
+        memberInfo.setMember(this);
     }
 }
