@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-import org.tms.common.auth.configuration.global.algorithms.model.FastSorter;
+import org.tms.common.auth.configuration.global.algorithms.model.BubbleSortUtil;
+import org.tms.common.auth.configuration.global.algorithms.model.FastSortUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher;
 
 import java.io.FileReader;
@@ -34,34 +35,10 @@ public class AlgorithmsTest {
 
     @Test
     void bubbleSort() {
-
         int[] array = {2,33,5,11,7,23,3,45};
         System.out.println(Arrays.toString(array));
 
-        //ASC:
-        // for(int i = array.length - 1; i > 0; --i) {
-        //     for(int n = 0; n < i; ++n) {
-
-        //         if(array[n] > array[n+1]) {
-        //             int temp = array[n+1];
-        //             array[n+1] = array[n];
-        //             array[n] = temp;
-        //         }
-        //     }
-        // }
-
-        //DESC:
-        for(int i = 0; i < array.length - 1; ++i) {
-
-            for(int n = array.length - 1; n > i; --n ) {
-                if(array[n] > array[n - 1]) {
-                    int temp = array[n-1];
-                    array[n-1] = array[n];
-                    array[n] = temp;
-                }
-            }
-        }
-
+        BubbleSortUtil.sortAsc(array);
         System.out.println(Arrays.toString(array));
     }
 
@@ -69,13 +46,14 @@ public class AlgorithmsTest {
     @Test
     void fastSortTest() {
         List<Integer> array = Arrays.asList(2, 33, 5, 11, 5, 7, 23, 3, 45, 45);
-
         log.info("Before: " + array);
-        var sortedArray = new FastSorter().sort(array);
+
+        var sortedArray = FastSortUtil.sort(array);
         log.info("After: " + sortedArray);
     }
 
 
+    //TODO: try to improve:
     @Test
     void test() {
 

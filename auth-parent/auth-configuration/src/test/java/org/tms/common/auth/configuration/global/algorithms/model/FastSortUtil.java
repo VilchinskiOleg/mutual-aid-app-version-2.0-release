@@ -3,9 +3,9 @@ package org.tms.common.auth.configuration.global.algorithms.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FastSorter {
+public class FastSortUtil {
 
-    public List<Integer> sort(List<Integer> array) {
+    public static List<Integer> sort(List<Integer> array) {
 
         if (array.size() <= 1) return array;
 
