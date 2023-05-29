@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.tms.common.auth.configuration.global.algorithms.model.BubbleSortUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.FastSortUtil;
+import org.tms.common.auth.configuration.global.algorithms.model.FindPairToSumUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher;
 
 import java.io.FileReader;
@@ -50,6 +51,24 @@ public class AlgorithmsTest {
 
         var sortedArray = FastSortUtil.sort(array);
         log.info("After: " + sortedArray);
+    }
+
+
+    @Test
+    void findPairToSumTest() {
+        int[] arr = {1,4,5,8,0,2,13,7};
+
+        int[] res0 = FindPairToSumUtil.findPairToSum0(arr, 7);
+        int[] res1 = FindPairToSumUtil.findPairToSum1(arr, 7);
+
+        BubbleSortUtil.sortAsc(arr);
+
+        int[] res2_1 = FindPairToSumUtil.findPairToSum2(arr, 7);
+        int[] res2_2 = FindPairToSumUtil.findPairToSum2(arr, 12);
+        int[] res3_1 = FindPairToSumUtil.findPairToSum3(arr, 7);
+        int[] res3_2 = FindPairToSumUtil.findPairToSum3(arr, 12);
+
+        System.out.println("OK");
     }
 
 
