@@ -16,7 +16,7 @@ public class MessageToApiMessageConverter extends BaseConverter<Message, message
     public void convert(Message source, messagechat.messagechatservice.rest.model.Message destination) {
         //todo: ?
 
-        destination.setId(source.getId());
+        destination.setId(source.getInternalId());
         destination.setDialogId(source.getDialogId());
         destination.setDescription(source.getDescription());
 
