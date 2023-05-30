@@ -7,6 +7,7 @@ import messagechat.messagechatservice.domain.model.Message;
 import messagechat.messagechatservice.domain.service.DialogService;
 import messagechat.messagechatservice.domain.service.MessageChatService;
 import messagechat.messagechatservice.domain.service.client.ProfileClientService;
+import messagechat.messagechatservice.domain.service.proessor.TranslateMessageService;
 import messagechat.messagechatservice.persistent.repository.DialogRepository;
 import messagechat.messagechatservice.persistent.repository.MessageRepository;
 import messagechat.messagechatservice.service.hibernate_listener.PostInsertDialogListener;
@@ -16,6 +17,7 @@ import org.hibernate.internal.SessionFactoryImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.internal.verification.Times;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
@@ -24,7 +26,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.tms.mutual_aid.profile_service.client.model.Name;
 import org.tms.mutual_aid.profile_service.client.model.Profile;
-import org.mockito.internal.verification.Times;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
@@ -32,10 +33,10 @@ import java.util.List;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.random;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.data.domain.PageRequest.of;
 
 @ActiveProfiles("local")
@@ -69,6 +70,8 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig {
     private MessageRepository messageRepository;
     @Resource
     private EntityManagerFactory entityManagerFactory;
+    @Resource
+    private TranslateMessageService translateMessageService;
     @MockBean
     private ProfileClientService profileClientService;
 
@@ -105,7 +108,33 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig {
         var dialog = dialogRepository.findByDialogId(DIALOG_ID).orElseThrow();
         var messages = messageRepository.findAllByDialogIdOrName(of(0,2), DIALOG_ID, null).getContent();
         assertEquals(2, messages.size());
+        assertThat(messages.size()).isEqualTo(2);
         verify(profileClientService, new Times(2)).getProfileById((String) any());
+    }
+
+    //TODO: Check and refactor:
+    @Test
+    void fail_and_rollback_all_operation_adding_new_message_to_dialog_if_something_go_wrong_within_transaction() {
+        try {
+            final String firstUserId = "1296234-assdfgsdf-230914";
+            final String secondUserId = "1231234-asdfsdf-234sd637";
+            registerAdditionalHibernateListenersForTests();
+
+            when(profileClientService.getProfileById((String) any())).thenAnswer(args -> generateProfile(args.getArgument(0)));
+            doThrow(RuntimeException.class).when(translateMessageService).translateSavedMessage((Message) any());
+            var newMessage_1 = Message.builder()
+                    .author(Member.builder().profileId(firstUserId).build())
+                    .description("Some test message description. (From firstUser)")
+                    .build();
+            messageChatService.addMessageToDialog(newMessage_1, secondUserId);
+        } catch (Exception ex) {
+            System.out.println("WRONG!");
+        }
+
+        // Verify:
+        var dialog = dialogRepository.findByDialogId(DIALOG_ID).orElseThrow();
+
+        System.out.println("OK");
     }
 
     private Profile generateProfile(String profileId) {

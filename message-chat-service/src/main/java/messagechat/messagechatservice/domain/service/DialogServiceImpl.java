@@ -36,17 +36,9 @@ public class DialogServiceImpl implements DialogService {
     @Override
     public Page<Dialog> getPageDialogsByMemberId(String memberId, Integer pageNumber, Integer size) {
         PageRequest pageRequest = of(pageNumber, size);
-        var dataDialogsPage = dialogRepository.findAllByMemberId(memberId, pageRequest);
-        return dataDialogsPage.map(dialog -> mapper.map(dialog, Dialog.class));
-    }
-
-    @Override
-    public Dialog getLinkedDialog(String dialogId, String authorId, String consumerId) {
-        Dialog dialog = isNull(dialogId) ? createNewDialog(consumerId) : findDialogByInternalIdRequired(dialogId);
-        checkDialogIsActive(dialog);
-        populateMembersIfNeed(dialog, authorId, consumerId);
-        refreshChanges(dialog, authorId);
-        return saveDialog(dialog);
+//        var dataDialogsPage = dialogRepository.findAllByMemberId(memberId, pageRequest);
+//        return dataDialogsPage.map(dialog -> mapper.map(dialog, Dialog.class));
+        return null;
     }
 
     public Dialog createNewDialog(@Nullable String consumerId){
@@ -78,6 +70,11 @@ public class DialogServiceImpl implements DialogService {
         checkDialogIsActive(dialog);
         if (populateMembersIfNeed(dialog, authorId, receiverId)) {
             refreshChanges(dialog, authorId);
+//            try {
+//
+//            } catch (RollbackException ex) {
+//
+//            }
             return saveDialog(dialog);
         } else {
             return dialog;

@@ -131,9 +131,11 @@ public class MessageChatRest {
     public MessagesPageResponse updateMassage(@RequestBody @Valid UpdateMessageRequest updateMessageRequest) {
         var message = mapper.map(updateMessageRequest, messagechat.messagechatservice.domain.model.Message.class);
         message = messageChatService.updateMessage(message);
-        var pageMessages = messageChatService.getPageMessagesFromDialog(updateMessageRequest.getPageNumber(),
-                                                                                       updateMessageRequest.getSize(),
-                                                                                       message.getDialogId());
-        return mapper.map(pageMessages, MessagesPageResponse.class);
+        //TODO: check :
+//        var pageMessages = messageChatService.getPageMessagesFromDialog(updateMessageRequest.getPageNumber(),
+//                                                                                       updateMessageRequest.getSize(),
+//                                                                                       message.getDialogId());
+//        return mapper.map(pageMessages, MessagesPageResponse.class);
+        return null;
     }
 }
