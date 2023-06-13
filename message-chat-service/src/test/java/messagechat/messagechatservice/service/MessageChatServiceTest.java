@@ -34,7 +34,7 @@ import java.util.List;
 import static java.lang.Math.abs;
 import static java.lang.Math.random;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.data.domain.PageRequest.of;
@@ -56,7 +56,7 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig {
         registry.add("datasource.message-chat.jdbc-url",postgresDB::getJdbcUrl);
         registry.add("datasource.message-chat.username", () -> TEST_DB_USERNAME);
         registry.add("datasource.message-chat.password", () -> TEST_DB_PASSWORD);
-        registry.add("message-chat-properties.translation-message.enabled", () -> false);
+//        registry.add("message-chat-properties.translation-message.enabled", () -> false);
     }
 
 
@@ -70,7 +70,8 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig {
     private MessageRepository messageRepository;
     @Resource
     private EntityManagerFactory entityManagerFactory;
-    @Resource
+
+    @MockBean
     private TranslateMessageService translateMessageService;
     @MockBean
     private ProfileClientService profileClientService;
@@ -112,29 +113,30 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig {
         verify(profileClientService, new Times(2)).getProfileById((String) any());
     }
 
-    //TODO: Check and refactor:
+    /**
+     * Within adding new Message, system will try to create and save new Dialog (because Message, we provide, doesn't have reference to existed Dialog),
+     * but after saving (flush 'INSERT' to DB) Dialog we will be provided by RuntimeException and system
+     * will Roll Back all changes within current transaction, so that we must obtain null value when we try to retrieve
+     * Dialog by dialogId later.
+     */
     @Test
-    void fail_and_rollback_all_operation_adding_new_message_to_dialog_if_something_go_wrong_within_transaction() {
-        try {
-            final String firstUserId = "1296234-assdfgsdf-230914";
-            final String secondUserId = "1231234-asdfsdf-234sd637";
-            registerAdditionalHibernateListenersForTests();
+    void fail_and_rollback_all_operation_within_adding_new_message_to_dialog_if_something_go_wrong_within_transaction() {
+        final String firstUserId = "1296234-assdfgsdf-230914";
+        final String secondUserId = "1231234-asdfsdf-234sd637";
+        registerAdditionalHibernateListenersForTests();
+        final String errorMessage = "RollBackTestException";
 
-            when(profileClientService.getProfileById((String) any())).thenAnswer(args -> generateProfile(args.getArgument(0)));
-            doThrow(RuntimeException.class).when(translateMessageService).translateSavedMessage((Message) any());
-            var newMessage_1 = Message.builder()
-                    .author(Member.builder().profileId(firstUserId).build())
-                    .description("Some test message description. (From firstUser)")
-                    .build();
-            messageChatService.addMessageToDialog(newMessage_1, secondUserId);
-        } catch (Exception ex) {
-            System.out.println("WRONG!");
-        }
+        when(profileClientService.getProfileById((String) any())).thenAnswer(args -> generateProfile(args.getArgument(0)));
+        doThrow(new RuntimeException("RollBackTestException")).when(translateMessageService).translateSavedMessage((Message) any());
+        // The same model like in previous test:
+        var newMessage_1 = Message.builder()
+                .author(Member.builder().profileId(firstUserId).build())
+                .description("Some test message description. (From firstUser)")
+                .build();
 
         // Verify:
-        var dialog = dialogRepository.findByDialogId(DIALOG_ID).orElseThrow();
-
-        System.out.println("OK");
+        assertThrows(RuntimeException.class,() -> messageChatService.addMessageToDialog(newMessage_1, secondUserId), errorMessage);
+        assertTrue(dialogRepository.findByDialogId(DIALOG_ID).isEmpty());
     }
 
     private Profile generateProfile(String profileId) {
