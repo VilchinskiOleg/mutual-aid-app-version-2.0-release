@@ -1,9 +1,12 @@
 package messagechat.messagechatservice.domain.service;
 
 import messagechat.messagechatservice.domain.model.Dialog;
+import org.springframework.lang.Nullable;
 import org.springframework.data.domain.Page;
 
-public interface DialogService {
+import java.util.Set;
+
+public interface DialogService{
 
     /**
      * User opens message-chat app and look at his chats (Dialogs).
@@ -27,7 +30,9 @@ public interface DialogService {
      * @param receiverId -
      * @return Dialog -
      */
-    Dialog getLinkedDialog(String dialogId, String authorId, String receiverId);
+    Dialog getLinkedDialog(@Nullable String dialogId, String authorId, @Nullable String receiverId);
+
+    Dialog createNewChanel(String chanelName, Set<String> memberIds);
 
     Dialog findDialogByInternalIdRequired(String dialogId);
 }

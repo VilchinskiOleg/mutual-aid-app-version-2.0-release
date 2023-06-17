@@ -8,8 +8,10 @@ import messagechat.messagechatservice.rest.message.request.CreateDialogRequest;
 import messagechat.messagechatservice.rest.message.request.CreateMessageRequest;
 import messagechat.messagechatservice.rest.message.request.PageRequest;
 import messagechat.messagechatservice.rest.message.request.UpdateMessageRequest;
+import messagechat.messagechatservice.rest.message.response.DialogResponse;
 import messagechat.messagechatservice.rest.message.response.DialogsPageResponse;
 import messagechat.messagechatservice.rest.message.response.MessagesPageResponse;
+import messagechat.messagechatservice.rest.model.Dialog;
 import org.common.http.autoconfiguration.annotation.Api;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.web.bind.annotation.*;
@@ -110,17 +112,17 @@ public class MessageChatRest {
      * Step 3.2:
      * User wants to create chanel for group of people.
      *
-     * @param createDialogRequest -
-     * @return MessagesPageResponse -
+     * @param request - model of request to create new Chanel, that contains all necessary data.
+     * @return DialogResponse - created Dialog model.
      */
     @Api
     @ApiOperation(value = "${message-chat.operation.create-dialog}",
             nickname = "createDialog")
     @PostMapping(path = "/create-dialog")
     @ResponseStatus(CREATED)
-    public MessagesPageResponse createDialog(@RequestBody @Valid CreateDialogRequest createDialogRequest) {
-        //TODO:..
-        return null;
+    public DialogResponse createDialog(@RequestBody @Valid CreateDialogRequest request) {
+        var dialog = dialogService.createNewChanel(request.getDialogName(), request.getMemberIds());
+        return new DialogResponse(mapper.map(dialog, Dialog.class));
     }
 
     @Api

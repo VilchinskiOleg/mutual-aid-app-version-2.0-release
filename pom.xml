@@ -151,6 +151,12 @@
             <version>${test.container.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- FOR PROPS-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

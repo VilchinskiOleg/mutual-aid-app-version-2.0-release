@@ -1,23 +1,30 @@
 package messagechat.messagechatservice.domain.service;
 
 import messagechat.messagechatservice.domain.model.Dialog;
-import messagechat.messagechatservice.domain.service.proessor.IdGeneratorService;
 import messagechat.messagechatservice.persistent.repository.DialogRepository;
+import org.common.http.autoconfiguration.service.IdGeneratorService;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
-import org.jetbrains.annotations.Nullable;
 import org.mapper.autoconfiguration.mapper.Mapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.lang.Nullable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.tms.common.auth.configuration.model.JwtAuthenticationToken;
 
 import javax.annotation.Resource;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toSet;
 import static messagechat.messagechatservice.domain.model.Dialog.Status.ACTIVE;
 import static messagechat.messagechatservice.domain.model.Dialog.Status.NOT_ACTIVE;
 import static messagechat.messagechatservice.domain.model.Dialog.Type.CHANNEL;
 import static messagechat.messagechatservice.domain.model.Dialog.Type.FACE_TO_FACE_DIALOG;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.data.domain.PageRequest.of;
 
 @Component
@@ -41,16 +48,12 @@ public class DialogServiceImpl implements DialogService {
         return null;
     }
 
-    public Dialog createNewDialog(@Nullable String consumerId){
-        var dialog = new Dialog();
-        dialog.setInternalId(idGeneratorService.generate());
-        if (isNull(consumerId)) {
-            dialog.setType(CHANNEL);
-        } else {
-            dialog.setType(FACE_TO_FACE_DIALOG);
-        }
-        dialog.setStatus(ACTIVE);
-        return dialog;
+    @Override
+    public Dialog createNewChanel(String chanelName, Set<String> memberIds) {
+        Dialog chanel = createNewDialog(null, chanelName);
+        populateMembersIfNeed(chanel, memberIds);
+        refreshChanges(chanel, fetchAuthorIdFromAuthContext());
+        return saveDialog(chanel);
     }
 
     /**
@@ -65,20 +68,21 @@ public class DialogServiceImpl implements DialogService {
      */
     @Override
     @Transactional
-    public Dialog getLinkedDialog(String dialogId, String authorId, String receiverId) {
-        Dialog dialog = isNull(dialogId) ? createNewDialog(receiverId) : findDialogByInternalIdRequired(dialogId);
+    public Dialog getLinkedDialog(@Nullable String dialogId, String authorId, @Nullable String receiverId) {
+        Dialog dialog = isNull(dialogId) ? createNewDialog(receiverId, null) : findDialogByInternalIdRequired(dialogId);
         checkDialogIsActive(dialog);
         if (populateMembersIfNeed(dialog, authorId, receiverId)) {
+            populateDefaultDialogNameIfNeed(dialog);
             refreshChanges(dialog, authorId);
-//            try {
-//
-//            } catch (RollbackException ex) {
-//
-//            }
-            return saveDialog(dialog);
-        } else {
-            return dialog;
+            try {
+                return saveDialog(dialog);
+            } catch (Exception ex) {
+                //todo: refactor:
+                System.out.println("OK!");
+                return null;
+            }
         }
+        return dialog;
     }
 
     @Override
@@ -88,6 +92,18 @@ public class DialogServiceImpl implements DialogService {
         return mapper.map(dataDialog, Dialog.class);
     }
 
+    private Dialog createNewDialog(@Nullable String consumerId, @Nullable String dialogName){
+        var dialog = new Dialog();
+        dialog.setInternalId(idGeneratorService.generate());
+        dialog.setName(dialogName);
+        if (isNull(consumerId)) {
+            dialog.setType(CHANNEL);
+        } else {
+            dialog.setType(FACE_TO_FACE_DIALOG);
+        }
+        dialog.setStatus(ACTIVE);
+        return dialog;
+    }
 
     private Dialog saveDialog(Dialog dialog) {
         var dataDialog = dialogRepository.save(mapper.map(dialog,
@@ -108,6 +124,16 @@ public class DialogServiceImpl implements DialogService {
         return anyMemberWasPopulated;
     }
 
+    private void populateMembersIfNeed(Dialog dialog, Set<String> memberIds) {
+        if (!memberIds.isEmpty()) {
+            dialog.setMembers(
+                    memberIds.stream()
+                            .map(memberId -> memberServiceImpl.getMemberByIdRequired(memberId))
+                            .collect(toSet())
+            );
+        }
+    }
+
     private void refreshChanges(Dialog dialog, String authorId) {
         if (isNull(dialog.getCreateAt())) {
             dialog.setCreateByMemberId(authorId);
@@ -120,5 +146,23 @@ public class DialogServiceImpl implements DialogService {
         if (NOT_ACTIVE == dialog.getStatus()) {
             throw new ConflictException("DIALOG_NOT_ACTIVE");
         }
+    }
+
+    private void populateDefaultDialogNameIfNeed(Dialog dialog) {
+        if (isBlank(dialog.getName())) {
+            String dialogName = dialog.getMembers().stream()
+                    .map(member -> isBlank(member.getNickName()) ? member.getFirstName() : member.getNickName())
+                    .collect(Collectors.joining("_"));
+            dialog.setName(dialogName);
+        }
+    }
+
+    private String fetchAuthorIdFromAuthContext() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth instanceof JwtAuthenticationToken) {
+            return ((JwtAuthenticationToken) auth).getProfileId();
+        }
+        // If you call that method from TEST account (not like usual user), method will write your login as a authorId:
+        return auth.getPrincipal().toString();
     }
 }
