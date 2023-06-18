@@ -10,6 +10,8 @@ import messagechat.messagechatservice.domain.service.client.ProfileClientService
 import messagechat.messagechatservice.domain.service.proessor.TranslateMessageService;
 import messagechat.messagechatservice.persistent.repository.DialogRepository;
 import messagechat.messagechatservice.persistent.repository.MessageRepository;
+import messagechat.messagechatservice.service.common.DatabaseSourceTestConfig;
+import messagechat.messagechatservice.service.common.ProfileMockTestExtension;
 import messagechat.messagechatservice.service.hibernate_listener.PostInsertDialogListener;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
@@ -24,15 +26,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.tms.mutual_aid.profile_service.client.model.Name;
-import org.tms.mutual_aid.profile_service.client.model.Profile;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
-import java.util.List;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.random;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,11 +42,9 @@ import static org.springframework.data.domain.PageRequest.of;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @ExtendWith(SpringExtension.class)
-public class MessageChatServiceTest extends DatabaseSourceTestConfig {
+public class MessageChatServiceTest extends DatabaseSourceTestConfig implements ProfileMockTestExtension {
 
     public static String DIALOG_ID;
-    private static final String[] PROFILE_FIRST_NAMES = {"John", "Sarah", "Jeims", "Rik", "Jesika", "Piter"};
-    private static final String[] PROFILE_LAST_NAMES = {"Smith", "Parker", "Malfoy", "Potter", "Stark", "Gibson"};
 
     @DynamicPropertySource
     public static void properties(DynamicPropertyRegistry registry) {
@@ -128,7 +123,7 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig {
 
         when(profileClientService.getProfileById((String) any())).thenAnswer(args -> generateProfile(args.getArgument(0)));
         doThrow(new RuntimeException("RollBackTestException")).when(translateMessageService).translateSavedMessage((Message) any());
-        // The same model like in previous test:
+        // The same model lake in previous test:
         var newMessage_1 = Message.builder()
                 .author(Member.builder().profileId(firstUserId).build())
                 .description("Some test message description. (From firstUser)")
@@ -139,16 +134,6 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig {
         assertTrue(dialogRepository.findByDialogId(DIALOG_ID).isEmpty());
     }
 
-    private Profile generateProfile(String profileId) {
-        var profile = new Profile();
-        profile.setId(profileId);
-        var name = new Name();
-        name.setFirstName(PROFILE_FIRST_NAMES[abs(5 - (int)(random()*10))]);
-        name.setLastName(PROFILE_LAST_NAMES[abs(5 - (int)(random()*10))]);
-        name.setLocale("en");
-        profile.setNames(List.of(name));
-        return profile;
-    }
 
     private void registerAdditionalHibernateListenersForTests() {
         var sessionFactory = entityManagerFactory.unwrap(SessionFactoryImpl.class);
