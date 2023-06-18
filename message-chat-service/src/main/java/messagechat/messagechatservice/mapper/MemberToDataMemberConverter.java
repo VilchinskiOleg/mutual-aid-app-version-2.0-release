@@ -13,6 +13,7 @@ public class MemberToDataMemberConverter extends BaseConverter<Member, messagech
         destination.setId(source.getId());
         destination.setProfileId(source.getProfileId());
         destination.setMemberInfo(MemberInfo.builder()
+                .id(source.getId())
                 .firstName(source.getFirstName())
                 .lastName(source.getLastName())
                 .nickName(source.getNickName())

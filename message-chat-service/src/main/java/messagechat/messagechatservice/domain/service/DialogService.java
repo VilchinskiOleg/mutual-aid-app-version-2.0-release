@@ -28,11 +28,20 @@ public interface DialogService{
      * @param dialogId -
      * @param authorId -
      * @param receiverId -
-     * @return Dialog -
+     * @return new (created) or existed (fetched from DB) Dialog.
      */
     Dialog getLinkedDialog(@Nullable String dialogId, String authorId, @Nullable String receiverId);
 
     Dialog createNewChanel(String chanelName, Set<String> memberIds);
+
+    /**
+     * For example add/remove user from Dialog, or rename Dialog.
+     *
+     * @param dialogData - data for comparing and changing of model.
+     * @param authorId - member ID who makes changes.
+     * @return updated Dialog.
+     */
+    Dialog updateDialog(Dialog dialogData, String authorId);
 
     Dialog findDialogByInternalIdRequired(String dialogId);
 }

@@ -14,8 +14,11 @@ public class DialogToDataDialogConverter extends BaseConverter<Dialog, messagech
         destination.setId(source.getId());
         destination.setDialogId(source.getInternalId());
         destination.setVersion(source.getVersion());
+
         // 'source.getMembers()' have lazy List initialization, so it will not provide as with NPE:
         source.getMembers().forEach(member -> destination.addMember(mapper.map(member, Member.class)));
+
+        destination.setName(source.getName());
         destination.setStatus(mapper.map(source.getStatus()));
         destination.setType(mapper.map(source.getType()));
         destination.setCreateAt(source.getCreateAt());

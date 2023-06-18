@@ -21,6 +21,7 @@ public class DataDialogToDialogConverter extends BaseConverter<Dialog, messagech
 
         destination.setMembers(mapper.map(source.getMembers(), new HashSet<>(), Member.class));
 
+        destination.setName(source.getName());
         destination.setStatus(mapper.map(source.getStatus(), Status.class));
         destination.setType(mapper.map(source.getType(), Type.class));
         destination.setCreateAt(source.getCreateAt());

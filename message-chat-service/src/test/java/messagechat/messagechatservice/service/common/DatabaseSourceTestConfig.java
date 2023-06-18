@@ -1,4 +1,4 @@
-package messagechat.messagechatservice.service;
+package messagechat.messagechatservice.service.common;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.test.annotation.DirtiesContext;

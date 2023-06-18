@@ -57,6 +57,12 @@ public class Dialog {
         }
     }
 
+    public void removeMember(Member member) {
+        if (nonNull(member)) {
+            getMembers().remove(member);
+        }
+    }
+
     public Member getMemberById(String memberId) {
         return getMembers().stream()
                            .filter(member -> member.getProfileId().equals(memberId))

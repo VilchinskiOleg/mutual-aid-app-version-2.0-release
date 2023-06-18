@@ -14,6 +14,7 @@ import messagechat.messagechatservice.rest.message.response.MessagesPageResponse
 import messagechat.messagechatservice.rest.model.Dialog;
 import org.common.http.autoconfiguration.annotation.Api;
 import org.mapper.autoconfiguration.mapper.Mapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -116,21 +117,44 @@ public class MessageChatRest {
      * @return DialogResponse - created Dialog model.
      */
     @Api
-    @ApiOperation(value = "${message-chat.operation.create-dialog}",
-            nickname = "createDialog")
-    @PostMapping(path = "/create-dialog")
+    @ApiOperation(value = "${message-chat.operation.create-chanel}",
+            nickname = "createChanel")
+    @PostMapping(path = "/create-chanel")
     @ResponseStatus(CREATED)
-    public DialogResponse createDialog(@RequestBody @Valid CreateDialogRequest request) {
+    public DialogResponse createChanel(@RequestBody @Valid CreateDialogRequest request) {
         var dialog = dialogService.createNewChanel(request.getDialogName(), request.getMemberIds());
         return new DialogResponse(mapper.map(dialog, Dialog.class));
+    }
+
+    /**
+     * Step 4.1:
+     * User want to join/leave chanel or rename current Dialog.
+     *
+     * @param dialogData - dialog changes to update.
+     * @return updated Dialog.
+     */
+    @Api
+    @ApiOperation(value = "${message-chat.operation.update-dialog}",
+            nickname = "updateDialog")
+    @PatchMapping("/update-dialog/{author-id}")
+    @ResponseStatus(OK)
+    @PreAuthorize("hasRole('UPDATE_DIALOG') or #authorId == authentication.profileId")
+    public DialogResponse updateDialog(@RequestBody @Valid Dialog dialogData,
+                                       @PathVariable("author-id") String authorId) {
+        var updatedDialog = dialogService.updateDialog(
+                mapper.map(dialogData, messagechat.messagechatservice.domain.model.Dialog.class),
+                authorId);
+        return new DialogResponse(mapper.map(updatedDialog, Dialog.class));
     }
 
     @Api
     @ApiOperation(value = "${message-chat.operation.update-message}",
                   nickname = "updateMessage")
-    @PutMapping(path = "/update-massage")
+    @PutMapping(path = "/update-message/{author-id}")
     @ResponseStatus(OK)
-    public MessagesPageResponse updateMassage(@RequestBody @Valid UpdateMessageRequest updateMessageRequest) {
+    @PreAuthorize("hasRole('UPDATE_MESSAGE') or #authorId == authentication.profileId")
+    public MessagesPageResponse updateMassage(@RequestBody @Valid UpdateMessageRequest updateMessageRequest,
+                                              @PathVariable("author-id") String authorId) {
         var message = mapper.map(updateMessageRequest, messagechat.messagechatservice.domain.model.Message.class);
         message = messageChatService.updateMessage(message);
         //TODO: check :

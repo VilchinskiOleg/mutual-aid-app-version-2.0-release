@@ -33,4 +33,6 @@ public class MemberServiceImpl {
                 .orElseThrow(() -> new ConflictException(MEMBER_NOT_FUND));
         return mapper.map(profile, Member.class);
     }
+
+    //TODO: Add method to Sync Profile changes to that service as well !
 }
