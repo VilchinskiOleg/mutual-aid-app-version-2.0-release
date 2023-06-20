@@ -29,7 +29,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import static messagechat.messagechatservice.domain.model.Dialog.Status.NOT_ACTIVE;
 import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -112,6 +114,7 @@ public class DialogServiceTest extends DatabaseSourceTestConfig implements Profi
         }
 
         // Update existed Chanel by two different Threads simultaneously:
+        // [1.] Add new Member to the chanel.
         var dialogDataFirstThreadChange = Dialog.builder()
                 .internalId(chanel.getInternalId())
                 .name(chanelName1)
@@ -122,6 +125,7 @@ public class DialogServiceTest extends DatabaseSourceTestConfig implements Profi
             latch.await();
             return dialogService.updateDialog(dialogDataFirstThreadChange, thirdUserId);
         });
+        // [2.] Remove existed Member from the chanel.
         var dialogDataSecondThreadChange = Dialog.builder()
                 .internalId(chanel.getInternalId())
                 .name(chanelName2)
@@ -132,18 +136,27 @@ public class DialogServiceTest extends DatabaseSourceTestConfig implements Profi
             latch.await();
             return dialogService.updateDialog(dialogDataSecondThreadChange, secondUserId);
         });
+
         executorService.shutdown();
         latch.countDown();
 
         // Waiting for result:
         await()
-                .atMost(15, TimeUnit.SECONDS)
+                .atMost(10, TimeUnit.SECONDS)
                 .pollInterval(1, TimeUnit.SECONDS)
                 .until(() -> resultByFirstThread.isDone() && resultBySecondThread.isDone());
 
         // Validate:
         var updatedChanel = dialogService.findDialogByInternalIdRequired(chanel.getInternalId());
-
-        System.out.println("OK!");
+        if (secondUserId.equals(updatedChanel.getModifyByMemberId())) {
+            // REMOVING operation was accomplished:
+            assertEquals(1, updatedChanel.getMembers().size());
+            assertFalse(updatedChanel.getMembers().contains(new Member(secondUserId)));
+        } else {
+            // ADDING operation was accomplished:
+            assertEquals(thirdUserId, updatedChanel.getModifyByMemberId());
+            assertEquals(3, updatedChanel.getMembers().size());
+            assertTrue(updatedChanel.getMembers().contains(new Member(thirdUserId)));
+        }
     }
 }
