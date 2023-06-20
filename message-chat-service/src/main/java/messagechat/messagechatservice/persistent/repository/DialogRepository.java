@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface DialogRepository extends JpaRepository<Dialog, Integer>, ExtendedDialogRepository {
 
-    @Query( "from Dialog d " +
+    @Query( "select d from Dialog d " +
             "join fetch d.dialogByMemberDetails d_by_m " +
             "join fetch d_by_m.member m " +
             "join fetch m.memberInfo m_inf " +

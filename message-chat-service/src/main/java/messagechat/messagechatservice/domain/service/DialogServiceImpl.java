@@ -82,7 +82,7 @@ public class DialogServiceImpl implements DialogService {
 
     @Override
     public Dialog findDialogByInternalIdRequired(String dialogId) {
-        var dataDialog = dialogRepository.findByDialogIdWithOptimisticLock(dialogId)
+        var dataDialog = dialogRepository.findByDialogId(dialogId)
                                                 .orElseThrow(() -> new ConflictException("DIALOG_NOT_FOUND"));
         return mapper.map(dataDialog, Dialog.class);
     }
