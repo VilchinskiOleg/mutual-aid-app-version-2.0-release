@@ -65,6 +65,34 @@ public class DialogServiceTest extends DatabaseSourceTestConfig implements Profi
 
 
     @Test
+    void success_when_new_user_try_to_join_chanel() {
+        final String firstUserId = "1296234-assdfgsdf-230914";
+        final String secondUserId = "1231234-asdfsdf-234sd637";
+        final String thirdUserId = "1dgoy1234-lkayrf-7709437";
+        when(profileClientService.getProfileById((String) any())).thenAnswer(args -> generateProfile(args.getArgument(0)));
+        String chanelName = "TEST_CHANEL_NAME";
+
+        // Create new Chanel:
+        Dialog chanel;
+        try (MockedStatic<AuthenticationUtils> utilities = Mockito.mockStatic(AuthenticationUtils.class)) {
+            utilities.when(AuthenticationUtils::fetchAuthorOfRequestUserIdFromAuthContext).thenReturn(firstUserId);
+            chanel = dialogService.createNewChanel(chanelName, Set.of(firstUserId, secondUserId));
+        }
+        assertEquals(2, chanel.getMembers().size());
+
+        // Update Chanel by joining new User:
+        var dialogData = Dialog.builder()
+                .internalId(chanel.getInternalId())
+                .members(Set.of(new Member(firstUserId), new Member(secondUserId), new Member(thirdUserId)))
+                .build();
+        dialogService.updateDialog(dialogData, thirdUserId);
+
+        // Verify:
+        var updatedChanel = dialogRepository.findByDialogId(chanel.getInternalId()).get();
+        assertEquals(3, updatedChanel.getMembers().size());
+    }
+
+    @Test
     void check_optimistic_lock_for_update_one_Dialog_by_several_users_simultaneously() {
         final String firstUserId = "1296234-assdfgsdf-230914";
         final String secondUserId = "1231234-asdfsdf-234sd637";
@@ -87,16 +115,17 @@ public class DialogServiceTest extends DatabaseSourceTestConfig implements Profi
         var dialogDataFirstThreadChange = Dialog.builder()
                 .internalId(chanel.getInternalId())
                 .name(chanelName1)
+                .status(NOT_ACTIVE)
                 .members(Set.of(new Member(firstUserId), new Member(secondUserId), new Member(thirdUserId)))
                 .build();
         Future<Dialog> resultByFirstThread = executorService.submit(() -> {
             latch.await();
             return dialogService.updateDialog(dialogDataFirstThreadChange, thirdUserId);
-//            return dialogService.updateDialog(dialogDataFirstThreadChange, firstUserId);
         });
         var dialogDataSecondThreadChange = Dialog.builder()
                 .internalId(chanel.getInternalId())
                 .name(chanelName2)
+                .status(NOT_ACTIVE)
                 .members(Set.of(new Member(firstUserId), new Member(thirdUserId)))
                 .build();
         Future<Dialog> resultBySecondThread = executorService.submit(() -> {
@@ -113,6 +142,8 @@ public class DialogServiceTest extends DatabaseSourceTestConfig implements Profi
                 .until(() -> resultByFirstThread.isDone() && resultBySecondThread.isDone());
 
         // Validate:
+        var updatedChanel = dialogService.findDialogByInternalIdRequired(chanel.getInternalId());
+
         System.out.println("OK!");
     }
 }
