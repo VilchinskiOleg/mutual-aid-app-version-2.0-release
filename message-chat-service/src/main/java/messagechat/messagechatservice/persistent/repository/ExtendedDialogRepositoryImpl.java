@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import messagechat.messagechatservice.persistent.entity.Dialog;
 import messagechat.messagechatservice.persistent.entity.DialogByMember;
 import messagechat.messagechatservice.persistent.entity.Member;
+import org.hibernate.Session;
 import org.hibernate.graph.GraphSemantic;
+import org.hibernate.internal.SessionImpl;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
@@ -17,6 +19,9 @@ public class ExtendedDialogRepositoryImpl implements ExtendedDialogRepository {
 
     @Override
     public Optional<Dialog> findByDialogIdWithOptimisticLock(String dialogId) {
+
+        // Probably using 'EntityGraph' provide us with additional request to DB.
+        // [!] Be careful, I had some issues when I called that method to change (join/remove) some Members into Dialog:
         var dialogGraph = entityManager.createEntityGraph(Dialog.class);
         dialogGraph.addAttributeNodes("dialogByMemberDetails");
         var dialogByMemberDetailsSubGraph = dialogGraph.addSubgraph("dialogByMemberDetails", DialogByMember.class);
@@ -40,4 +45,9 @@ public class ExtendedDialogRepositoryImpl implements ExtendedDialogRepository {
 //                       pageRequest,
 //                       () -> mongoTemplate.count(query.with(pageRequest).skip(-1).limit(-1), Dialog.class));
 //    }
+
+    @Override
+    public Session getHibernateSession() {
+        return entityManager.unwrap(SessionImpl.class);
+    }
 }
