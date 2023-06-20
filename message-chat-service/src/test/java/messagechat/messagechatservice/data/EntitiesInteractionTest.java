@@ -1,10 +1,7 @@
 package messagechat.messagechatservice.data;
 
 import messagechat.messagechatservice.configuration.data.MessageChatJpaConfig;
-import messagechat.messagechatservice.persistent.entity.Dialog;
-import messagechat.messagechatservice.persistent.entity.Member;
-import messagechat.messagechatservice.persistent.entity.MemberInfo;
-import messagechat.messagechatservice.persistent.entity.Message;
+import messagechat.messagechatservice.persistent.entity.*;
 import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -194,7 +191,13 @@ public class EntitiesInteractionTest extends AbstractTest {
     @Test
     void add_existed_in_DB_member_to_existed_dialog_and_Read_updated_dialog() {
         createChanel(hibernateEntityManagerImpl, DIALOG_ID);
+        String findDialogQuery = "select d from Dialog d " +
+                "join fetch d.dialogByMemberDetails d_by_m " +
+                "join fetch d_by_m.member m " +
+                "join fetch m.memberInfo m_inf " +
+                "where d.dialogId = :dialogId";
 
+        // Save additional user into DB:
         String userId = "test-user-3";
         hibernateEntityManagerImpl.beginTransaction();
         try {
@@ -211,12 +214,11 @@ public class EntitiesInteractionTest extends AbstractTest {
             hibernateEntityManagerImpl.getTransaction().rollback();
         }
 
+        // Make changes:
         hibernateEntityManagerImpl.beginTransaction();
         try {
-            Dialog savedDialog = hibernateEntityManagerImpl.createQuery(
-                            "from Dialog d " +
-                                    "join fetch d.dialogByMemberDetails d_by_m " +
-                                    "where d.dialogId = :dialogId", Dialog.class)
+            // retrieve dialog from DB:
+            Dialog savedDialog = hibernateEntityManagerImpl.createQuery(findDialogQuery, Dialog.class)
                     .setParameter("dialogId", DIALOG_ID)
                     .getSingleResult();
             assertEquals(2, savedDialog.getMembers().size());
@@ -235,14 +237,184 @@ public class EntitiesInteractionTest extends AbstractTest {
             hibernateEntityManagerImpl.getTransaction().rollback();
         }
 
-        Dialog updatedDialog = hibernateEntityManagerImpl.createQuery(
-                        "from Dialog d " +
-                                "join fetch d.dialogByMemberDetails d_by_m " +
-                                "where d.dialogId = :dialogId", Dialog.class)
+        // Validate:
+        Dialog updatedDialog = hibernateEntityManagerImpl.createQuery(findDialogQuery, Dialog.class)
                 .setParameter("dialogId", DIALOG_ID)
                 .getSingleResult();
         assertEquals(3, updatedDialog.getMembers().size());
+        // To check there weren't created any new members:
+        assertEquals(3, hibernateEntityManagerImpl.createQuery("from Member m", Member.class).getResultList().size());
         hibernateEntityManagerImpl.clear();
+
+        cleanDb(hibernateEntityManagerImpl);
+    }
+
+    @Test
+    void remove_member_in_chanel_by_merging_changes_in_DB() {
+        createChanel(hibernateEntityManagerImpl, DIALOG_ID);
+        String findDialogQuery = "select d from Dialog d " +
+                "join fetch d.dialogByMemberDetails d_by_m " +
+                "join fetch d_by_m.member m " +
+                "join fetch m.memberInfo m_inf " +
+                "where d.dialogId = :dialogId";
+
+        // retrieve dialog from DB:
+        Dialog dialog = null;
+        hibernateEntityManagerImpl.beginTransaction();
+        try {
+            dialog = hibernateEntityManagerImpl.createQuery(findDialogQuery, Dialog.class)
+                    .setParameter("dialogId", DIALOG_ID)
+                    .getSingleResult();
+            assertEquals(2, dialog.getMembers().size());
+
+            hibernateEntityManagerImpl.getTransaction().commit();
+            hibernateEntityManagerImpl.clear();
+        } catch (Exception ex) {
+            hibernateEntityManagerImpl.getTransaction().rollback();
+        }
+
+        // Make changes outside the Persistent Context:
+        dialog.getDialogByMemberDetails().remove(1);
+
+        // Invoke changes into DB:
+        hibernateEntityManagerImpl.beginTransaction();
+        try {
+            // Use 'Merge()'. It's important:
+            ((Session) hibernateEntityManagerImpl).merge(dialog);
+
+            hibernateEntityManagerImpl.getTransaction().commit();
+            hibernateEntityManagerImpl.clear();
+        } catch (Exception ex) {
+            hibernateEntityManagerImpl.getTransaction().rollback();
+        }
+
+        // Validate:
+        Dialog updatedDialog = hibernateEntityManagerImpl.createQuery(findDialogQuery, Dialog.class)
+                .setParameter("dialogId", DIALOG_ID)
+                .getSingleResult();
+        assertEquals(1, updatedDialog.getMembers().size());
+        assertEquals(1, hibernateEntityManagerImpl.createQuery("from DialogByMember d_by_m", DialogByMember.class).getResultList().size());
+
+        cleanDb(hibernateEntityManagerImpl);
+    }
+
+    @Test
+    void add_member_in_chanel_by_merging_changes_in_DB() {
+        createChanel(hibernateEntityManagerImpl, DIALOG_ID);
+        String findDialogQuery = "select d from Dialog d " +
+                "join fetch d.dialogByMemberDetails d_by_m " +
+                "join fetch d_by_m.member m " +
+                "join fetch m.memberInfo m_inf " +
+                "where d.dialogId = :dialogId";
+
+        // retrieve dialog from DB:
+        Dialog dialog = null;
+        hibernateEntityManagerImpl.beginTransaction();
+        try {
+            dialog = hibernateEntityManagerImpl.createQuery(findDialogQuery, Dialog.class)
+                    .setParameter("dialogId", DIALOG_ID)
+                    .getSingleResult();
+            assertEquals(2, dialog.getMembers().size());
+
+            hibernateEntityManagerImpl.getTransaction().commit();
+            hibernateEntityManagerImpl.clear();
+        } catch (Exception ex) {
+            hibernateEntityManagerImpl.getTransaction().rollback();
+        }
+
+        // Make changes outside the Persistent Context:
+        String userId = "test-user-3";
+        var usrInfo3 = MemberInfo.builder()
+                .firstName("firstname of " + userId)
+                .lastName("lastname of " + userId)
+                .nickName("nickname of " + userId).build();
+        var usr3 = new Member(userId, usrInfo3);
+        dialog.addMember(usr3);
+
+        // You must set complex ID to the existed (in DB) DialogByMember through the converter in App level.
+        // Otherwise, you will be provided by exception, because Hibernate will not be able to figure out that
+        // such DialogByMember item already exists.
+
+        // Code below emulate that behavior:
+        // dialog.getDialogByMemberDetails().forEach(dialogByMember -> dialogByMember.setId(new DialogByMemberKey()));
+
+        // Invoke changes into DB:
+        hibernateEntityManagerImpl.beginTransaction();
+        try {
+            // Use 'Merge()'. It's important:
+            ((Session) hibernateEntityManagerImpl).merge(dialog);
+
+            hibernateEntityManagerImpl.getTransaction().commit();
+            hibernateEntityManagerImpl.clear();
+        } catch (Exception ex) {
+            hibernateEntityManagerImpl.getTransaction().rollback();
+        }
+
+        // Validate:
+        Dialog updatedDialog = hibernateEntityManagerImpl.createQuery(findDialogQuery, Dialog.class)
+                .setParameter("dialogId", DIALOG_ID)
+                .getSingleResult();
+        assertEquals(3, updatedDialog.getMembers().size());
+        assertEquals(3, hibernateEntityManagerImpl.createQuery("from DialogByMember d_by_m", DialogByMember.class).getResultList().size());
+
+        cleanDb(hibernateEntityManagerImpl);
+    }
+
+    @Test
+    void add_member_in_chanel_by_merging_changes_in_DB_within_one_single_transaction() {
+        createChanel(hibernateEntityManagerImpl, DIALOG_ID);
+        String findDialogQuery = "select d from Dialog d " +
+                "join fetch d.dialogByMemberDetails d_by_m " +
+                "join fetch d_by_m.member m " +
+                "join fetch m.memberInfo m_inf " +
+                "where d.dialogId = :dialogId";
+
+        hibernateEntityManagerImpl.beginTransaction();
+        try {
+            var dialog = hibernateEntityManagerImpl.createQuery(findDialogQuery, Dialog.class)
+                    .setParameter("dialogId", DIALOG_ID)
+                    .getSingleResult();
+            assertEquals(2, dialog.getMembers().size());
+
+            String userId = "test-user-3";
+            var usrInfo3 = MemberInfo.builder()
+                    .firstName("firstname of " + userId)
+                    .lastName("lastname of " + userId)
+                    .nickName("nickname of " + userId).build();
+            var usr3 = new Member(userId, usrInfo3);
+
+            // Generate copy of Dialog:
+            var copyOfDialog = Dialog.builder()
+                    .id(dialog.getId())
+                    .version(dialog.getVersion())
+                    .dialogId(dialog.getDialogId())
+                    .name(dialog.getName())
+                    .type(dialog.getType())
+                    .status(dialog.getStatus())
+                    .createAt(dialog.getCreateAt())
+                    .createByMemberId(dialog.getCreateByMemberId())
+                    .build();
+            dialog.getMembers().forEach(copyOfDialog::addMember);
+            copyOfDialog.addMember(usr3);
+            // Can ignore fetching/setting up messages for copy of Dialog from original because of 'orphanRemoval = false':
+            // copyOfDialog.addMessages(dialog.getMessages());
+
+            // Merge changed Dialog to current from Persistent Context:
+            ((Session) hibernateEntityManagerImpl).merge(copyOfDialog);
+
+            hibernateEntityManagerImpl.getTransaction().commit();
+            hibernateEntityManagerImpl.clear();
+        } catch (Exception ex) {
+            hibernateEntityManagerImpl.getTransaction().rollback();
+        }
+
+        // Validate:
+        Dialog updatedDialog = hibernateEntityManagerImpl.createQuery(findDialogQuery, Dialog.class)
+                .setParameter("dialogId", DIALOG_ID)
+                .getSingleResult();
+        assertEquals(3, updatedDialog.getMembers().size());
+        assertEquals(3, hibernateEntityManagerImpl.createQuery("from DialogByMember d_by_m", DialogByMember.class).getResultList().size());
+        assertEquals(2, updatedDialog.getMessages().size());
 
         cleanDb(hibernateEntityManagerImpl);
     }

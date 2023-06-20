@@ -3,6 +3,8 @@ package messagechat.messagechatservice.data;
 import lombok.Cleanup;
 import messagechat.messagechatservice.configuration.data.MessageChatJpaConfig;
 import messagechat.messagechatservice.persistent.entity.Dialog;
+import messagechat.messagechatservice.persistent.entity.Member;
+import messagechat.messagechatservice.persistent.entity.MemberInfo;
 import messagechat.messagechatservice.persistent.entity.Message;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
@@ -36,8 +38,11 @@ public class IsolationTransactionTest extends AbstractTest {
     private EntityManagerFactory entityManagerFactory;
 
 
+    /**
+     * Prevent Last Commit wins effect by Optimistic Lock:
+     */
     @Test
-    void throw_exception_by_optimistic_lock_when_try_to_make_changes() {
+    void throw_exception_by_optimistic_lock_when_try_to_change_dialog_name() {
         createDialogForCouple((Session) entityManagerFactory.createEntityManager(), DIALOG_ID);
 
         final String F_D_CH = "First dialog NAME changing";

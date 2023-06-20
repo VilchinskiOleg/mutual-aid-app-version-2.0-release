@@ -39,12 +39,15 @@ public class Dialog {
     private Long version;
 
     @ToString.Exclude
-    @Builder.Default // Will initialize field by inline '= new ArrayList<>()' below if I use builder:
-    @OneToMany(mappedBy = "dialog", cascade = CascadeType.ALL)
+    // Will initialize field by inline '= new ArrayList<>()' below if I use builder:
+    @Builder.Default
+    @OneToMany(mappedBy = "dialog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DialogByMember> dialogByMemberDetails = new ArrayList<>();
 
     @ToString.Exclude
-    @Builder.Default // Will initialize field by inline '= new HashSet<>()' below if I use builder:
+    // Will initialize field by inline '= new HashSet<>()' below if I use builder:
+    @Builder.Default
+    // Leave 'orphanRemoval = false' (default value):
     @OneToMany(mappedBy = "dialog", cascade = CascadeType.ALL)
     private Set<Message> messages = new HashSet<>();
 
