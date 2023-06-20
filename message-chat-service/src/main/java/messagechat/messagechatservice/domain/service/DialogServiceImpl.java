@@ -8,13 +8,18 @@ import messagechat.messagechatservice.persistent.repository.DialogRepository;
 import org.common.http.autoconfiguration.service.IdGeneratorService;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.mapper.autoconfiguration.mapper.Mapper;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.Nullable;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.persistence.OptimisticLockException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +31,7 @@ import static messagechat.messagechatservice.domain.model.Dialog.Status.NOT_ACTI
 import static messagechat.messagechatservice.domain.model.Dialog.Type.CHANNEL;
 import static messagechat.messagechatservice.domain.model.Dialog.Type.FACE_TO_FACE_DIALOG;
 import static messagechat.messagechatservice.mapper.DialogToDialogUpdateByPatchConverter.UPDATE_DIALOG_BY_PATCH;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.data.domain.PageRequest.of;
 import static org.tms.common.auth.configuration.utils.AuthenticationUtils.fetchAuthorOfRequestUserIdFromAuthContext;
@@ -76,38 +82,36 @@ public class DialogServiceImpl implements DialogService {
 
     @Override
     public Dialog findDialogByInternalIdRequired(String dialogId) {
-        var dataDialog = dialogRepository.findByDialogId(dialogId)
+        var dataDialog = dialogRepository.findByDialogIdWithOptimisticLock(dialogId)
                                                 .orElseThrow(() -> new ConflictException("DIALOG_NOT_FOUND"));
         return mapper.map(dataDialog, Dialog.class);
     }
 
     @Override
     @Transactional
+    @Retryable(
+            value = {OptimisticLockingFailureException.class, OptimisticLockException.class},
+            maxAttempts = 2,
+            backoff = @Backoff(delay = 100))
     public Dialog updateDialog(Dialog dialogData, String authorId) {
         Dialog dialog = findDialogByInternalIdRequired(dialogData.getInternalId());
+        checkDialogIsActive(dialog);
         // join/live dialog:
-        Set<Member> membersWereModified;
-        Member author = new Member(authorId);
-        if ((membersWereModified = Sets.difference(dialogData.getMembers(), dialog.getMembers())).size() == 1
-                && membersWereModified.contains(author)) {
-            dialog.addMember(memberServiceImpl.getMemberByIdRequired(authorId));
-        } else if ((membersWereModified = Sets.difference(dialog.getMembers(), dialogData.getMembers())).size() == 1
-                && membersWereModified.contains(author)) {
-            dialog.removeMember(author);
-        } else {
-            log.error("DialogData= {} contains additional Members to make changes in current Dialog= {} unless current User with ID= {}.",
-                    dialogData, dialog, authorId);
-            throw new ConflictException("Any user must update only his own status toward Dialog, and mustn't bring along any additional Members!");
+        Set<Member> membersChangeData = dialogData.getMembers();
+        if (isNotEmpty(membersChangeData)) {
+            updateMembers(membersChangeData, dialog, authorId);
         }
         // modify name or status:
         mapper.map(dialogData, dialog, UPDATE_DIALOG_BY_PATCH);
         refreshChanges(dialog, authorId);
-        try {
-            return saveDialog(dialog);
-        }catch (Exception ex) {
-            System.out.println("OK!");
-            return null;
-        }
+        return saveDialog(dialog);
+    }
+
+    @Recover
+    void recoverDialogUpdating(Exception ex, Dialog dialogData, String authorId) {
+        log.error("Max attempts for update Dialog with ID= {} by Dialog Data= {} was surpassed!",
+                dialogData.getInternalId(), dialogData, ex);
+        throw new ConflictException("Try one more little beat later.");
     }
 
     private Dialog createNewDialog(@Nullable String consumerId, @Nullable String dialogName){
@@ -143,7 +147,7 @@ public class DialogServiceImpl implements DialogService {
     }
 
     private void populateMembersIfNeed(Dialog dialog, Set<String> memberIds) {
-        if (!memberIds.isEmpty()) {
+        if (isNotEmpty(memberIds)) {
             dialog.setMembers(
                     memberIds.stream()
                             .map(memberId -> memberServiceImpl.getMemberByIdRequired(memberId))
@@ -174,6 +178,23 @@ public class DialogServiceImpl implements DialogService {
                     .map(member -> isBlank(member.getNickName()) ? member.getFirstName() : member.getNickName())
                     .collect(Collectors.joining("_"));
             dialog.setName(dialogName);
+        }
+    }
+
+    private void updateMembers(Set<Member> membersChangeData, Dialog dialog, String authorId) {
+        Set<Member> membersWereModified;
+        Member author = new Member(authorId);
+
+        if ((membersWereModified = Sets.difference(membersChangeData, dialog.getMembers())).size() == 1
+                && membersWereModified.contains(author)) {
+            dialog.addMember(memberServiceImpl.getMemberByIdRequired(authorId));
+        } else if ((membersWereModified = Sets.difference(dialog.getMembers(), membersChangeData)).size() == 1
+                && membersWereModified.contains(author)) {
+            dialog.removeMember(author);
+        } else {
+            log.error("DialogData with members= {} contains additional Members to make changes in current Dialog= {} unless current User with ID= {}.",
+                    membersChangeData, dialog, authorId);
+            throw new ConflictException("Any user must update only his own status toward Dialog, and mustn't bring along any additional Members!");
         }
     }
 }
