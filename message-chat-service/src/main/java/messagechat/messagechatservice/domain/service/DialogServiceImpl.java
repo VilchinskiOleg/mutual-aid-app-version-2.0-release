@@ -181,6 +181,14 @@ public class DialogServiceImpl implements DialogService {
         }
     }
 
+    /**
+     * [!] In a current moment only avery single user can add/remove him self.
+     * [!] Other different users can't add/remove other users.
+     *
+     * @param membersChangeData - changes to merge in DB.
+     * @param dialog - current Dialog (fetched from DB).
+     * @param authorId - user who tries to make changes.
+     */
     private void updateMembers(Set<Member> membersChangeData, Dialog dialog, String authorId) {
         Set<Member> membersWereModified;
         Member author = new Member(authorId);
