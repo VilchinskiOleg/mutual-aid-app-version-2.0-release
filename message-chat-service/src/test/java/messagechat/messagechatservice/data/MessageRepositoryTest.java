@@ -39,7 +39,7 @@ public class MessageRepositoryTest extends AbstractTest {
      * 2. Pagination in method 'findAllByDialogId' works properly.
      */
     @Test
-    void get_all_messages_by_dialogId_repository_test() {
+    void get_all_messages_by_dialogId_or_dialogName_test() {
         @Cleanup var session = (Session) entityManagerFactory.createEntityManager();
         createDialogForCouple(session, DIALOG_ID);
 
@@ -53,6 +53,24 @@ public class MessageRepositoryTest extends AbstractTest {
                 of(0, 1),
                 DIALOG_ID,
                 null).getContent();
+        assertEquals(1, messages2.size());
+
+        cleanDb(session);
+    }
+
+    @Test
+    void get_all_messages_by_dialogId_test() {
+        @Cleanup var session = (Session) entityManagerFactory.createEntityManager();
+        createDialogForCouple(session, DIALOG_ID);
+
+        List<Message> messages1 = messageRepository.findAllByDialogId(
+                of(0, 2),
+                DIALOG_ID);
+        assertEquals(2, messages1.size());
+
+        List<Message> messages2 = messageRepository.findAllByDialogId(
+                of(1, 1),
+                DIALOG_ID);
         assertEquals(1, messages2.size());
 
         cleanDb(session);
