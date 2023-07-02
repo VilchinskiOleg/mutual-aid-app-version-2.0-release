@@ -72,6 +72,7 @@ public class MessageRepositoryTest extends AbstractTest {
                 of(1, 1),
                 DIALOG_ID);
         assertEquals(1, messages2.size());
+        assertEquals(2, messages2.get(0).getId());
 
         cleanDb(session);
     }
