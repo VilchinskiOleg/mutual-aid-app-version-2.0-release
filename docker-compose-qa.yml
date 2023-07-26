@@ -40,15 +40,15 @@ services:
       - ${pwd}/postgres/backup:/var/lib/postgresql/data
       # For Linux:
 #      - $(pwd)/postgres/backup:/var/lib/postgresql/data
-  auth-service:
-    image: '"${DOCKER_ID}"/auth-service-boot'
-    container_name: 'auth-service'
-    ports:
-      - '8100:8100'
-      - '5015:5005'
-    environment:
-      - MONGO_DB_PASSWORD
-      - EMAIL_SENDER_API_TOKEN
+#  auth-service:
+#    image: '"${DOCKER_ID}"/auth-service-boot'
+#    container_name: 'auth-service'
+#    ports:
+#      - '8100:8100'
+#      - '5015:5005'
+#    environment:
+#      - MONGO_DB_PASSWORD
+#      - EMAIL_SENDER_API_TOKEN
   profile-service:
     build:
       dockerfile: Dockerfile
