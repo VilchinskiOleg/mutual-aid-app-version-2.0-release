@@ -104,23 +104,23 @@ services:
       - datasource.api.jdbc-url=jdbc:postgresql://postgres:5432/apiDB
       - auth-rest-client.url=http://auth-service:8100
       - profile-rest-client.url=http://profile-service:8200
-  event-storage-service:
-    build:
-      dockerfile: Dockerfile
-      context: ./event-storage-service
-    container_name: 'event-storage-service'
-    ports:
-      - '8400:8400'
-      - '5045:5005'
-    depends_on:
-      - 'auth-service'
-      - 'order-service'
-      - 'kafka'
-    environment:
-      - MONGO_DB_PASSWORD
-      - kafka.bootstrapServers=kafka:9092
-      - kafka.ssl-keystore-location=/app/clientkeystore.jks
-      - kafka.ssl-truststore-location=/app/clienttruststore.jks
+#  event-storage-service:
+#    build:
+#      dockerfile: Dockerfile
+#      context: ./event-storage-service
+#    container_name: 'event-storage-service'
+#    ports:
+#      - '8400:8400'
+#      - '5045:5005'
+#    depends_on:
+#      - 'auth-service'
+#      - 'order-service'
+#      - 'kafka'
+#    environment:
+#      - MONGO_DB_PASSWORD
+#      - kafka.bootstrapServers=kafka:9092
+#      - kafka.ssl-keystore-location=/app/clientkeystore.jks
+#      - kafka.ssl-truststore-location=/app/clienttruststore.jks
   message-chat-service:
     build:
       dockerfile: Dockerfile
