@@ -62,19 +62,19 @@ services:
     environment:
       - MONGO_DB_PASSWORD
       - auth-rest-client.url=http://auth-service:8100
-  profile-soap-service:
-    build:
-      dockerfile: Dockerfile
-      context: ./profile-service-parent/profile-service-soap
-    container_name: 'profile-soap-service'
-    ports:
-      - '8250:8250'
-      - '5225:5005'
-    depends_on:
-      - 'auth-service'
-    environment:
-      - MONGO_DB_PASSWORD
-      - auth-rest-client.url=http://auth-service:8100
+#  profile-soap-service:
+#    build:
+#      dockerfile: Dockerfile
+#      context: ./profile-service-parent/profile-service-soap
+#    container_name: 'profile-soap-service'
+#    ports:
+#      - '8250:8250'
+#      - '5225:5005'
+#    depends_on:
+#      - 'auth-service'
+#    environment:
+#      - MONGO_DB_PASSWORD
+#      - auth-rest-client.url=http://auth-service:8100
   order-service:
     build:
       dockerfile: Dockerfile
