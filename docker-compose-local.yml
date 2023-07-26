@@ -54,19 +54,19 @@ services:
     environment:
       - MONGO_DB_PASSWORD
       - EMAIL_SENDER_API_TOKEN
-  profile-service:
-    build:
-      dockerfile: Dockerfile
-      context: ./profile-service-parent/profile-service-rest
-    container_name: 'profile-service'
-    ports:
-      - '8200:8200'
-      - '5025:5005'
-    depends_on:
-      - 'auth-service'
-    environment:
-      - MONGO_DB_PASSWORD
-      - auth-rest-client.url=http://auth-service:8100
+#  profile-service:
+#    build:
+#      dockerfile: Dockerfile
+#      context: ./profile-service-parent/profile-service-rest
+#    container_name: 'profile-service'
+#    ports:
+#      - '8200:8200'
+#      - '5025:5005'
+#    depends_on:
+#      - 'auth-service'
+#    environment:
+#      - MONGO_DB_PASSWORD
+#      - auth-rest-client.url=http://auth-service:8100
   profile-soap-service:
     build:
       dockerfile: Dockerfile
