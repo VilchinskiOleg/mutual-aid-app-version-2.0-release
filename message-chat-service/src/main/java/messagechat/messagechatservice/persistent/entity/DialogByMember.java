@@ -22,13 +22,18 @@ public class DialogByMember {
     private DialogByMemberKey id = new DialogByMemberKey();
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false)
     @MapsId("dialogId")
     @JoinColumn(name = "dialog_id")
     private Dialog dialog;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @MapsId("memberId")
     @JoinColumn(name = "member_id")
     private Member member;

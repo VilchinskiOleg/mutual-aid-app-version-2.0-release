@@ -30,7 +30,9 @@ public class Dialog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true, nullable = false)
+    @Column(
+            unique = true,
+            nullable = false)
     private String dialogId;
 
     private String name;
@@ -41,14 +43,19 @@ public class Dialog {
     @ToString.Exclude
     // Will initialize field by inline '= new ArrayList<>()' below if I use builder:
     @Builder.Default
-    @OneToMany(mappedBy = "dialog", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "dialog",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<DialogByMember> dialogByMemberDetails = new ArrayList<>();
 
     @ToString.Exclude
     // Will initialize field by inline '= new HashSet<>()' below if I use builder:
     @Builder.Default
     // Leave 'orphanRemoval = false' (default value):
-    @OneToMany(mappedBy = "dialog", cascade = CascadeType.ALL)
+    @OneToMany(
+            mappedBy = "dialog",
+            cascade = CascadeType.ALL)
     private Set<Message> messages = new HashSet<>();
 
     private String status;
