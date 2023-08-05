@@ -15,13 +15,11 @@ import javax.persistence.*;
 public class MemberInfo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
-//    @PrimaryKeyJoinColumn
     @JoinColumn(name = "id")
     private Member member;
 
