@@ -1,5 +1,6 @@
 package messagechat.messagechatservice.configuration.data;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
@@ -29,6 +30,9 @@ public class MessageChatJpaConfig {
 
     private static final String API_DATA_HANDLER_PERSISTENT_UNIT = "message-chat-persistent-unit";
 
+    @Value("${jpa-props.message-chat.ddl-auto}")
+    private String ddlAuto;
+
     @Bean(name = "dataSource")
     @ConfigurationProperties(prefix = "datasource.message-chat")
     public DataSource dataSource() {
@@ -54,7 +58,7 @@ public class MessageChatJpaConfig {
     private Map<String, Object> getProperties() {
         return Map.of(
                 "hibernate.dialect", "org.hibernate.dialect.PostgreSQL10Dialect",
-                "hibernate.hbm2ddl.auto", "update",
+                "hibernate.hbm2ddl.auto", ddlAuto,
                 "hibernate.show_sql", "true",
                 "hibernate.format_sql", "true",
                 "hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy"

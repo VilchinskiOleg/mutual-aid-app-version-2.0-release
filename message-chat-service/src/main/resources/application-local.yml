@@ -2,6 +2,8 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://admin:${MONGO_DB_PASSWORD}@cluster0.lme5y.mongodb.net/mutual-aid-app?retryWrites=true&w=majority
+  liquibase:
+    enabled: false
 
 profile-rest-client:
   url: http://localhost:8200
@@ -9,4 +11,8 @@ profile-rest-client:
 
 message-chat-properties:
   translation-message:
-    enabled: true
+    enabled: false
+
+jpa-props:
+  message-chat:
+    ddl-auto: update

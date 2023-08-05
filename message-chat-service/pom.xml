@@ -37,6 +37,10 @@
             <version>${test.container.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
 
         <!-- WEB CLIENT: -->
         <dependency>
@@ -96,19 +100,17 @@
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-<!--            <version>4.1.1</version>-->
             <scope>test</scope>
         </dependency>
 
+        <!-- Retry Logic for Optimistic Locking flow: -->
         <dependency>
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
-<!--            <version>2.0.0</version>-->
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
-<!--            <version>5.2.8.RELEASE</version>-->
         </dependency>
 
     </dependencies>

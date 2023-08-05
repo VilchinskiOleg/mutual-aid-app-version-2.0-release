@@ -17,7 +17,7 @@ import javax.persistence.*;
  * @Table(name = "Term", indexes = {
  *     @Index(columnList = "name, id", name = "name_idx") })
  *
- * in order to define your custom index (not like unique single field or primary key, with will be created automatically)
+ * in order to define your custom index (not like unique constraint or primary key, with will be created automatically)
  */
 public class Member {
 

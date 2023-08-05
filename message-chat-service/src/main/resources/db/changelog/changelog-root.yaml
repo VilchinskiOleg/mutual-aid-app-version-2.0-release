@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - includeAll:
+      path: classpath:/db/changelog/changelog-tables
+#  - includeAll:
+#      path: classpath:/db/changelog/changelog-indexes

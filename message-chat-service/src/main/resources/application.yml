@@ -10,6 +10,8 @@ spring:
     default-property-inclusion: non_empty
     parser:
       allow-comments: true
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-root.yaml
 
 application:
   api-info:
@@ -24,9 +26,11 @@ application:
 datasource:
   message-chat:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://localhost:5432/messageChatService
-    username: ${PG_USERNAME}
-    password: ${PG_PASSWORD}
+    jdbc-url: jdbc:postgresql://localhost:5432/message-chat
+#    username: ${PG_USERNAME}
+#    password: ${PG_PASSWORD}
+    username: test
+    password: test
 
 feign:
   client:
