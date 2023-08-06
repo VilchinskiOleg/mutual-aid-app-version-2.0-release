@@ -1,11 +1,5 @@
 package org.tms.authservicerest.domain.service;
 
-import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.tms.authservicerest.utils.Constant.Service.PASSWORD_LENGTH;
-
-import java.util.List;
-import javax.annotation.Resource;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.mapper.autoconfiguration.mapper.Mapper;
@@ -18,6 +12,13 @@ import org.tms.authservicerest.domain.service.client.EmailSenderClientService;
 import org.tms.authservicerest.domain.service.jwt.JwtHandler;
 import org.tms.authservicerest.domain.service.ticket.TicketHandlerStrategy;
 import org.tms.authservicerest.persistent.service.ProfileRepository;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.tms.authservicerest.utils.Constant.Service.PASSWORD_LENGTH;
 
 @Slf4j
 @Component

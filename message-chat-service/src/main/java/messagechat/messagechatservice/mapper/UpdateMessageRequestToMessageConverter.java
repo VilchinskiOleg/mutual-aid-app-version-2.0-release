@@ -15,7 +15,7 @@ public class UpdateMessageRequestToMessageConverter extends BaseConverter<Update
 
     @Override
     public void convert(UpdateMessageRequest source, Message destination) {
-        destination.setId(source.getMessageId());
+        destination.setInternalId(source.getMessageId());
         destination.setDescription(source.getDescription());
     }
 }

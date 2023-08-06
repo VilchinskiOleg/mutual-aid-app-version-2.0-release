@@ -20,12 +20,29 @@
     </properties>
 
     <dependencies>
+
+        <!-- DATA: -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${test.container.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
         </dependency>
 
-
+        <!-- WEB CLIENT: -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
@@ -43,7 +60,7 @@
             <artifactId>feign-slf4j</artifactId>
         </dependency>
 
-
+        <!-- STARTER: -->
         <dependency>
             <groupId>org.tms.mapper</groupId>
             <artifactId>model-mapper-autoconfiguration</artifactId>
@@ -60,11 +77,42 @@
             <groupId>org.tms</groupId>
             <artifactId>profile-service-client</artifactId>
         </dependency>
+
         <!-- COMMON AUTH CONFIGURATION: -->
         <dependency>
             <groupId>org.tms.common.auth</groupId>
             <artifactId>auth-configuration</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>32.0.1-jre</version>
+        </dependency>
+
+        <!-- FOR STATIC MOCK: -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- FOR TESTS (ADDITIONAL): -->
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Retry Logic for Optimistic Locking flow: -->
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

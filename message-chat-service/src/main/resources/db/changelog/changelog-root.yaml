@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - includeAll:
+      path: classpath:/db/changelog/changelog-tables
+  - include:
+      file: classpath:/db/changelog/changelog-tables-relations.sql
+
+# We don't use that part because it's not necessary
+# (UNIQUE constraints create indexes by default in Postgres):
+
+#  - includeAll:
+#      path: classpath:/db/changelog/changelog-indexes

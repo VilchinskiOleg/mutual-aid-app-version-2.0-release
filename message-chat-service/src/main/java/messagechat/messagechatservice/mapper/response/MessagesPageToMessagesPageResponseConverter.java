@@ -10,11 +10,6 @@ import java.util.ArrayList;
 public class MessagesPageToMessagesPageResponseConverter extends PageToPageResponseConverter<Message, MessagesPageResponse> {
 
     @Override
-    protected MessagesPageResponse getDestination() {
-        return new MessagesPageResponse();
-    }
-
-    @Override
     public void convert(Page<Message> source, MessagesPageResponse destination) {
         destination.setMessages(mapper.map(source.getContent(),
                                            new ArrayList<>(),

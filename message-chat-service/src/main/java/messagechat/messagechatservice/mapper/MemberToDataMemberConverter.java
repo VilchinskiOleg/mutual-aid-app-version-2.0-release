@@ -1,6 +1,7 @@
 package messagechat.messagechatservice.mapper;
 
 import messagechat.messagechatservice.domain.model.Member;
+import messagechat.messagechatservice.persistent.entity.MemberInfo;
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
 
@@ -8,15 +9,14 @@ import org.springframework.stereotype.Component;
 public class MemberToDataMemberConverter extends BaseConverter<Member, messagechat.messagechatservice.persistent.entity.Member> {
 
     @Override
-    protected messagechat.messagechatservice.persistent.entity.Member getDestination() {
-        return new messagechat.messagechatservice.persistent.entity.Member();
-    }
-
-    @Override
     public void convert(Member source, messagechat.messagechatservice.persistent.entity.Member destination) {
+        destination.setId(source.getId());
         destination.setProfileId(source.getProfileId());
-        destination.setFirstName(source.getFirstName());
-        destination.setLastName(source.getLastName());
-        destination.setNickName(source.getNickName());
+        destination.setMemberInfo(MemberInfo.builder()
+                .id(source.getId())
+                .firstName(source.getFirstName())
+                .lastName(source.getLastName())
+                .nickName(source.getNickName())
+                .build());
     }
 }

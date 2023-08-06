@@ -1,22 +1,32 @@
 package messagechat.messagechatservice.domain.model;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import lombok.*;
 
-import lombok.Getter;
-import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
+
 @Getter
 @Setter
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Dialog {
 
-    private String id;
+    // ID in DB:
+    private Integer id;
+    private Long version;
 
     private String internalId;
+
+    // Name of Group if there are more than two members, or default generated name (like: member1_member2):
+    private String name;
+
     private Set<Member> members;
     private Status status;
     private Type type;
@@ -47,6 +57,12 @@ public class Dialog {
         }
     }
 
+    public void removeMember(Member member) {
+        if (nonNull(member)) {
+            getMembers().remove(member);
+        }
+    }
+
     public Member getMemberById(String memberId) {
         return getMembers().stream()
                            .filter(member -> member.getProfileId().equals(memberId))
@@ -60,7 +76,15 @@ public class Dialog {
     }
 
     public enum Type {
+
+        /**
+         * Can have as meany as you want members.
+         */
         CHANNEL,
+
+        /**
+         * Must have only two members.
+         */
         FACE_TO_FACE_DIALOG
     }
 }

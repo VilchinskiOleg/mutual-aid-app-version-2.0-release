@@ -1,9 +1,5 @@
 package org.tms.authservicerest.domain.service.client;
 
-import static java.util.Collections.singletonList;
-import static org.common.http.autoconfiguration.utils.Constant.OK_HTTP_CODE;
-import static org.tms.authservicerest.utils.Constant.Errors.RESET_PASSWORD_FAILED;
-
 import feign.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
@@ -13,7 +9,14 @@ import org.tms.authservicerest.configuration.client.model.Contact;
 import org.tms.authservicerest.configuration.client.model.Content;
 import org.tms.authservicerest.configuration.client.model.EmailLetter;
 import org.tms.authservicerest.configuration.client.model.Personalization;
+
 import javax.annotation.Resource;
+import java.util.regex.Pattern;
+
+import static java.lang.String.valueOf;
+import static java.util.Collections.singletonList;
+import static java.util.regex.Pattern.compile;
+import static org.tms.authservicerest.utils.Constant.Errors.RESET_PASSWORD_FAILED;
 
 @Component
 @Slf4j
@@ -22,6 +25,7 @@ public class EmailSenderClientService {
     private static final String SENDER_EMAIL = "vin76423@gmail.com";
     private static final String SUBJECT = "Resending password";
     private static final String CONTENT_TYPE = "text/plain"; // text/plain ; application/json
+    private static final Pattern SUCCESS_HTTP_CODE = compile("^2\\d+$");
 
     @Resource
     private RapidEmailSenderApiClient emailSenderApiClient;
@@ -54,7 +58,7 @@ public class EmailSenderClientService {
     }
 
     private void checkResponse(Response response) {
-        if (OK_HTTP_CODE != response.status()) {
+        if (!SUCCESS_HTTP_CODE.matcher(valueOf(response.status())).matches()) {
             throw new ConflictException(RESET_PASSWORD_FAILED);
         }
     }

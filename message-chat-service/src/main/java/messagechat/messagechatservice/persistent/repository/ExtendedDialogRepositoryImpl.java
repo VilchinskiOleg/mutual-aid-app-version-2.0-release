@@ -1,31 +1,53 @@
 package messagechat.messagechatservice.persistent.repository;
 
-import static messagechat.messagechatservice.util.Constant.Service.Mongo.MEMBERS;
-import static messagechat.messagechatservice.util.Constant.Service.Mongo.PROFILE_ID;
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.support.PageableExecutionUtils.getPage;
-
+import lombok.RequiredArgsConstructor;
 import messagechat.messagechatservice.persistent.entity.Dialog;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import javax.annotation.Resource;
-import java.util.List;
+import messagechat.messagechatservice.persistent.entity.DialogByMember;
+import messagechat.messagechatservice.persistent.entity.Member;
+import org.hibernate.Session;
+import org.hibernate.graph.GraphSemantic;
+import org.hibernate.internal.SessionImpl;
 
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
+import java.util.Optional;
+
+@RequiredArgsConstructor
 public class ExtendedDialogRepositoryImpl implements ExtendedDialogRepository {
 
-    @Resource
-    private MongoTemplate mongoTemplate;
+    private final EntityManager entityManager;
 
     @Override
-    public Page<Dialog> findAllByMemberId(String memberId, PageRequest pageRequest) {
-        Criteria subCriteria = where(PROFILE_ID).is(memberId);
-        Query query = new Query(where(MEMBERS).elemMatch(subCriteria));
-        List<Dialog> dialogs = mongoTemplate.find(query.with(pageRequest), Dialog.class);
-        return getPage(dialogs,
-                       pageRequest,
-                       () -> mongoTemplate.count(query.with(pageRequest).skip(-1).limit(-1), Dialog.class));
+    public Optional<Dialog> findByDialogIdWithOptimisticLock(String dialogId) {
+
+        // Probably using 'EntityGraph' provide us with additional request to DB.
+        // [!] Be careful, I had some issues when I called that method to change (join/remove) some Members into Dialog:
+        var dialogGraph = entityManager.createEntityGraph(Dialog.class);
+        dialogGraph.addAttributeNodes("dialogByMemberDetails");
+        var dialogByMemberDetailsSubGraph = dialogGraph.addSubgraph("dialogByMemberDetails", DialogByMember.class);
+        dialogByMemberDetailsSubGraph.addAttributeNodes("member");
+        var memberSubGraph = dialogByMemberDetailsSubGraph.addSubgraph("member", Member.class);
+        memberSubGraph.addAttributeNodes("memberInfo");
+
+        return Optional.ofNullable(entityManager.createQuery("from Dialog d where d.dialogId = :dialogId", Dialog.class)
+                .setParameter("dialogId", dialogId)
+                .setLockMode(LockModeType.OPTIMISTIC)
+                .setHint(GraphSemantic.LOAD.getJpaHintName(), dialogGraph)
+                .getSingleResult());
+    }
+
+//    @Override
+//    public Page<Dialog> findAllByMemberId(String memberId, PageRequest pageRequest) {
+//        Criteria subCriteria = where(PROFILE_ID).is(memberId);
+//        Query query = new Query(where(MEMBERS).elemMatch(subCriteria));
+//        List<Dialog> dialogs = mongoTemplate.find(query.with(pageRequest), Dialog.class);
+//        return getPage(dialogs,
+//                       pageRequest,
+//                       () -> mongoTemplate.count(query.with(pageRequest).skip(-1).limit(-1), Dialog.class));
+//    }
+
+    @Override
+    public Session getHibernateSession() {
+        return entityManager.unwrap(SessionImpl.class);
     }
 }

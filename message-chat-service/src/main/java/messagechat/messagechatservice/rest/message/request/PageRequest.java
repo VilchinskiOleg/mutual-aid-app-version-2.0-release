@@ -1,11 +1,11 @@
 package messagechat.messagechatservice.rest.message.request;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PageRequest {
 
     @NonNull

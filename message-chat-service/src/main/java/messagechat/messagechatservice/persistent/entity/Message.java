@@ -1,22 +1,52 @@
 package messagechat.messagechatservice.persistent.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.*;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Document(collection = "message-chat-service.message")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+
+@Entity
+@Table(name = "message")
 public class Message {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    private String dialogId;
-    private String description;
+    @Column(
+            unique = true,
+            nullable = false)
+    private String messageId;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dialog_id")
+    private Dialog dialog;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id")
     private Member author;
+
+    private String description;
     private LocalDateTime createAt;
     private LocalDateTime modifyAt;
+
+
+    /**
+     * Initializes all relation Dialog-Message automatically.
+     * Use that method from your client code for initialization.
+     *
+     * @param dialog - related Dialog entity.
+     */
+    public void setDialog(@NonNull Dialog dialog) {
+        this.dialog = dialog;
+        dialog.addMessage(this);
+    }
 }

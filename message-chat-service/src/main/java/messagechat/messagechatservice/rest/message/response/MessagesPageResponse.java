@@ -6,7 +6,11 @@ import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class MessagesPageResponse extends PageResponse {
 
+    private String dialogId;
+    private String dialogName;
     private List<Message> messages;
 }

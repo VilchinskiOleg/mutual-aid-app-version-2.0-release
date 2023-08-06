@@ -1,21 +1,25 @@
 package org.tms.common.auth.configuration.global.algorithms;
 
-import static java.lang.String.format;
-import static java.util.Objects.isNull;
-import static org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher.Node;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ClassPathResource;
-import org.tms.common.auth.configuration.global.algorithms.model.FastSorter;
-import org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
+import org.tms.common.auth.configuration.global.algorithms.model.BubbleSortUtil;
+import org.tms.common.auth.configuration.global.algorithms.model.FastSortUtil;
+import org.tms.common.auth.configuration.global.algorithms.model.FindPairToSumUtil;
+import org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TreeSet;
+
+import static java.lang.String.format;
+import static java.util.Objects.isNull;
+import static org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher.Node;
 
 @Slf4j
 public class AlgorithmsTest {
@@ -32,21 +36,10 @@ public class AlgorithmsTest {
 
     @Test
     void bubbleSort() {
-
         int[] array = {2,33,5,11,7,23,3,45};
         System.out.println(Arrays.toString(array));
 
-        for(int i = array.length - 1; i > 0; --i) {
-            for(int n = 0; n < i; ++n) {
-
-                if(array[n] > array[n+1]) {
-                    int temp = array[n+1];
-                    array[n+1] = array[n];
-                    array[n] = temp;
-                }
-            }
-        }
-
+        BubbleSortUtil.sortAsc(array);
         System.out.println(Arrays.toString(array));
     }
 
@@ -54,18 +47,42 @@ public class AlgorithmsTest {
     @Test
     void fastSortTest() {
         List<Integer> array = Arrays.asList(2, 33, 5, 11, 5, 7, 23, 3, 45, 45);
-
         log.info("Before: " + array);
-        var sortedArray = new FastSorter().sort(array);
+
+        var sortedArray = FastSortUtil.sort(array);
         log.info("After: " + sortedArray);
     }
 
 
     @Test
+    void findPairToSumTest() {
+        int[] arr = {1,4,5,8,0,2,13,7};
+
+        int[] res0 = FindPairToSumUtil.findPairToSum0(arr, 7);
+        int[] res1 = FindPairToSumUtil.findPairToSum1(arr, 7);
+
+        BubbleSortUtil.sortAsc(arr);
+
+        int[] res2_1 = FindPairToSumUtil.findPairToSum2(arr, 7);
+        int[] res2_2 = FindPairToSumUtil.findPairToSum2(arr, 12);
+        int[] res3_1 = FindPairToSumUtil.findPairToSum3(arr, 7);
+        int[] res3_2 = FindPairToSumUtil.findPairToSum3(arr, 12);
+
+        System.out.println("OK");
+    }
+
+
+    //TODO: try to improve:
+    @Test
     void test() {
 
         int [] left = {1, 5, 7, 8, 16, 21};
         int [] right = {3, 13, 14, 15, 17, 23}; // bigger
+
+        List<Integer> lt = List.of(3, 13, 14, 15, 17, 23);
+        TreeSet<Integer> set = new TreeSet(lt);
+        int b = set.last();
+        int prB = set.floor(b);
 
         int [] res = new int[left.length + right.length];
 
