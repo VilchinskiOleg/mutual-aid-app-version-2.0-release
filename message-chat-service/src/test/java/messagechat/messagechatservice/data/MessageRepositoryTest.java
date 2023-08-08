@@ -2,6 +2,7 @@ package messagechat.messagechatservice.data;
 
 import lombok.Cleanup;
 import messagechat.messagechatservice.configuration.data.MessageChatJpaConfig;
+import messagechat.messagechatservice.data.common.AbstractTest;
 import messagechat.messagechatservice.persistent.entity.Message;
 import messagechat.messagechatservice.persistent.repository.ExtendedMessageRepositoryImpl;
 import messagechat.messagechatservice.persistent.repository.MessageRepository;

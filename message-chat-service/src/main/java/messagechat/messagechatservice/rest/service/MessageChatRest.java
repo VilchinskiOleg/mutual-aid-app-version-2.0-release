@@ -74,13 +74,13 @@ public class MessageChatRest {
     public MessagesPageResponse getPageMassagesFromDialog(@RequestBody @Valid PageRequest pageRequest,
                                                           @PathVariable("dialog-id") String dialogId,
                                                           @PathVariable(value = "dialog-name", required = false) String dialogName) {
-        var pageMessages = messageChatService.getPageMessagesFromDialog(
+        var messages = messageChatService.getPageMessagesFromDialog(
                 pageRequest.getPageNumber(),
                 pageRequest.getSize(),
                 dialogId,
                 dialogName);
-        var messages = mapper.map(pageMessages.getContent(), new ArrayList<>(), messagechat.messagechatservice.rest.model.Message.class);
-        return new MessagesPageResponse(dialogId, dialogName, messages);
+        var messagesApiData = mapper.map(messages, new ArrayList<>(), messagechat.messagechatservice.rest.model.Message.class);
+        return new MessagesPageResponse(dialogId, dialogName, messagesApiData);
     }
 
     /**

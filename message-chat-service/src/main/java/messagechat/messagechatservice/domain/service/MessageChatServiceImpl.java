@@ -1,25 +1,31 @@
 package messagechat.messagechatservice.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import messagechat.messagechatservice.configuration.MessageChatConfig;
 import messagechat.messagechatservice.domain.model.Dialog;
 import messagechat.messagechatservice.domain.model.Member;
 import messagechat.messagechatservice.domain.model.Message;
+import messagechat.messagechatservice.domain.service.proessor.ExternalCacheManager;
 import messagechat.messagechatservice.domain.service.proessor.TranslateMessageService;
 import messagechat.messagechatservice.persistent.repository.MessageRepository;
 import org.common.http.autoconfiguration.service.IdGeneratorService;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.mapper.autoconfiguration.mapper.Mapper;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static messagechat.messagechatservice.util.Constant.Errors.MESSAGE_NOT_FOUND;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.springframework.data.domain.PageRequest.of;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class MessageChatServiceImpl implements MessageChatService {
@@ -27,7 +33,9 @@ public class MessageChatServiceImpl implements MessageChatService {
     private final MessageRepository messageRepository;
     private final DialogService dialogService;
     private final TranslateMessageService translateMessageService;
+    private final ExternalCacheManager cacheManager;
     private final IdGeneratorService idGeneratorService;
+    private final MessageChatConfig messageChatConfig;
     private final Mapper mapper;
 
 
@@ -52,15 +60,32 @@ public class MessageChatServiceImpl implements MessageChatService {
     }
 
     @Override
-    public Page<Message> getPageMessagesFromDialog(Integer pageNumber,
+    public List<Message> getPageMessagesFromDialog(Integer pageNumber,
                                                    Integer size,
                                                    String dialogId,
                                                    @Nullable String dialogName) {
+        List<Message> messages;
+
+        if (messageChatConfig.isTranslationEnabled()) {
+            log.info("Try to find translated messages into cache.");
+            messages = cacheManager.readMessagesFromCache(dialogId, pageNumber, size);
+            if (isNotEmpty(messages)) {
+                log.info("Have retrieved messages from cache successfully.");
+                return messages;
+            }
+            log.info("Didn't manage to read messages from cache. Gonna use usual flow with DB and result handling.");
+        }
+
         PageRequest pageRequest = of(pageNumber, size);
         var dataMessagesPage = messageRepository.findAllByDialogIdOrName(pageRequest, dialogId, dialogName);
-        var messagesPage = dataMessagesPage.map(message -> mapper.map(message, Message.class));
-        translateMessageService.translateReturnedMessages(messagesPage.getContent());
-        return messagesPage;
+        messages = dataMessagesPage.map(message -> mapper.map(message, Message.class)).getContent();
+        translateMessageService.translateReturnedMessages(messages);
+
+        if (messageChatConfig.isTranslationEnabled()) {
+            cacheManager.cacheTranslatedMessages(messages);
+        }
+
+        return messages;
     }
 
     private void linkDialogToMessage(Message message, String receiverId) {

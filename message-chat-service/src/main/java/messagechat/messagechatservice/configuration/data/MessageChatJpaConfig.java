@@ -1,5 +1,11 @@
 package messagechat.messagechatservice.configuration.data;
 
+import messagechat.messagechatservice.domain.service.proessor.ExternalCacheManager;
+import messagechat.messagechatservice.domain.service.proessor.hibernate_listener.PreInsertListener;
+import messagechat.messagechatservice.domain.service.proessor.hibernate_listener.PreUpdateListener;
+import org.hibernate.event.service.spi.EventListenerRegistry;
+import org.hibernate.event.spi.EventType;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -12,6 +18,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Map;
@@ -30,8 +38,13 @@ public class MessageChatJpaConfig {
 
     private static final String API_DATA_HANDLER_PERSISTENT_UNIT = "message-chat-persistent-unit";
 
+    @Resource
+    private EntityManagerFactory entityManagerFactory;
+    @Resource
+    private ExternalCacheManager cacheManager;
     @Value("${jpa-props.message-chat.ddl-auto}")
     private String ddlAuto;
+
 
     @Bean(name = "dataSource")
     @ConfigurationProperties(prefix = "datasource.message-chat")
@@ -54,6 +67,17 @@ public class MessageChatJpaConfig {
     public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
+
+    @PostConstruct
+    public void registerEventListeners() {
+        var sessionFactory = entityManagerFactory.unwrap(SessionFactoryImpl.class);
+        var registry = sessionFactory.getServiceRegistry().getService(EventListenerRegistry.class);
+
+        // Register required Listeners:
+        registry.getEventListenerGroup(EventType.PRE_INSERT).appendListener(new PreInsertListener(cacheManager));
+        registry.getEventListenerGroup(EventType.PRE_UPDATE).appendListener(new PreUpdateListener(cacheManager));
+    }
+
 
     private Map<String, Object> getProperties() {
         return Map.of(

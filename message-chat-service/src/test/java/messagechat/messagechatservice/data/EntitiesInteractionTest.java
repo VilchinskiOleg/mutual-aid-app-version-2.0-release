@@ -1,6 +1,7 @@
 package messagechat.messagechatservice.data;
 
 import messagechat.messagechatservice.configuration.data.MessageChatJpaConfig;
+import messagechat.messagechatservice.data.common.AbstractTest;
 import messagechat.messagechatservice.persistent.entity.*;
 import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
