@@ -1,38 +1,46 @@
 package messagechat.messagechatservice.persistent.cache;
 
-import org.mapper.autoconfiguration.mapper.Mapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import javax.annotation.Resource;
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toCollection;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
+@Slf4j
 public class ExtendedCachedMessageRepositoryImpl implements ExtendedCachedMessageRepository {
 
-    @Resource
-    private RedisTemplate<String, Object> redisTemplate;
-    @Resource
-    private Mapper mapper;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final HashOperations<String, Object, Object> hashOperations;
+
+
+    public ExtendedCachedMessageRepositoryImpl(RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+        this.hashOperations = redisTemplate.opsForHash();
+    }
+
+
+    @Override
+    public void saveMessageByKey(String key, CachedMessage message) {
+        var payload = message.getMap();
+        hashOperations.putAll(key, payload);
+    }
 
     @Override
     public NavigableSet<CachedMessage> getMessagesByKeyPattern(String pattern) {
         Set<String> cachedMessageKeys = redisTemplate.keys(pattern);
         if (isEmpty(cachedMessageKeys)) return null;
 
-        var hashOperations = redisTemplate.opsForHash();
         return cachedMessageKeys.stream()
-                .map(key -> {
-                    Map<Object, Object> entries = hashOperations.entries(key);
-                    Integer serialNumberDesc = 1;//todo!
-                    entries.put("serialNumberDesc", serialNumberDesc);
-                    return entries;
-                })
-                .map(entry -> mapper.map(entry, CachedMessage.class))
+                .map(hashOperations::entries)
+                .map(this::convertToCachedMsg)
                 .collect(toCollection(TreeSet::new));
     }
 
@@ -50,5 +58,23 @@ public class ExtendedCachedMessageRepositoryImpl implements ExtendedCachedMessag
         if (isEmpty(cachedMessageKeys)) return false;
 
         return redisTemplate.delete(new TreeSet<>(cachedMessageKeys).first());
+    }
+
+
+    private CachedMessage convertToCachedMsg(Map<Object, Object> data) {
+        var result = new CachedMessage();
+        try{
+            for(Field field : CachedMessage.class.getDeclaredFields()) {
+                Object val = data.get(field.getName());
+                if (nonNull(val)) {
+                    field.setAccessible(true);
+                    field.set(result, val);
+                }
+            }
+        }catch (Exception ex) {
+            log.error("Get fail trying to map entries properties to CachedMessage entity.", ex);
+            throw new RuntimeException(ex);
+        }
+        return result;
     }
 }

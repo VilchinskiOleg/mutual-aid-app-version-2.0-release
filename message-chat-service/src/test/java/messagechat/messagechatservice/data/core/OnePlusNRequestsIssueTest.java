@@ -1,4 +1,4 @@
-package messagechat.messagechatservice.data;
+package messagechat.messagechatservice.data.core;
 
 import messagechat.messagechatservice.configuration.data.MessageChatJpaConfig;
 import messagechat.messagechatservice.data.common.AbstractTest;

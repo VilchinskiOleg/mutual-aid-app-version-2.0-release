@@ -18,8 +18,8 @@ public abstract class TranslateMessageService {
     @Resource
     private CommonData commonData;
 
+    //REMOVE:
     public void translateSavedMessage(Message message) {
-        //REMOVE:
         String sourceLang = commonData.getLocale().getLanguage();
         if (DEFAULT_LANG.equals(sourceLang)) {
             return;

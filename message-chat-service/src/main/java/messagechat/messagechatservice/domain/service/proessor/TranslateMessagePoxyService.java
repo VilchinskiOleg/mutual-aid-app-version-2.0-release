@@ -1,6 +1,6 @@
 package messagechat.messagechatservice.domain.service.proessor;
 
-import messagechat.messagechatservice.configuration.MessageChatConfig;
+import messagechat.messagechatservice.configuration.MessageChatConfigProps;
 import messagechat.messagechatservice.domain.model.Message;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
@@ -10,18 +10,18 @@ import java.util.List;
 public class TranslateMessagePoxyService extends TranslateMessageService {
 
     @Resource
-    private MessageChatConfig messageChatConfig;
+    private MessageChatConfigProps messageChatConfigProps;
 
     @Override
     public void translateSavedMessage(Message message) {
-        if (messageChatConfig.isTranslationEnabled()) {
+        if (messageChatConfigProps.isTranslationEnabled()) {
             super.translateSavedMessage(message);
         }
     }
 
     @Override
     public void translateReturnedMessages(List<Message> messages) {
-        if (messageChatConfig.isTranslationEnabled()) {
+        if (messageChatConfigProps.isTranslationEnabled()) {
             super.translateReturnedMessages(messages);
         }
     }

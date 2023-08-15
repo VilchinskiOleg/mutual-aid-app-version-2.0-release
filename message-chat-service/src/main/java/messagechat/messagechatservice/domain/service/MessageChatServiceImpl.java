@@ -2,7 +2,7 @@ package messagechat.messagechatservice.domain.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import messagechat.messagechatservice.configuration.MessageChatConfig;
+import messagechat.messagechatservice.configuration.MessageChatConfigProps;
 import messagechat.messagechatservice.domain.model.Dialog;
 import messagechat.messagechatservice.domain.model.Member;
 import messagechat.messagechatservice.domain.model.Message;
@@ -35,7 +35,7 @@ public class MessageChatServiceImpl implements MessageChatService {
     private final TranslateMessageService translateMessageService;
     private final ExternalCacheManager cacheManager;
     private final IdGeneratorService idGeneratorService;
-    private final MessageChatConfig messageChatConfig;
+    private final MessageChatConfigProps messageChatConfigProps;
     private final Mapper mapper;
 
 
@@ -66,7 +66,7 @@ public class MessageChatServiceImpl implements MessageChatService {
                                                    @Nullable String dialogName) {
         List<Message> messages;
 
-        if (messageChatConfig.isTranslationEnabled()) {
+        if (messageChatConfigProps.isTranslationEnabled()) {
             log.info("Try to find translated messages into cache.");
             messages = cacheManager.readMessagesFromCache(dialogId, pageNumber, size);
             if (isNotEmpty(messages)) {
@@ -81,8 +81,8 @@ public class MessageChatServiceImpl implements MessageChatService {
         messages = dataMessagesPage.map(message -> mapper.map(message, Message.class)).getContent();
         translateMessageService.translateReturnedMessages(messages);
 
-        if (messageChatConfig.isTranslationEnabled()) {
-            cacheManager.cacheTranslatedMessages(messages);
+        if (messageChatConfigProps.isTranslationEnabled()) {
+            cacheManager.cacheTranslatedMessages(messages, pageNumber, size);
         }
 
         return messages;

@@ -1,4 +1,4 @@
-package messagechat.messagechatservice.data;
+package messagechat.messagechatservice.data.core;
 
 import lombok.Cleanup;
 import messagechat.messagechatservice.configuration.data.MessageChatJpaConfig;

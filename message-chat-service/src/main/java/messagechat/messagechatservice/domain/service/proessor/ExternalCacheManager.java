@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
@@ -29,17 +29,24 @@ public class ExternalCacheManager {
     private final CommonData commonData;
     private final Mapper mapper;
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(3);
+//    private ExecutorService executorService = Executors.newFixedThreadPool(3);
 
 
-    //Async
-    public void cacheTranslatedMessages(List<Message> messages) {
-        executorService.submit(() -> {
+//    @Async("threadPoolTaskExecutor")
+    public void cacheTranslatedMessages(List<Message> messages, Integer pageNumber, Integer size) {
+//        executorService.submit(() -> {
+            // in this case 1th - is a last message in a chat:
+            String lang = commonData.getLocale().getLanguage().toUpperCase();
+            AtomicInteger currentSerialNumberDesc = new AtomicInteger(size * pageNumber + 1);
             messages.forEach(message -> {
                 var cachedMessage = mapper.map(message, CachedMessage.class);
-                cachedMessageRepository.save(cachedMessage); //??? key
+                cachedMessage.setSerialNumberDesc(currentSerialNumberDesc.get());
+                String dialogId = ofNullable(message.getDialogId()).orElseThrow(() -> new RuntimeException("Dialog ID can't be null"));
+                String messageId = ofNullable(message.getInternalId()).orElseThrow(() -> new RuntimeException("Message ID can't be null"));
+                String key = buildCacheKeyPattern(dialogId, lang, currentSerialNumberDesc.getAndIncrement(), messageId);
+                cachedMessageRepository.saveMessageByKey(key, cachedMessage);
             });
-        });
+//        });
     }
 
     public List<Message> readMessagesFromCache(String dialogId, Integer pageNumber, Integer size) {
@@ -62,13 +69,13 @@ public class ExternalCacheManager {
         return mapper.map(matchedCachedMessages, new ArrayList<>(), Message.class);
     }
 
-    //Async
+//    @Async("threadPoolTaskExecutor")
     public void removeAllMessagesByDialogId(String dialogId) {
-        executorService.submit(() -> {
+//        executorService.submit(() -> {
             String pattern = buildCacheKeyPattern(dialogId, null, null, null);
             var numbers = cachedMessageRepository.removeMessagesByKeyPattern(pattern);
             log.info("Was removed {} messages from the cache for dialog= {}", numbers, dialogId);
-        });
+//        });
     }
 
     public void removeMessageByMessageId(String messageId) {

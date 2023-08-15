@@ -1,12 +1,12 @@
 package messagechat.messagechatservice.configuration.data;
 
+import messagechat.messagechatservice.configuration.MessageChatConfigProps;
 import messagechat.messagechatservice.domain.service.proessor.ExternalCacheManager;
 import messagechat.messagechatservice.domain.service.proessor.hibernate_listener.PreInsertListener;
 import messagechat.messagechatservice.domain.service.proessor.hibernate_listener.PreUpdateListener;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.internal.SessionFactoryImpl;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
@@ -42,8 +42,8 @@ public class MessageChatJpaConfig {
     private EntityManagerFactory entityManagerFactory;
     @Resource
     private ExternalCacheManager cacheManager;
-    @Value("${jpa-props.message-chat.ddl-auto}")
-    private String ddlAuto;
+    @Resource
+    private MessageChatConfigProps configProps;
 
 
     @Bean(name = "dataSource")
@@ -82,7 +82,7 @@ public class MessageChatJpaConfig {
     private Map<String, Object> getProperties() {
         return Map.of(
                 "hibernate.dialect", "org.hibernate.dialect.PostgreSQL10Dialect",
-                "hibernate.hbm2ddl.auto", ddlAuto,
+                "hibernate.hbm2ddl.auto", configProps.getDdlAuto(),
                 "hibernate.show_sql", "true",
                 "hibernate.format_sql", "true",
                 "hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy"
