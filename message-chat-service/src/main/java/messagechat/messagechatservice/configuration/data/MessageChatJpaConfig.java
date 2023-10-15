@@ -18,7 +18,6 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -38,10 +37,6 @@ public class MessageChatJpaConfig {
 
     private static final String API_DATA_HANDLER_PERSISTENT_UNIT = "message-chat-persistent-unit";
 
-    @Resource
-    private EntityManagerFactory entityManagerFactory;
-    @Resource
-    private ExternalCacheManager cacheManager;
     @Resource
     private MessageChatConfigProps configProps;
 
@@ -64,12 +59,14 @@ public class MessageChatJpaConfig {
     }
 
     @Bean(name = "transactionManager")
-    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory,
+                                                         ExternalCacheManager cacheManager) {
+        registerEventListeners(entityManagerFactory, cacheManager);
         return new JpaTransactionManager(entityManagerFactory);
     }
 
-    @PostConstruct
-    public void registerEventListeners() {
+
+    private void registerEventListeners(EntityManagerFactory entityManagerFactory, ExternalCacheManager cacheManager) {
         var sessionFactory = entityManagerFactory.unwrap(SessionFactoryImpl.class);
         var registry = sessionFactory.getServiceRegistry().getService(EventListenerRegistry.class);
 
@@ -77,7 +74,6 @@ public class MessageChatJpaConfig {
         registry.getEventListenerGroup(EventType.PRE_INSERT).appendListener(new PreInsertListener(cacheManager));
         registry.getEventListenerGroup(EventType.PRE_UPDATE).appendListener(new PreUpdateListener(cacheManager));
     }
-
 
     private Map<String, Object> getProperties() {
         return Map.of(

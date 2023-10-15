@@ -4,8 +4,8 @@ import com.redis.testcontainers.RedisContainer;
 import messagechat.messagechatservice.configuration.MessageChatConfigProps;
 import messagechat.messagechatservice.configuration.data.MessageChatRedisConfig;
 import messagechat.messagechatservice.persistent.cache.CachedMessage;
-import messagechat.messagechatservice.persistent.cache.CachedMessageRepository;
-import messagechat.messagechatservice.persistent.cache.ExtendedCachedMessageRepositoryImpl;
+import messagechat.messagechatservice.persistent.cache.repository.CachedMessageRepository;
+import messagechat.messagechatservice.persistent.cache.repository.ExtendedCachedMessageRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.data.redis.DataRedisTest;
@@ -55,7 +55,7 @@ public class CachedMessageRepositoryTest {
 
     @Test
     void save_and_read_cached_message_by_key_pattern() {
-        String keyPattern = "%s:%s:%s:%s";
+        String keyPattern = "%s/%s/%s/%s";
         String dialogId = "1-dialog-UUID-id";
         String messageId = "1-message-UUID-id";
         Integer serialNumberDesc = 1;

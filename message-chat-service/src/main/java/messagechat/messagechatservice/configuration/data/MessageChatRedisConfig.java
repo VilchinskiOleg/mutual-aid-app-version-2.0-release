@@ -1,10 +1,11 @@
 package messagechat.messagechatservice.configuration.data;
 
 import messagechat.messagechatservice.configuration.MessageChatConfigProps;
+import messagechat.messagechatservice.configuration.data.redis.LettuceConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -13,26 +14,18 @@ import javax.annotation.Resource;
 
 @Configuration
 @EnableRedisRepositories(basePackages = "messagechat.messagechatservice.persistent.cache")
-public class MessageChatRedisConfig {
+public class MessageChatRedisConfig extends LettuceConfig {
 
     @Resource
     private MessageChatConfigProps configProps;
 
 
     @Bean
-    public JedisConnectionFactory jedisConnectionFactory() {
-        return new JedisConnectionFactory(getConnectionConfiguration());
-    }
-
-//    @Bean
-//    public LettuceConnectionFactory redisConnectionFactory() {
-//        return new LettuceConnectionFactory(getConnectionConfiguration());
-//    }
-
-    @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(jedisConnectionFactory());
+        RedisConnectionFactory connectionFactory = getConnectionFactory(getConnectionConfiguration());
+
+        template.setConnectionFactory(connectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
         return template;
     }

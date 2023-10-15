@@ -14,6 +14,7 @@ import static java.util.Objects.isNull;
 
 // Not use for my logic (but it will create key like: @RedisHash.value + ':' + @id):
 @RedisHash("CachedMessage")
+
 // Not necessary for Redis, only for my custom manipulation:
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,6 +34,9 @@ public class CachedMessage implements Serializable, Comparable<CachedMessage> {
     private String authorNickName;
     private String description;
 
+    /**
+     * Date when original Message was created/modified , not CachedMessage:
+     */
     private LocalDateTime createAt;
     private LocalDateTime modifyAt;
 

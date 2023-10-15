@@ -1,6 +1,7 @@
-package messagechat.messagechatservice.persistent.cache;
+package messagechat.messagechatservice.persistent.cache.repository;
 
 import lombok.extern.slf4j.Slf4j;
+import messagechat.messagechatservice.persistent.cache.CachedMessage;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 

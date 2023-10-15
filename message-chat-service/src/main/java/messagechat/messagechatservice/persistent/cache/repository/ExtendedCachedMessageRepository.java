@@ -1,4 +1,6 @@
-package messagechat.messagechatservice.persistent.cache;
+package messagechat.messagechatservice.persistent.cache.repository;
+
+import messagechat.messagechatservice.persistent.cache.CachedMessage;
 
 import java.util.NavigableSet;
 
