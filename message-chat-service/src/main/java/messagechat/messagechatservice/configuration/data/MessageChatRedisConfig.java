@@ -1,7 +1,7 @@
 package messagechat.messagechatservice.configuration.data;
 
 import messagechat.messagechatservice.configuration.MessageChatConfigProps;
-import messagechat.messagechatservice.configuration.data.redis.LettuceConfig;
+import messagechat.messagechatservice.configuration.data.redis.JedisConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 
 @Configuration
 @EnableRedisRepositories(basePackages = "messagechat.messagechatservice.persistent.cache")
-public class MessageChatRedisConfig extends LettuceConfig {
+public class MessageChatRedisConfig extends JedisConfig {
 
     @Resource
     private MessageChatConfigProps configProps;

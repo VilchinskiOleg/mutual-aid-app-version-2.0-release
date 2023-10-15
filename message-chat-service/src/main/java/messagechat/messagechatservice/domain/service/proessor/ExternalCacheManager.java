@@ -73,6 +73,7 @@ public class ExternalCacheManager {
             log.info("Was removed {} messages from the cache for dialog= {}", numbers, dialogId);
 //        });
     }
+
     public void removeMessageByMessageId(String messageId) {
         String pattern = buildCacheKeyPattern(null, null, null, messageId);
         cachedMessageRepository.removeMessageByKeyPattern(pattern);
