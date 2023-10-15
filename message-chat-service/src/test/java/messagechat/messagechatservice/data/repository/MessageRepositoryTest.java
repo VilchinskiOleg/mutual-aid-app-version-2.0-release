@@ -5,6 +5,7 @@ import messagechat.messagechatservice.configuration.MessageChatConfigProps;
 import messagechat.messagechatservice.configuration.data.MessageChatJpaConfig;
 import messagechat.messagechatservice.data.common.AbstractTest;
 import messagechat.messagechatservice.domain.service.proessor.ExternalCacheManager;
+import messagechat.messagechatservice.persistent.entity.Dialog;
 import messagechat.messagechatservice.persistent.entity.Message;
 import messagechat.messagechatservice.persistent.repository.ExtendedMessageRepositoryImpl;
 import messagechat.messagechatservice.persistent.repository.MessageRepository;
@@ -20,7 +21,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
+import java.util.Comparator;
 import java.util.List;
+import java.util.NavigableSet;
+import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.data.domain.PageRequest.of;
@@ -55,12 +59,14 @@ public class MessageRepositoryTest extends AbstractTest {
         @Cleanup var session = (Session) entityManagerFactory.createEntityManager();
         createDialogForCouple(session, DIALOG_ID);
 
+        // case 1:
         List<Message> messages1 = messageRepository.findAllByDialogIdOrName(
                 of(0, 2),
                 DIALOG_ID,
                 "wrong_value").getContent();
         assertEquals(2, messages1.size());
 
+        // case 2:
         List<Message> messages2 = messageRepository.findAllByDialogIdOrName(
                 of(0, 1),
                 DIALOG_ID,
@@ -70,21 +76,32 @@ public class MessageRepositoryTest extends AbstractTest {
         cleanDb(session);
     }
 
+    /**
+     * Check reading of the messages by Criteria api.
+     */
     @Test
     void get_all_messages_by_dialogId_test() {
         @Cleanup var session = (Session) entityManagerFactory.createEntityManager();
-        createDialogForCouple(session, DIALOG_ID);
+        Dialog createdDialog = createDialogForCouple(session, DIALOG_ID);
 
+        // case 1:
+        // Perform:
         List<Message> messages1 = messageRepository.findAllByDialogId(
                 of(0, 2),
                 DIALOG_ID);
+        // Validate:
         assertEquals(2, messages1.size());
 
+        // case 2:
+        // Perform:
         List<Message> messages2 = messageRepository.findAllByDialogId(
                 of(1, 1),
                 DIALOG_ID);
+        // Validate:
         assertEquals(1, messages2.size());
-        assertEquals(2, messages2.get(0).getId());
+        NavigableSet<Message> orderedDialogMessages = new TreeSet<>(Comparator.comparingInt(Message::getId));
+        orderedDialogMessages.addAll(createdDialog.getMessages());
+        assertEquals(orderedDialogMessages.last().getId(), messages2.get(0).getId());
 
         cleanDb(session);
     }
