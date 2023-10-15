@@ -10,8 +10,8 @@ public interface ExtendedMessageRepository {
     /**
      * Just implementation with using Criteria api.
      *
-     * @param page -
-     * @param dialogId -
+     * @param page - object that contains info about position of messages were requested.
+     * @param dialogId - ID of dialog which messages you want to get of.
      * @return page of Message.
      */
     List<Message> findAllByDialogId(PageRequest page, String dialogId);
