@@ -7,6 +7,7 @@ import messagechat.messagechatservice.domain.model.Message;
 import messagechat.messagechatservice.domain.service.DialogService;
 import messagechat.messagechatservice.domain.service.MessageChatService;
 import messagechat.messagechatservice.domain.service.client.ProfileClientService;
+import messagechat.messagechatservice.domain.service.proessor.ExternalCacheManager;
 import messagechat.messagechatservice.domain.service.proessor.TranslateMessageService;
 import messagechat.messagechatservice.persistent.repository.DialogRepository;
 import messagechat.messagechatservice.persistent.repository.MessageRepository;
@@ -20,6 +21,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.internal.verification.Times;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
@@ -27,6 +32,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 
@@ -41,7 +47,11 @@ import static org.springframework.data.domain.PageRequest.of;
         classes = {MessageChatServiceApplication.class},
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
+@EnableAutoConfiguration(
+        exclude = {RedisAutoConfiguration.class, RedisRepositoriesAutoConfiguration.class, RedisReactiveAutoConfiguration.class}
+)
 @ExtendWith(SpringExtension.class)
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MessageChatServiceTest extends DatabaseSourceTestConfig implements ProfileMockTestExtension {
 
     public static String DIALOG_ID;
@@ -70,6 +80,8 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig implements 
     private TranslateMessageService translateMessageService;
     @MockBean
     private ProfileClientService profileClientService;
+    @MockBean
+    private ExternalCacheManager cacheManager;
 
 
     @BeforeAll
@@ -82,7 +94,7 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig implements 
     void add_new_messages_to_dialog_successfully() {
         final String firstUserId = "1296234-assdfgsdf-230914";
         final String secondUserId = "1231234-asdfsdf-234sd637";
-        registerAdditionalHibernateListenersForTests();
+//        registerAdditionalHibernateListenersForTests();
 
         // Create new Dialog (automatically) and fetch Members from profile-service(MOCK):
         when(profileClientService.getProfileById((String) any())).thenAnswer(args -> generateProfile(args.getArgument(0)));
@@ -118,7 +130,7 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig implements 
     void fail_and_rollback_all_operation_within_adding_new_message_to_dialog_if_something_go_wrong_within_transaction() {
         final String firstUserId = "1296234-assdfgsdf-230914";
         final String secondUserId = "1231234-asdfsdf-234sd637";
-        registerAdditionalHibernateListenersForTests();
+//        registerAdditionalHibernateListenersForTests();
         final String errorMessage = "RollBackTestException";
 
         when(profileClientService.getProfileById((String) any())).thenAnswer(args -> generateProfile(args.getArgument(0)));
@@ -134,8 +146,8 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig implements 
         assertTrue(dialogRepository.findByDialogId(DIALOG_ID).isEmpty());
     }
 
-
-    private void registerAdditionalHibernateListenersForTests() {
+    @PostConstruct
+    void registerAdditionalHibernateListenersForTests() {
         var sessionFactory = entityManagerFactory.unwrap(SessionFactoryImpl.class);
         var registry = sessionFactory.getServiceRegistry().getService(EventListenerRegistry.class);
 
