@@ -46,14 +46,12 @@ public class MessageChatServiceImpl implements MessageChatService {
         message.setInternalId(idGeneratorService.generate());
         linkDialogToMessage(message, receiverId);
         linkAuthorToMessage(message);
-        translateMessageService.translateSavedMessage(message);
         saveMessage(message);
     }
 
     @Override
     public Message updateMessage(Message message) {
         Message currentMessage = getMessageByIdRequired(message.getInternalId());
-        translateMessageService.translateSavedMessage(message);
         mapper.map(message, currentMessage);
         saveMessage(currentMessage);
         return getMessageByIdRequired(message.getInternalId());
@@ -88,12 +86,12 @@ public class MessageChatServiceImpl implements MessageChatService {
         return messages;
     }
 
-    private void linkDialogToMessage(Message message, String receiverId) {
+    void linkDialogToMessage(Message message, String receiverId) {
         Dialog linkedDialog = dialogService.getLinkedDialog(message.getDialogId(), message.getAuthorId(), receiverId);
         message.setDialog(linkedDialog);
     }
 
-    private void linkAuthorToMessage(Message message) {
+    void linkAuthorToMessage(Message message) {
         Dialog dialog = message.getDialog();
         Member retrievedAuthor = dialog.getMemberById(message.getAuthorId());
         message.setAuthor(retrievedAuthor);

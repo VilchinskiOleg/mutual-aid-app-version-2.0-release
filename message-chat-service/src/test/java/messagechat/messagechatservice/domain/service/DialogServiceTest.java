@@ -1,14 +1,13 @@
-package messagechat.messagechatservice.service;
+package messagechat.messagechatservice.domain.service;
 
 
 import messagechat.messagechatservice.MessageChatServiceApplication;
 import messagechat.messagechatservice.domain.model.Dialog;
 import messagechat.messagechatservice.domain.model.Member;
-import messagechat.messagechatservice.domain.service.DialogService;
 import messagechat.messagechatservice.domain.service.client.ProfileClientService;
 import messagechat.messagechatservice.persistent.repository.DialogRepository;
-import messagechat.messagechatservice.service.common.DatabaseSourceTestConfig;
-import messagechat.messagechatservice.service.common.ProfileMockTestExtension;
+import messagechat.messagechatservice.domain.service.common.DatabaseSourceTestConfig;
+import messagechat.messagechatservice.domain.service.common.ProfileMockTestExtension;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

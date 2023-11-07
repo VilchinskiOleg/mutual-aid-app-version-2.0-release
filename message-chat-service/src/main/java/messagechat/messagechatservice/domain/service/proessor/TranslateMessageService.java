@@ -18,7 +18,7 @@ public abstract class TranslateMessageService {
     @Resource
     private CommonData commonData;
 
-    //REMOVE:
+    @Deprecated
     public void translateSavedMessage(Message message) {
         String sourceLang = commonData.getLocale().getLanguage();
         if (DEFAULT_LANG.equals(sourceLang)) {

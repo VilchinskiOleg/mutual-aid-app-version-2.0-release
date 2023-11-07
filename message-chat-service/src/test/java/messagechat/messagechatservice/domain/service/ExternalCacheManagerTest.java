@@ -1,4 +1,4 @@
-package messagechat.messagechatservice.service;
+package messagechat.messagechatservice.domain.service;
 
 import com.redis.testcontainers.RedisContainer;
 import messagechat.messagechatservice.configuration.MessageChatConfigProps;

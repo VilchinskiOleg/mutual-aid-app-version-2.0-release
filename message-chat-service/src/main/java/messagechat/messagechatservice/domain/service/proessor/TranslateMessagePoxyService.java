@@ -13,13 +13,6 @@ public class TranslateMessagePoxyService extends TranslateMessageService {
     private MessageChatConfigProps messageChatConfigProps;
 
     @Override
-    public void translateSavedMessage(Message message) {
-        if (messageChatConfigProps.isTranslationEnabled()) {
-            super.translateSavedMessage(message);
-        }
-    }
-
-    @Override
     public void translateReturnedMessages(List<Message> messages) {
         if (messageChatConfigProps.isTranslationEnabled()) {
             super.translateReturnedMessages(messages);
