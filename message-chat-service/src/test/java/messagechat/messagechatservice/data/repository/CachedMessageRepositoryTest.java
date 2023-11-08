@@ -69,7 +69,12 @@ public class CachedMessageRepositoryTest {
                 .authorNickName("Jon Caron 93")
                 .description("Hi man! How are you?")
                 .createAt(now()).build();
-        cachedMessageRepository.saveMessageByKey(format(keyPattern, dialogId, "EN", serialNumberDesc, messageId), cachedMessage);
+
+        // Save:
+        String key = format(keyPattern, dialogId, "EN", serialNumberDesc, messageId);
+        cachedMessageRepository.saveMessageByKey(key, cachedMessage);
+
+        // Read:
         var messages = cachedMessageRepository.getMessagesByKeyPattern(format(keyPattern, dialogId, "EN", "*", "*"));
 
         // Validate:

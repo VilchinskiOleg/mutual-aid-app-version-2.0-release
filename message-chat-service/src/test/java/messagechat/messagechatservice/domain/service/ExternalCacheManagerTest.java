@@ -11,6 +11,8 @@ import messagechat.messagechatservice.mapper.CachedMessageToMessageConverter;
 import messagechat.messagechatservice.mapper.MessageToCachedMessageConverter;
 import messagechat.messagechatservice.persistent.cache.repository.ExtendedCachedMessageRepositoryImpl;
 import org.common.http.autoconfiguration.model.CommonData;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapper.autoconfiguration.ModelMapperConfig;
@@ -55,9 +57,6 @@ import static org.mockito.Mockito.when;
 })
 public class ExternalCacheManagerTest {
 
-    private static final String DIALOG_ID = "1-dialog-UUID-id";
-    private static final Logger LOG = LoggerFactory.getLogger(ExternalCacheManagerTest.class);
-
     @Container
     private static final RedisContainer REDIS_CONTAINER =
             new RedisContainer(DockerImageName.parse("redis:5.0.3-alpine")).withExposedPorts(6379);
@@ -71,69 +70,72 @@ public class ExternalCacheManagerTest {
     }
 
 
+    private static final String DIALOG_ID = "1-dialog-UUID-id";
+    private static final Logger LOG = LoggerFactory.getLogger(ExternalCacheManagerTest.class);
+    private static final List<Message> messagesMOCK = generateMessagesMock();
+
     @Resource
     private ExternalCacheManager cacheManager;
     @MockBean
     private CommonData commonData;
 
 
+    @BeforeAll
+    static void beforeAll() {
+        // Reverse order, the way them will be requested from DB (some N last messages):
+        Collections.reverse(messagesMOCK);
+    }
+
+
     @Test
     void read_subset_of_last_three_messages_when_cache_contain_five() {
-        var messages = generateMessagesMock();
-        final int lastMsgInChatId = messages.size();
-        // reverse order the way them will be requested from DB (some N last messages):
-        Collections.reverse(messages);
+        final int lastMsgInChatId = messagesMOCK.size();
+        final int size = 3;
+
         when(commonData.getLocale()).thenReturn(new Locale("EN"));
 
-        final int size = 3;
-        cacheManager.cacheTranslatedMessages(messages, 0, 10);
+        cacheManager.cacheTranslatedMessages(messagesMOCK, 0, 10);
         List<Message> cachedMessagesSubList = cacheManager.readMessagesFromCache(DIALOG_ID, 0, size);
 
-        // validate:
+        // Validate:
         assertEquals(size, cachedMessagesSubList.size());
         assertEquals(lastMsgInChatId, cachedMessagesSubList.get(0).getId());
         assertEquals(lastMsgInChatId - size + 1, cachedMessagesSubList.get(2).getId());
-
-        cleanCacheAndValidate();
     }
 
     @Test
     void read_subset_of_two_messages_in_middle_of_cache_when_cache_contain_five() {
-        var messages = generateMessagesMock();
-        // reverse order the way them will be requested from DB (some N last messages):
-        Collections.reverse(messages);
         when(commonData.getLocale()).thenReturn(new Locale("EN"));
 
         final int size = 2;
-        cacheManager.cacheTranslatedMessages(messages, 0, 5);
+        cacheManager.cacheTranslatedMessages(messagesMOCK, 0, 5);
         List<Message> cachedMessagesSubList = cacheManager.readMessagesFromCache(DIALOG_ID, 1, size);
 
-        // validate:
+        // Validate:
         assertEquals(size, cachedMessagesSubList.size());
         assertEquals(3, cachedMessagesSubList.get(0).getId());
         assertEquals(2, cachedMessagesSubList.get(1).getId());
-
-        cleanCacheAndValidate();
     }
 
     @Test
     void return_empty_list_of_messages_When_requested_range_of_messages_run_out_amount_of_cached_messages_in_general() {
-        var messages = generateMessagesMock();
-        // reverse order the way them will be requested from DB (some N last messages):
-        Collections.reverse(messages);
         when(commonData.getLocale()).thenReturn(new Locale("EN"));
 
-        cacheManager.cacheTranslatedMessages(messages, 0, 5);
+        cacheManager.cacheTranslatedMessages(messagesMOCK, 0, 5);
         List<Message> cachedMessagesSubList = cacheManager.readMessagesFromCache(DIALOG_ID, 0, 7);
 
-        // validate:
+        // Validate:
         assertTrue(isEmpty(cachedMessagesSubList));
+    }
 
+
+    @AfterEach
+    void afterEach() {
         cleanCacheAndValidate();
     }
 
 
-    private List<Message>  generateMessagesMock() {
+    private static List<Message>  generateMessagesMock() {
         Dialog dialog = new Dialog();
         dialog.setId(1);
         dialog.setInternalId(DIALOG_ID);
@@ -158,7 +160,7 @@ public class ExternalCacheManagerTest {
         cacheManager.removeAllMessagesByDialogId(DIALOG_ID);
         List<Message> cachedMessagesSubListAfterDeleting = cacheManager.readMessagesFromCache(DIALOG_ID, 0, 5);
 
-        // validate:
+        // Validate:
         assertTrue(isEmpty(cachedMessagesSubListAfterDeleting));
     }
 }
