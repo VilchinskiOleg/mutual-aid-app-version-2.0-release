@@ -28,6 +28,7 @@ import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoCo
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -35,6 +36,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -69,22 +72,22 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig implements 
 
     @DynamicPropertySource
     public static void properties(DynamicPropertyRegistry registry) {
-        registry.add("datasource.message-chat.jdbc-url",postgresDB::getJdbcUrl);
+        registry.add("datasource.message-chat.jdbc-url", postgresDB::getJdbcUrl);
         registry.add("datasource.message-chat.username", () -> TEST_DB_USERNAME);
         registry.add("datasource.message-chat.password", () -> TEST_DB_PASSWORD);
-//        registry.add("message-chat-properties.translation-message.enabled", () -> false);
+        registry.add("message-chat-properties.translation-message.enabled", () -> true);
     }
 
 
     @SpyBean
     private MessageChatServiceImpl messageChatService;
+    @SpyBean
+    private MessageRepository messageRepository;
 
     @Resource
     private DialogService dialogService;
     @Resource
     private DialogRepository dialogRepository;
-    @Resource
-    private MessageRepository messageRepository;
     @Resource
     private EntityManagerFactory entityManagerFactory;
 
@@ -102,6 +105,7 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig implements 
     }
 
 
+    // Test "addMessageToDialog" method:
     @Test
     void add_new_messages_to_dialog_successfully() {
         // Create new Dialog (automatically) and fetch Members from profile-service(MOCK):
@@ -149,6 +153,65 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig implements 
         // Verify:
         assertThrows(RuntimeException.class,() -> messageChatService.addMessageToDialog(newMessage, SECOND_USER_ID), errorMessage);
         assertTrue(dialogRepository.findByDialogId(DIALOG_ID).isEmpty());
+    }
+
+
+
+    // Test "GetPageMessagesFromDialog" method:
+    @Test
+    void get_messages_from_cache_If_all_of_them_were_found_into_cache() {
+        int pageNumber = 0, size = 2;
+
+        var cachedMessage_1 = Message.builder()
+                .author(Member.builder().profileId(FIRST_USER_ID).build())
+                .description("Some test message description. (From firstUser)")
+                .build();
+        var cachedMessage_2 = Message.builder()
+                .author(Member.builder().profileId(SECOND_USER_ID).build())
+                .dialog(Dialog.builder().internalId(DIALOG_ID).build())
+                .description("Some test message description. (From secondUser)")
+                .build();
+
+        when(cacheManager.readMessagesFromCache(DIALOG_ID, pageNumber, size)).thenReturn(List.of(cachedMessage_1, cachedMessage_2));
+
+        List<Message> cachedMessages = messageChatService.getPageMessagesFromDialog(pageNumber, size, DIALOG_ID, null);
+
+        // Verify:
+        assertEquals(size, cachedMessages.size());
+        verify(messageChatService, new Times(0)).findAllByDialogIdOrName(any(), any(), any());
+        verify(translateMessageService, new Times(0)).translateReturnedMessages(any());
+    }
+
+    @Test
+    void get_messages_from_DB_If_all_of_them_were_not_found_into_cache() {
+        int pageNumber = 0, size = 2;
+
+        var cachedMessage_1 = Message.builder()
+                .author(Member.builder().profileId(FIRST_USER_ID).build())
+                .description("Some test message description. (From firstUser)")
+                .build();
+        var cachedMessage_2 = Message.builder()
+                .author(Member.builder().profileId(SECOND_USER_ID).build())
+                .dialog(Dialog.builder().internalId(DIALOG_ID).build())
+                .description("Some test message description. (From secondUser)")
+                .build();
+        List<Message> messagesMock = List.of(cachedMessage_1, cachedMessage_2);
+
+        when(cacheManager.readMessagesFromCache(DIALOG_ID, pageNumber, size)).thenReturn(Collections.emptyList());
+        // [1.] It's necessary to use 'doReturn()..' instead of 'when()..' for Spy Mock (see docs):
+        // [2.] Also sometime you might be provided with issue when you try to provide real value and 'any()' to mock-method simultaneously.
+        // Use 'eq()' instead of real value to fix it:
+        doReturn(messagesMock).when(messageChatService).findAllByDialogIdOrName(eq(DIALOG_ID), (PageRequest) any(), (String) any());
+        doNothing().when(translateMessageService).translateReturnedMessages(messagesMock);
+        doNothing().when(cacheManager).cacheTranslatedMessages(messagesMock, pageNumber, size);
+
+        List<Message> cachedMessages = messageChatService.getPageMessagesFromDialog(pageNumber, size, DIALOG_ID, null);
+
+        // Verify:
+        assertEquals(size, cachedMessages.size());
+        verify(messageChatService, new Times(1)).findAllByDialogIdOrName(eq(DIALOG_ID), any(), any());
+        verify(translateMessageService, new Times(1)).translateReturnedMessages(messagesMock);
+        verify(cacheManager, new Times(1)).cacheTranslatedMessages(messagesMock, pageNumber, size);
     }
 
 

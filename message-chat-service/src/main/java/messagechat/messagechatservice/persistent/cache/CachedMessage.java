@@ -12,7 +12,9 @@ import java.util.Map;
 
 import static java.util.Objects.isNull;
 
-// Not use for my logic (but it will create key like: @RedisHash.value + ':' + @id):
+// I don't use it for my logic (I convert entity to hash manually),
+// but if I used Redis Repository entity mapping by @RedisHash -
+// new entity would be saved to Redis with the key like: @RedisHash.value + ':' + @id):
 @RedisHash("CachedMessage")
 
 // Not necessary for Redis, only for my custom manipulation:

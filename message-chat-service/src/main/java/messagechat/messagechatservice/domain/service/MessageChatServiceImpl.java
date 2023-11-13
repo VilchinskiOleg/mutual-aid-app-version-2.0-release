@@ -74,9 +74,7 @@ public class MessageChatServiceImpl implements MessageChatService {
             log.info("Didn't manage to read messages from cache. Gonna use usual flow with DB and result handling.");
         }
 
-        PageRequest pageRequest = of(pageNumber, size);
-        var dataMessagesPage = messageRepository.findAllByDialogIdOrName(pageRequest, dialogId, dialogName);
-        messages = dataMessagesPage.map(message -> mapper.map(message, Message.class)).getContent();
+        messages = findAllByDialogIdOrName(dialogId, of(pageNumber, size), dialogName);
         translateMessageService.translateReturnedMessages(messages);
 
         if (messageChatConfigProps.isTranslationEnabled()) {
@@ -95,6 +93,11 @@ public class MessageChatServiceImpl implements MessageChatService {
         Dialog dialog = message.getDialog();
         Member retrievedAuthor = dialog.getMemberById(message.getAuthorId());
         message.setAuthor(retrievedAuthor);
+    }
+
+    List<Message> findAllByDialogIdOrName(String dialogId, PageRequest pageRequest, @Nullable String dialogName) {
+        var dataMessagesPage = messageRepository.findAllByDialogIdOrName(pageRequest, dialogId, dialogName);
+        return dataMessagesPage.map(message -> mapper.map(message, Message.class)).getContent();
     }
 
     private void saveMessage(Message message) {
