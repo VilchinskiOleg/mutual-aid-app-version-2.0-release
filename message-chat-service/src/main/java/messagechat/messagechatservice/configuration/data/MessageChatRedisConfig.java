@@ -19,7 +19,11 @@ public class MessageChatRedisConfig extends JedisConfig {
     @Resource
     private MessageChatConfigProps configProps;
 
-
+    /**
+     * Method create Redis Client implementation to interact with redis server.
+     *
+     * @return RedisTemplate - Redis Client Spring framework implementation.
+     */
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> template = new RedisTemplate<>();

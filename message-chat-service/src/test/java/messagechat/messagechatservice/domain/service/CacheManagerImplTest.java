@@ -6,10 +6,10 @@ import messagechat.messagechatservice.configuration.data.MessageChatRedisConfig;
 import messagechat.messagechatservice.domain.model.Dialog;
 import messagechat.messagechatservice.domain.model.Member;
 import messagechat.messagechatservice.domain.model.Message;
-import messagechat.messagechatservice.domain.service.proessor.ExternalCacheManager;
+import messagechat.messagechatservice.domain.service.proessor.CacheManagerImpl;
 import messagechat.messagechatservice.mapper.CachedMessageToMessageConverter;
 import messagechat.messagechatservice.mapper.MessageToCachedMessageConverter;
-import messagechat.messagechatservice.persistent.cache.repository.ExtendedCachedMessageRepositoryImpl;
+import messagechat.messagechatservice.persistent.cache.repository.ExtendedHashCachedMessageRepositoryImpl;
 import org.common.http.autoconfiguration.model.CommonData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -51,11 +51,12 @@ import static org.mockito.Mockito.when;
 @ExtendWith({SpringExtension.class})
 @DataRedisTest
 @ContextConfiguration(classes = {
-        MessageChatRedisConfig.class, ExtendedCachedMessageRepositoryImpl.class, MessageChatConfigProps.class,
+        MessageChatRedisConfig.class, MessageChatConfigProps.class,
+        ExtendedHashCachedMessageRepositoryImpl.class,
         ModelMapperConfig.class, CachedMessageToMessageConverter.class, MessageToCachedMessageConverter.class,
-        ExternalCacheManager.class //,          ThreadPoolTaskExecutionConfig.class
+        CacheManagerImpl.class //,          ThreadPoolTaskExecutionConfig.class
 })
-public class ExternalCacheManagerTest {
+public class CacheManagerImplTest {
 
     @Container
     private static final RedisContainer REDIS_CONTAINER =
@@ -71,11 +72,11 @@ public class ExternalCacheManagerTest {
 
 
     private static final String DIALOG_ID = "1-dialog-UUID-id";
-    private static final Logger LOG = LoggerFactory.getLogger(ExternalCacheManagerTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CacheManagerImplTest.class);
     private static final List<Message> messagesMOCK = generateMessagesMock();
 
     @Resource
-    private ExternalCacheManager cacheManager;
+    private CacheManagerImpl cacheManager;
     @MockBean
     private CommonData commonData;
 

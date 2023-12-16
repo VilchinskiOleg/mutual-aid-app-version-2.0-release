@@ -3,16 +3,15 @@ package messagechat.messagechatservice.mapper;
 import messagechat.messagechatservice.domain.model.Dialog;
 import messagechat.messagechatservice.domain.model.Member;
 import messagechat.messagechatservice.domain.model.Message;
-import messagechat.messagechatservice.persistent.cache.CachedMessage;
+import messagechat.messagechatservice.persistent.cache.model.HashCachedMessage;
 import org.mapper.autoconfiguration.converter.BaseConverter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CachedMessageToMessageConverter extends BaseConverter<CachedMessage, Message> {
+public class CachedMessageToMessageConverter extends BaseConverter<HashCachedMessage, Message> {
 
     @Override
-    public void convert(CachedMessage source, Message destination) {
-        destination.setId(source.getId());
+    public void convert(HashCachedMessage source, Message destination) {
         destination.setInternalId(source.getInternalId());
 
         Dialog dialog = new Dialog();

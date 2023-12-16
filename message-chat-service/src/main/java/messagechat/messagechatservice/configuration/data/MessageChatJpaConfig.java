@@ -1,7 +1,7 @@
 package messagechat.messagechatservice.configuration.data;
 
 import messagechat.messagechatservice.configuration.MessageChatConfigProps;
-import messagechat.messagechatservice.domain.service.proessor.ExternalCacheManager;
+import messagechat.messagechatservice.domain.service.proessor.CacheManagerImpl;
 import messagechat.messagechatservice.domain.service.proessor.hibernate_listener.PreInsertListener;
 import messagechat.messagechatservice.domain.service.proessor.hibernate_listener.PreUpdateListener;
 import org.hibernate.event.service.spi.EventListenerRegistry;
@@ -60,13 +60,13 @@ public class MessageChatJpaConfig {
 
     @Bean(name = "transactionManager")
     public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory,
-                                                         ExternalCacheManager cacheManager) {
+                                                         CacheManagerImpl cacheManager) {
         registerEventListeners(entityManagerFactory, cacheManager);
         return new JpaTransactionManager(entityManagerFactory);
     }
 
 
-    private void registerEventListeners(EntityManagerFactory entityManagerFactory, ExternalCacheManager cacheManager) {
+    private void registerEventListeners(EntityManagerFactory entityManagerFactory, CacheManagerImpl cacheManager) {
         var sessionFactory = entityManagerFactory.unwrap(SessionFactoryImpl.class);
         var registry = sessionFactory.getServiceRegistry().getService(EventListenerRegistry.class);
 

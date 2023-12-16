@@ -4,7 +4,7 @@ import lombok.Cleanup;
 import messagechat.messagechatservice.configuration.MessageChatConfigProps;
 import messagechat.messagechatservice.configuration.data.MessageChatJpaConfig;
 import messagechat.messagechatservice.data.common.AbstractTest;
-import messagechat.messagechatservice.domain.service.proessor.ExternalCacheManager;
+import messagechat.messagechatservice.domain.service.proessor.CacheManagerImpl;
 import messagechat.messagechatservice.persistent.entity.Dialog;
 import messagechat.messagechatservice.persistent.entity.Message;
 import messagechat.messagechatservice.persistent.repository.ExtendedMessageRepositoryImpl;
@@ -47,7 +47,7 @@ public class MessageRepositoryTest extends AbstractTest {
 
     // Just in order to run a context for test:
     @MockBean
-    private ExternalCacheManager externalCacheManager;
+    private CacheManagerImpl cacheManagerImpl;
 
     /**
      * Check that:

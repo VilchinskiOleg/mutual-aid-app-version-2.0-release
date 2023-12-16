@@ -1,7 +1,7 @@
 package messagechat.messagechatservice.persistent.cache.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import messagechat.messagechatservice.persistent.cache.CachedMessage;
+import messagechat.messagechatservice.persistent.cache.model.HashCachedMessage;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -16,26 +16,26 @@ import static java.util.stream.Collectors.toCollection;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
-public class ExtendedCachedMessageRepositoryImpl implements ExtendedCachedMessageRepository {
+public class ExtendedHashCachedMessageRepositoryImpl implements ExtendedHashCachedMessageRepository {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final HashOperations<String, Object, Object> hashOperations;
 
 
-    public ExtendedCachedMessageRepositoryImpl(RedisTemplate<String, Object> redisTemplate) {
+    public ExtendedHashCachedMessageRepositoryImpl(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
         this.hashOperations = redisTemplate.opsForHash();
     }
 
 
     @Override
-    public void saveMessageByKey(String key, CachedMessage message) {
+    public void saveMessageByKey(String key, HashCachedMessage message) {
         var payload = message.getMap();
         hashOperations.putAll(key, payload);
     }
 
     @Override
-    public NavigableSet<CachedMessage> getMessagesByKeyPattern(String pattern) {
+    public NavigableSet<HashCachedMessage> getMessagesByKeyPattern(String pattern) {
         Set<String> cachedMessageKeys = redisTemplate.keys(pattern);
         if (isEmpty(cachedMessageKeys)) return null;
 
@@ -62,17 +62,17 @@ public class ExtendedCachedMessageRepositoryImpl implements ExtendedCachedMessag
     }
 
 
-    private CachedMessage convertToCachedMsg(Map<Object, Object> data) {
-        var result = new CachedMessage();
-        try{
-            for(Field field : CachedMessage.class.getDeclaredFields()) {
+    private HashCachedMessage convertToCachedMsg(Map<Object, Object> data) {
+        var result = new HashCachedMessage();
+        try {
+            for(Field field : HashCachedMessage.class.getDeclaredFields()) {
                 Object val = data.get(field.getName());
                 if (nonNull(val)) {
                     field.setAccessible(true);
                     field.set(result, val);
                 }
             }
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             log.error("Get fail trying to map entries properties to CachedMessage entity.", ex);
             throw new RuntimeException(ex);
         }

@@ -8,7 +8,7 @@ import messagechat.messagechatservice.domain.service.client.ProfileClientService
 import messagechat.messagechatservice.domain.service.common.DatabaseSourceTestConfig;
 import messagechat.messagechatservice.domain.service.common.ProfileMockTestExtension;
 import messagechat.messagechatservice.domain.service.listener.PostInsertDialogListener;
-import messagechat.messagechatservice.domain.service.proessor.ExternalCacheManager;
+import messagechat.messagechatservice.domain.service.proessor.CacheManagerImpl;
 import messagechat.messagechatservice.domain.service.proessor.TranslateMessageService;
 import messagechat.messagechatservice.persistent.repository.DialogRepository;
 import messagechat.messagechatservice.persistent.repository.MessageRepository;
@@ -96,7 +96,7 @@ public class MessageChatServiceTest extends DatabaseSourceTestConfig implements 
     @MockBean
     private ProfileClientService profileClientService;
     @MockBean
-    private ExternalCacheManager cacheManager;
+    private CacheManagerImpl cacheManager;
 
 
     @BeforeAll

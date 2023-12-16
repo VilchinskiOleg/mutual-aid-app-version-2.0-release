@@ -1,7 +1,7 @@
 package messagechat.messagechatservice.domain.service.proessor.hibernate_listener;
 
 import lombok.RequiredArgsConstructor;
-import messagechat.messagechatservice.domain.service.proessor.ExternalCacheManager;
+import messagechat.messagechatservice.domain.service.proessor.CacheManagerImpl;
 import messagechat.messagechatservice.persistent.entity.Message;
 import org.hibernate.event.spi.PreUpdateEvent;
 import org.hibernate.event.spi.PreUpdateEventListener;
@@ -9,7 +9,7 @@ import org.hibernate.event.spi.PreUpdateEventListener;
 @RequiredArgsConstructor
 public class PreUpdateListener implements PreUpdateEventListener {
 
-    private final ExternalCacheManager cacheManager;
+    private final CacheManagerImpl cacheManager;
 
     @Override
     public boolean onPreUpdate(PreUpdateEvent event) {

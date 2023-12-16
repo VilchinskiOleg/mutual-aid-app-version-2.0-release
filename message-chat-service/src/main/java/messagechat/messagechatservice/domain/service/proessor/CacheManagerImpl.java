@@ -3,10 +3,11 @@ package messagechat.messagechatservice.domain.service.proessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import messagechat.messagechatservice.domain.model.Message;
-import messagechat.messagechatservice.persistent.cache.CachedMessage;
-import messagechat.messagechatservice.persistent.cache.repository.CachedMessageRepository;
+import messagechat.messagechatservice.persistent.cache.model.HashCachedMessage;
+import messagechat.messagechatservice.persistent.cache.repository.HashCachedMessageRepository;
 import org.common.http.autoconfiguration.model.CommonData;
 import org.mapper.autoconfiguration.mapper.Mapper;
+import org.springframework.data.redis.core.RedisHash;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -22,31 +23,39 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ExternalCacheManager {
+public class CacheManagerImpl {
 
+    public static final String CACHE_MESSAGE_ID_PATTERN = "%s/%s/%s/%s";
     private static final String ONE_OR_MORE_ANY_SYMBOLS = "*";
-    private static final String DELIMITER = "/";
-    private static final String CACHE_MESSAGE_KEY_PATTERN = "%s/%s/%s/%s";
+    private static final Long ttl = 1L; //min
 
-    private final CachedMessageRepository cachedMessageRepository;
+    private final HashCachedMessageRepository cachedMessageRepository;
     private final CommonData commonData;
     private final Mapper mapper;
 
 //    private ExecutorService executorService = Executors.newFixedThreadPool(3);
 
 
+    /**
+     * Save translated Message into Redis Cache.
+     *
+     * @param messages - Message to cache
+     * @param pageNumber - number of page of translated Messages
+     * @param size - size of page of translated Messages
+     */
 //    @Async("threadPoolTaskExecutor")
     public void cacheTranslatedMessages(List<Message> messages, Integer pageNumber, Integer size) {
 //        executorService.submit(() -> {
-            // in this case 1th - is a last message in a chat:
             String lang = commonData.getLocale().getLanguage().toUpperCase();
-            AtomicInteger currentSerialNumberDesc = new AtomicInteger(size * pageNumber + 1);
-            messages.forEach(message -> saveMessageToCache(message, currentSerialNumberDesc, lang));
+            // in this case first message in a DB table - is a last message in a cache:
+            AtomicInteger currentSerialNumber = new AtomicInteger(size * pageNumber + 1);
+
+            messages.forEach(message -> saveMessageToCache(message, currentSerialNumber, lang));
 //        });
     }
 
     /**
-     * ...
+     * Try to find and read Messages from cache.
      *
      * @param dialogId - ID of dialog which cached messages belong to
      * @param pageNumber - number of page
@@ -65,6 +74,11 @@ public class ExternalCacheManager {
         return mapper.map(trimResultAccordingPage(cachedMessages, pageNumber, size), new ArrayList<>(), Message.class);
     }
 
+    /**
+     * Try to remove all Messages belonging to this dialog.
+     *
+     * @param dialogId - ID of dialog which cached messages belong to
+     */
 //    @Async("threadPoolTaskExecutor")
     public void removeAllMessagesByDialogId(String dialogId) {
 //        executorService.submit(() -> {
@@ -74,26 +88,37 @@ public class ExternalCacheManager {
 //        });
     }
 
+    /**
+     * Try to remove Message by ID.
+     *
+     * @param messageId - ID of Message to delete
+     */
     public void removeMessageByMessageId(String messageId) {
         String pattern = buildCacheKeyPattern(null, null, null, messageId);
         cachedMessageRepository.removeMessageByKeyPattern(pattern);
     }
 
+
     private void saveMessageToCache(Message message, AtomicInteger serialNumber, String lang) {
-        var cachedMessage = mapper.map(message, CachedMessage.class);
+        var cachedMessage = mapper.map(message, HashCachedMessage.class);
+
+        // in this case first message in a DB table - is a last message in a cache:
         cachedMessage.setSerialNumberDesc(serialNumber.get());
+
         String dialogId = ofNullable(message.getDialogId()).orElseThrow(() -> new RuntimeException("Dialog ID can't be null"));
         String messageId = ofNullable(message.getInternalId()).orElseThrow(() -> new RuntimeException("Message ID can't be null"));
-        String key = buildCacheKeyPattern(dialogId, lang, serialNumber.getAndIncrement(), messageId);
-        cachedMessageRepository.saveMessageByKey(key, cachedMessage);
+        cachedMessage.setId(buildCachedMessageId(dialogId, lang, serialNumber.getAndIncrement(), messageId));
+//        cachedMessage.setTtl(ttl);
+
+        cachedMessageRepository.save(cachedMessage);
     }
 
-    private NavigableSet<CachedMessage> trimResultAccordingPage(NavigableSet<CachedMessage> messages,
-                                                                Integer pageNumber,
-                                                                Integer size) {
+    private NavigableSet<HashCachedMessage> trimResultAccordingPage(NavigableSet<HashCachedMessage> messages,
+                                                                    Integer pageNumber,
+                                                                    Integer size) {
         int from = size * pageNumber + 1;
         int to = size * pageNumber + size;
-        var matchedMessages = messages.subSet(new CachedMessage(from), true, new CachedMessage(to), true);
+        var matchedMessages = messages.subSet(new HashCachedMessage(from), true, new HashCachedMessage(to), true);
         // validation matchedCachedMessages, that no one was missed :
         if (matchedMessages.size() != size) {
             log.info("Expected number= {}, retrieved number= {} of messages from cache.", size, matchedMessages.size());
@@ -103,8 +128,14 @@ public class ExternalCacheManager {
     }
 
     private String buildCacheKeyPattern(String dialogId, String lang, Integer serialNumberDesc, String messageId) {
+        String keyPrefix = HashCachedMessage.class.getAnnotation(RedisHash.class).value();
+        String id = buildCachedMessageId(dialogId, lang, serialNumberDesc, messageId);
+        return keyPrefix + ":" + id;
+    }
+
+    private String buildCachedMessageId(String dialogId, String lang, Integer serialNumberDesc, String messageId) {
         return format(
-                CACHE_MESSAGE_KEY_PATTERN,
+                CACHE_MESSAGE_ID_PATTERN,
                 nonNull(dialogId) ? dialogId : ONE_OR_MORE_ANY_SYMBOLS,
                 nonNull(lang) ? lang : ONE_OR_MORE_ANY_SYMBOLS,
                 nonNull(serialNumberDesc) ? serialNumberDesc : ONE_OR_MORE_ANY_SYMBOLS,

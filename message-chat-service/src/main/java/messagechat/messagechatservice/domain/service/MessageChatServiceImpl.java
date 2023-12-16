@@ -6,7 +6,7 @@ import messagechat.messagechatservice.configuration.MessageChatConfigProps;
 import messagechat.messagechatservice.domain.model.Dialog;
 import messagechat.messagechatservice.domain.model.Member;
 import messagechat.messagechatservice.domain.model.Message;
-import messagechat.messagechatservice.domain.service.proessor.ExternalCacheManager;
+import messagechat.messagechatservice.domain.service.proessor.CacheManagerImpl;
 import messagechat.messagechatservice.domain.service.proessor.TranslateMessageService;
 import messagechat.messagechatservice.persistent.repository.MessageRepository;
 import org.common.http.autoconfiguration.service.IdGeneratorService;
@@ -33,7 +33,7 @@ public class MessageChatServiceImpl implements MessageChatService {
     private final MessageRepository messageRepository;
     private final DialogService dialogService;
     private final TranslateMessageService translateMessageService;
-    private final ExternalCacheManager cacheManager;
+    private final CacheManagerImpl cacheManager;
     private final IdGeneratorService idGeneratorService;
     private final MessageChatConfigProps messageChatConfigProps;
     private final Mapper mapper;
