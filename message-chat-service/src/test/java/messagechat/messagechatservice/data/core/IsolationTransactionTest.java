@@ -1,10 +1,9 @@
-package messagechat.messagechatservice.data;
+package messagechat.messagechatservice.data.core;
 
 import lombok.Cleanup;
 import messagechat.messagechatservice.configuration.data.MessageChatJpaConfig;
+import messagechat.messagechatservice.data.common.AbstractTest;
 import messagechat.messagechatservice.persistent.entity.Dialog;
-import messagechat.messagechatservice.persistent.entity.Member;
-import messagechat.messagechatservice.persistent.entity.MemberInfo;
 import messagechat.messagechatservice.persistent.entity.Message;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;

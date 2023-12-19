@@ -1,8 +1,9 @@
 package messagechat.messagechatservice.domain.service;
 
 import messagechat.messagechatservice.domain.model.Message;
-import org.springframework.data.domain.Page;
 import org.springframework.lang.Nullable;
+
+import java.util.List;
 
 public interface MessageChatService {
 
@@ -16,7 +17,7 @@ public interface MessageChatService {
      * @param dialogName - optional
      * @return Page<Message> - page of Messages.
      */
-    Page<Message> getPageMessagesFromDialog(Integer pageNumber, Integer size, String dialogId,@Nullable String dialogName);
+    List<Message> getPageMessagesFromDialog(Integer pageNumber, Integer size, String dialogId, @Nullable String dialogName);
 
     void addMessageToDialog(Message massage, String receiverId);
 

@@ -1,4 +1,4 @@
-package messagechat.messagechatservice.service.common;
+package messagechat.messagechatservice.domain.service.common;
 
 import org.tms.mutual_aid.profile_service.client.model.Name;
 import org.tms.mutual_aid.profile_service.client.model.Profile;

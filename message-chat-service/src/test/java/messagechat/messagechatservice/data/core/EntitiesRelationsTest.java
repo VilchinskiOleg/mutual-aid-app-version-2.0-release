@@ -1,6 +1,7 @@
-package messagechat.messagechatservice.data;
+package messagechat.messagechatservice.data.core;
 
 import messagechat.messagechatservice.configuration.data.MessageChatJpaConfig;
+import messagechat.messagechatservice.data.common.AbstractTest;
 import messagechat.messagechatservice.persistent.entity.*;
 import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = {MessageChatJpaConfig.class})
-public class EntitiesInteractionTest extends AbstractTest {
+public class EntitiesRelationsTest extends AbstractTest {
 
     private static final String DIALOG_ID = "test-dialog-1";
 

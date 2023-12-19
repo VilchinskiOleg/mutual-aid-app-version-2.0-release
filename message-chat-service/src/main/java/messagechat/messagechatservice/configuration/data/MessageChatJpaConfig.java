@@ -1,6 +1,12 @@
 package messagechat.messagechatservice.configuration.data;
 
-import org.springframework.beans.factory.annotation.Value;
+import messagechat.messagechatservice.configuration.MessageChatConfigProps;
+import messagechat.messagechatservice.domain.service.proessor.CacheManagerImpl;
+import messagechat.messagechatservice.domain.service.proessor.hibernate_listener.PreInsertListener;
+import messagechat.messagechatservice.domain.service.proessor.hibernate_listener.PreUpdateListener;
+import org.hibernate.event.service.spi.EventListenerRegistry;
+import org.hibernate.event.spi.EventType;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
@@ -12,6 +18,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Map;
@@ -30,8 +37,9 @@ public class MessageChatJpaConfig {
 
     private static final String API_DATA_HANDLER_PERSISTENT_UNIT = "message-chat-persistent-unit";
 
-    @Value("${jpa-props.message-chat.ddl-auto}")
-    private String ddlAuto;
+    @Resource
+    private MessageChatConfigProps configProps;
+
 
     @Bean(name = "dataSource")
     @ConfigurationProperties(prefix = "datasource.message-chat")
@@ -51,14 +59,26 @@ public class MessageChatJpaConfig {
     }
 
     @Bean(name = "transactionManager")
-    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory,
+                                                         CacheManagerImpl cacheManager) {
+        registerEventListeners(entityManagerFactory, cacheManager);
         return new JpaTransactionManager(entityManagerFactory);
+    }
+
+
+    private void registerEventListeners(EntityManagerFactory entityManagerFactory, CacheManagerImpl cacheManager) {
+        var sessionFactory = entityManagerFactory.unwrap(SessionFactoryImpl.class);
+        var registry = sessionFactory.getServiceRegistry().getService(EventListenerRegistry.class);
+
+        // Register required Listeners:
+        registry.getEventListenerGroup(EventType.PRE_INSERT).appendListener(new PreInsertListener(cacheManager));
+        registry.getEventListenerGroup(EventType.PRE_UPDATE).appendListener(new PreUpdateListener(cacheManager));
     }
 
     private Map<String, Object> getProperties() {
         return Map.of(
                 "hibernate.dialect", "org.hibernate.dialect.PostgreSQL10Dialect",
-                "hibernate.hbm2ddl.auto", ddlAuto,
+                "hibernate.hbm2ddl.auto", configProps.getDdlAuto(),
                 "hibernate.show_sql", "true",
                 "hibernate.format_sql", "true",
                 "hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy"

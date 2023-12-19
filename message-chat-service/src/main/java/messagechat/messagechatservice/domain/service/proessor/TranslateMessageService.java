@@ -1,14 +1,15 @@
 package messagechat.messagechatservice.domain.service.proessor;
 
-import static java.util.stream.Collectors.toList;
-import static org.common.http.autoconfiguration.utils.Constant.DEFAULT_LANG;
-
-import java.util.Map;
 import messagechat.messagechatservice.domain.model.Message;
 import messagechat.messagechatservice.domain.service.client.TranslateClientService;
 import org.common.http.autoconfiguration.model.CommonData;
+
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.toList;
+import static org.common.http.autoconfiguration.utils.Constant.DEFAULT_LANG;
 
 public abstract class TranslateMessageService {
 
@@ -17,6 +18,7 @@ public abstract class TranslateMessageService {
     @Resource
     private CommonData commonData;
 
+    @Deprecated
     public void translateSavedMessage(Message message) {
         String sourceLang = commonData.getLocale().getLanguage();
         if (DEFAULT_LANG.equals(sourceLang)) {

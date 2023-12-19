@@ -32,6 +32,10 @@ datasource:
     username: test
     password: test
 
+redis-connection:
+  host: localhost
+  port: 6379
+
 feign:
   client:
     config:

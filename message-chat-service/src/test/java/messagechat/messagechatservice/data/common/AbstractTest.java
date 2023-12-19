@@ -1,4 +1,4 @@
-package messagechat.messagechatservice.data;
+package messagechat.messagechatservice.data.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -28,23 +28,23 @@ public abstract class AbstractTest extends DatabaseSourceTestConfig {
     }
 
 
-    protected void createDialogForCouple(@NonNull Session hibernateEntityManagerImpl,
+    protected Dialog createDialogForCouple(@NonNull Session hibernateEntityManagerImpl,
                                          String dialogId) {
-        createDialogImpl(
+        return createDialogImpl(
                 hibernateEntityManagerImpl,
                 dialogId,
                 messagechat.messagechatservice.domain.model.Dialog.Type.FACE_TO_FACE_DIALOG.name());
     }
 
-    protected void createChanel(@NonNull Session hibernateEntityManagerImpl,
+    protected Dialog createChanel(@NonNull Session hibernateEntityManagerImpl,
                                          String dialogId) {
-        createDialogImpl(
+        return createDialogImpl(
                 hibernateEntityManagerImpl,
                 dialogId,
                 messagechat.messagechatservice.domain.model.Dialog.Type.CHANNEL.name());
     }
 
-    private void createDialogImpl(@NonNull Session hibernateEntityManagerImpl,
+    private Dialog createDialogImpl(@NonNull Session hibernateEntityManagerImpl,
                                   @NotBlank String dialogId,
                                   @NotBlank String dialogType) {
         var transaction = hibernateEntityManagerImpl.beginTransaction();
@@ -91,8 +91,10 @@ public abstract class AbstractTest extends DatabaseSourceTestConfig {
             hibernateEntityManagerImpl.persist(dialog);
             transaction.commit();
             hibernateEntityManagerImpl.clear();
+            return dialog;
         } catch (Exception ex) {
             transaction.rollback();
+            return null;
         }
     }
 
