@@ -30,6 +30,7 @@ That project is C2C application. One of user (Customer) can publish certain Job.
 * OAuth JWT V3.19.2
 * MongoDB V4.1.1
 * PostgreSQL V42.3.6
+* Redis V3.8.0/6.1.9(jedis/lettuce)
 * Liquibase V4.0.0
 * Spring Data MongoDB V3.1.5
 * Spring Data JPA V2.7.2
