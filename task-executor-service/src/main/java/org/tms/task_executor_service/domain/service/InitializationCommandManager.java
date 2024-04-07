@@ -12,6 +12,10 @@ import java.lang.reflect.Method;
 import static java.util.Objects.isNull;
 import static org.tms.task_executor_service.utils.Constant.Errors.CANNOT_RETRIEVE_COMMAND;
 
+/**
+ * Handles each incoming {@link Task} and convert it to appropriate {@link AbstractCommand} implementation
+ * according to the {@link Task.Type#getCommandImplClass()}
+ */
 @Slf4j
 @Component
 public class InitializationCommandManager {
@@ -20,7 +24,7 @@ public class InitializationCommandManager {
         Class<?> commandImplClass = task.getType().getCommandImplClass();
         Method commandImplMethod = null;
         if (isNull(commandImplClass)) {
-            throw new RuntimeException("Er.");
+            throw new RuntimeException("Error: CommandImplClass cannot be null");
         } else if (!AbstractCommand.class.isAssignableFrom(commandImplClass)) {
             try {
                 Class<?> commandImplMethodMarker = task.getType().getCommandImplMethodMarker();

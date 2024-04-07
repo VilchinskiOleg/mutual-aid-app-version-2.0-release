@@ -8,6 +8,11 @@ import org.tms.task_executor_service.domain.service.client.CommandExecutionProvi
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * It works just like a Proxy which wrap and run real Command{@link AbstractCommand} functionality
+ *
+ * @param <T> - type of {@link CommandExecutionProvider} implementation.
+ */
 @Slf4j
 public class DefaultGenericAbstractCommandImpl<T extends CommandExecutionProvider> extends AbstractCommand<T> {
 

@@ -66,6 +66,13 @@ public class TaskExecutionServiceImp implements TaskExecutionService, ThreadSave
     }
 
 
+    /**
+     * Prepare couples { AbstractCommandsGroupListener implementation vs Set of AbstractCommand implementations }
+     * wrapped into Event object , from list of received Tasks.
+     *
+     * @param tasks - received Tasks
+     * @return - List of Events
+     */
     private List<Event> generateEvents(List<Task> tasks) {
         Map<Class<?>, List<Object>> commandByListener = tasks.stream()
                 .collect(groupingBy(
