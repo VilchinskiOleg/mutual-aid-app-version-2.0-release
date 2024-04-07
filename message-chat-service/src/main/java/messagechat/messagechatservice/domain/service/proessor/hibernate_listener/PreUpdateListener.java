@@ -11,6 +11,12 @@ public class PreUpdateListener implements PreUpdateEventListener {
 
     private final CacheManagerImpl cacheManager;
 
+    /**
+     * Remove Cached Messages by MessageId if that Message is gonna be updated.
+     *
+     * @param event
+     * @return
+     */
     @Override
     public boolean onPreUpdate(PreUpdateEvent event) {
         var entity = event.getEntity();

@@ -27,14 +27,13 @@ datasource:
   message-chat:
     driver-class-name: org.postgresql.Driver
     jdbc-url: jdbc:postgresql://localhost:5432/message-chat
-#    username: ${PG_USERNAME}
-#    password: ${PG_PASSWORD}
-    username: test
-    password: test
+    username: ${PG_USERNAME:postgres}
+    password: ${PG_PASSWORD:postgres}
 
 redis-connection:
   host: localhost
   port: 6379
+  ttl: 1 # min
 
 feign:
   client:

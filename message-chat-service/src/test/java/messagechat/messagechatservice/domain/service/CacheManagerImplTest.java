@@ -72,6 +72,8 @@ public class CacheManagerImplTest {
 
 
     private static final String DIALOG_ID = "1-dialog-UUID-id";
+    private static final String MESSAGE_ID_POSTFIX = "-message-UUID-id";
+    private static final String MEMBER_ID_POSTFIX = "-member-UUID-id";
     private static final Logger LOG = LoggerFactory.getLogger(CacheManagerImplTest.class);
     private static final List<Message> messagesMOCK = generateMessagesMock();
 
@@ -87,7 +89,6 @@ public class CacheManagerImplTest {
         Collections.reverse(messagesMOCK);
     }
 
-
     @Test
     void read_subset_of_last_three_messages_when_cache_contain_five() {
         final int lastMsgInChatId = messagesMOCK.size();
@@ -100,8 +101,8 @@ public class CacheManagerImplTest {
 
         // Validate:
         assertEquals(size, cachedMessagesSubList.size());
-        assertEquals(lastMsgInChatId, cachedMessagesSubList.get(0).getId());
-        assertEquals(lastMsgInChatId - size + 1, cachedMessagesSubList.get(2).getId());
+        assertEquals(lastMsgInChatId + MESSAGE_ID_POSTFIX, cachedMessagesSubList.get(0).getInternalId());
+        assertEquals((lastMsgInChatId - size + 1) + MESSAGE_ID_POSTFIX, cachedMessagesSubList.get(2).getInternalId());
     }
 
     @Test
@@ -114,8 +115,8 @@ public class CacheManagerImplTest {
 
         // Validate:
         assertEquals(size, cachedMessagesSubList.size());
-        assertEquals(3, cachedMessagesSubList.get(0).getId());
-        assertEquals(2, cachedMessagesSubList.get(1).getId());
+        assertEquals(3 + MESSAGE_ID_POSTFIX, cachedMessagesSubList.get(0).getInternalId());
+        assertEquals(2 + MESSAGE_ID_POSTFIX, cachedMessagesSubList.get(1).getInternalId());
     }
 
     @Test
@@ -148,9 +149,9 @@ public class CacheManagerImplTest {
         for (int n = 1; n <= 5; n++) {
             messages.add(Message.builder()
                     .id(n)
-                    .internalId(n + "-message-UUID-id")
+                    .internalId(n + MESSAGE_ID_POSTFIX)
                     .dialog(dialog)
-                    .author(new Member(n + "-member-UUID-id"))
+                    .author(new Member(n + MEMBER_ID_POSTFIX))
                     .description("Hello guys!")
                     .createAt(now()).build());
         }

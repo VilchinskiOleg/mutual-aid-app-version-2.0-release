@@ -1,6 +1,7 @@
 package messagechat.messagechatservice.domain.service;
 
 
+import lombok.extern.slf4j.Slf4j;
 import messagechat.messagechatservice.MessageChatServiceApplication;
 import messagechat.messagechatservice.domain.model.Dialog;
 import messagechat.messagechatservice.domain.model.Member;
@@ -8,6 +9,8 @@ import messagechat.messagechatservice.domain.service.client.ProfileClientService
 import messagechat.messagechatservice.domain.service.common.DatabaseSourceTestConfig;
 import messagechat.messagechatservice.domain.service.common.ProfileMockTestExtension;
 import messagechat.messagechatservice.persistent.repository.DialogRepository;
+import messagechat.messagechatservice.persistent.repository.MemberRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@Slf4j
 @ActiveProfiles("local")
 @SpringBootTest(
         classes = {MessageChatServiceApplication.class},
@@ -58,6 +62,8 @@ public class DialogServiceTest extends DatabaseSourceTestConfig implements Profi
     private DialogService dialogService;
     @Resource
     private DialogRepository dialogRepository;
+    @Resource
+    private MemberRepository memberRepository;
 
     @MockBean
     private ProfileClientService profileClientService;
@@ -155,5 +161,14 @@ public class DialogServiceTest extends DatabaseSourceTestConfig implements Profi
             assertEquals(3, updatedChanel.getMembers().size());
             assertTrue(updatedChanel.getMembers().contains(new Member(THIRD_USER_ID)));
         }
+    }
+
+    /**
+     * Clear DB after each Test :
+     */
+    @AfterEach
+    void afterEach() {
+        dialogRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 }

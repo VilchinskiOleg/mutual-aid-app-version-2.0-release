@@ -12,6 +12,10 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import javax.annotation.Resource;
 
+/**
+ * In order to test only that service without docker-compose file -> just run that command in docker CLI:
+ * docker run --name redis-container -p 6379:6379 -it redis
+ */
 @Configuration
 @EnableRedisRepositories(basePackages = "messagechat.messagechatservice.persistent.cache")
 public class MessageChatRedisConfig extends JedisConfig {

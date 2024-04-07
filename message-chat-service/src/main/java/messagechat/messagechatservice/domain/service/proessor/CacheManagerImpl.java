@@ -2,6 +2,7 @@ package messagechat.messagechatservice.domain.service.proessor;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import messagechat.messagechatservice.configuration.MessageChatConfigProps;
 import messagechat.messagechatservice.domain.model.Message;
 import messagechat.messagechatservice.persistent.cache.model.HashCachedMessage;
 import messagechat.messagechatservice.persistent.cache.repository.HashCachedMessageRepository;
@@ -27,11 +28,11 @@ public class CacheManagerImpl {
 
     public static final String CACHE_MESSAGE_ID_PATTERN = "%s/%s/%s/%s";
     private static final String ONE_OR_MORE_ANY_SYMBOLS = "*";
-    private static final Long ttl = 1L; //min
 
     private final HashCachedMessageRepository cachedMessageRepository;
     private final CommonData commonData;
     private final Mapper mapper;
+    private final MessageChatConfigProps configProps;
 
 //    private ExecutorService executorService = Executors.newFixedThreadPool(3);
 
@@ -64,8 +65,7 @@ public class CacheManagerImpl {
      */
     public List<Message> readMessagesFromCache(String dialogId, Integer pageNumber, Integer size) {
         String lang = commonData.getLocale().getLanguage().toUpperCase();
-        String pattern = buildCacheKeyPattern(dialogId, lang, null, null);
-        var cachedMessages = cachedMessageRepository.getMessagesByKeyPattern(pattern);
+        var cachedMessages = cachedMessageRepository.findAllByDialogIdAndLang(dialogId, lang);
         if (isEmpty(cachedMessages)) {
             log.info("Didn't find any cached message for dialogId= {} and lang= {}",
                     dialogId, commonData.getLocale().getLanguage().toUpperCase());
@@ -102,13 +102,14 @@ public class CacheManagerImpl {
     private void saveMessageToCache(Message message, AtomicInteger serialNumber, String lang) {
         var cachedMessage = mapper.map(message, HashCachedMessage.class);
 
+        cachedMessage.setLang(lang);
+        cachedMessage.setTtl(configProps.getTtl());
         // in this case first message in a DB table - is a last message in a cache:
         cachedMessage.setSerialNumberDesc(serialNumber.get());
 
         String dialogId = ofNullable(message.getDialogId()).orElseThrow(() -> new RuntimeException("Dialog ID can't be null"));
         String messageId = ofNullable(message.getInternalId()).orElseThrow(() -> new RuntimeException("Message ID can't be null"));
         cachedMessage.setId(buildCachedMessageId(dialogId, lang, serialNumber.getAndIncrement(), messageId));
-//        cachedMessage.setTtl(ttl);
 
         cachedMessageRepository.save(cachedMessage);
     }
