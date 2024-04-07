@@ -1,7 +1,9 @@
 package messagechat.messagechatservice.data.core;
 
+import messagechat.messagechatservice.configuration.MessageChatConfigProps;
 import messagechat.messagechatservice.configuration.data.MessageChatJpaConfig;
 import messagechat.messagechatservice.data.common.AbstractTest;
+import messagechat.messagechatservice.domain.service.proessor.CacheManagerImpl;
 import messagechat.messagechatservice.persistent.entity.Member;
 import messagechat.messagechatservice.persistent.entity.Message;
 import org.hibernate.Session;
@@ -12,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -22,14 +26,18 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ActiveProfiles("local")
 @ExtendWith({SpringExtension.class})
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = {MessageChatJpaConfig.class})
+@ContextConfiguration(classes = {MessageChatJpaConfig.class, MessageChatConfigProps.class})
 public class OnePlusNRequestsIssueTest extends AbstractTest {
 
     private static final String DIALOG_ID = "test-dialog-1";
 
+    // Just in order to run a context for test:
+    @MockBean
+    private CacheManagerImpl cacheManagerImpl;
 
     @Resource
     private EntityManagerFactory entityManagerFactory;

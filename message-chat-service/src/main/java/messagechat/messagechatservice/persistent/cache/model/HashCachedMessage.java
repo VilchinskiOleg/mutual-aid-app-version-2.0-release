@@ -34,7 +34,7 @@ public class HashCachedMessage implements Serializable, Comparable<HashCachedMes
     }
 
 
-    // String value created by pattern: DialogID/Lang/SerialNumber/MessageID :
+    // String value which should be (MANUALLY !) created by pattern: DialogID/Lang/SerialNumber/MessageID :
     @Id
     private String id;
     // ID of message defined in Domain layer :

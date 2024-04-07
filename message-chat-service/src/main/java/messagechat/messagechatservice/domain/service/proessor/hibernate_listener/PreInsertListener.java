@@ -11,6 +11,13 @@ public class PreInsertListener implements PreInsertEventListener {
 
     private final CacheManagerImpl cacheManager;
 
+    /**
+     * Remove all Cached Messages by DialogId if any new Message is gonna be inserted to current Dialog.
+     * Because order of Messages into Dialog will be changed and Cache will be not consistent any more.
+     *
+     * @param event
+     * @return
+     */
     @Override
     public boolean onPreInsert(PreInsertEvent event) {
         var entity = event.getEntity();

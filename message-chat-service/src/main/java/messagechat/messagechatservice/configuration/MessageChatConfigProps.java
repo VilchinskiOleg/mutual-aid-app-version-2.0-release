@@ -21,7 +21,8 @@ public class MessageChatConfigProps {
     private String redisHost;
     @Value("${redis-connection.port}")
     private int redisPort;
-
+    @Value("${redis-connection.ttl}")
+    private long ttl;
 
     public boolean isTranslationEnabled() {
         return translationMessageEnabled;

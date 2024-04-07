@@ -20,24 +20,25 @@ That project is C2C application. One of user (Customer) can publish certain Job.
 ### Technologies
 * Java 11
 * Spring Boot V2.4.3
-* Apache Commons V3.9/4.4
-* Swagger V2.9.2
-* Junit V5.7.1
-* Mockito V3.6.28
-* Testcontainer V1.16.2
 * Spring Security V5.4.5
-* Apache HttpClient V4.5.13
+* Spring Data MongoDB V3.1.5
+* Spring Data JPA V2.7.2
+* Spring Cloud Open Feign V3.0.1
+* Spring Rest Template
+* Spring Kafka V2.7.2
 * OAuth JWT V3.19.2
 * MongoDB V4.1.1
 * PostgreSQL V42.3.6
 * Redis V3.8.0/6.1.9(jedis/lettuce)
 * Liquibase V4.0.0
-* Spring Data MongoDB V3.1.5
-* Spring Data JPA V2.7.2
-* Spring Cloud Open Feign V3.0.1
-* Spring Kafka V2.7.2
+* Apache Commons V3.9/4.4
+* Apache HttpClient V4.5.13
 * Awaitility V4.1.1
 * Modelmapper V2.3.8
+* Swagger V2.9.2
+* Junit V5.7.1
+* Mockito V3.6.28
+* Testcontainer V1.16.2
 * Open API's (email sender; translater)
 * SOAP
 

@@ -1,8 +1,10 @@
 package messagechat.messagechatservice.data.core;
 
 import lombok.Cleanup;
+import messagechat.messagechatservice.configuration.MessageChatConfigProps;
 import messagechat.messagechatservice.configuration.data.MessageChatJpaConfig;
 import messagechat.messagechatservice.data.common.AbstractTest;
+import messagechat.messagechatservice.domain.service.proessor.CacheManagerImpl;
 import messagechat.messagechatservice.persistent.entity.Dialog;
 import messagechat.messagechatservice.persistent.entity.Message;
 import org.hibernate.LockMode;
@@ -13,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -24,10 +28,11 @@ import javax.persistence.RollbackException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("local")
 @ExtendWith({SpringExtension.class})
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = {MessageChatJpaConfig.class})
+@ContextConfiguration(classes = {MessageChatJpaConfig.class, MessageChatConfigProps.class})
 public class IsolationTransactionTest extends AbstractTest {
 
     private static final String DIALOG_ID = "test-dialog-1";
@@ -35,6 +40,10 @@ public class IsolationTransactionTest extends AbstractTest {
 
     @Resource
     private EntityManagerFactory entityManagerFactory;
+
+    // Just in order to run a context for test:
+    @MockBean
+    private CacheManagerImpl cacheManagerImpl;
 
 
     /**

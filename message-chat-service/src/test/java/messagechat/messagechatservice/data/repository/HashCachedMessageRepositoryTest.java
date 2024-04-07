@@ -51,6 +51,7 @@ public class HashCachedMessageRepositoryTest {
 
     private static final String DIALOG_ID_MOCK = "1-dialog-UUID-id";
     private static final String MESSAGE_ID_MOCK = "1-message-UUID-id";
+    private static final String LANG_MOCK = "EN";
 
 
     @Resource
@@ -59,10 +60,20 @@ public class HashCachedMessageRepositoryTest {
     private MessageChatConfigProps configProps;
 
 
+    /**
+     * Test of more lowe level Redis implementation which using RedisTemplate and HashOperations:
+     *
+     * NOTE:
+     * If you save Entities by RedisTemplate (and HashOperations) directly , you also must read them by RedisTemplate ,
+     * because RedisTemplate and Spring Data (repository) use different mechanisms of Serialization.
+     *
+     * Otherwise you will be provided with Deserialization error (for example if I would use 'save(cachedMessage)'
+     * instead of 'saveMessageByKey(key, cachedMessage)' in method below).
+     */
     @Test
     void save_and_read_cached_message_by_key_pattern() {
         Integer serialNumberDesc = 1;
-        String id = format(CACHE_MESSAGE_ID_PATTERN, DIALOG_ID_MOCK, "EN", serialNumberDesc, MESSAGE_ID_MOCK);
+        String id = format(CACHE_MESSAGE_ID_PATTERN, DIALOG_ID_MOCK, LANG_MOCK, serialNumberDesc, MESSAGE_ID_MOCK);
 
         var cachedMessage = HashCachedMessage.builder()
                 .id(id)
@@ -75,13 +86,13 @@ public class HashCachedMessageRepositoryTest {
                 .createAt(now()).build();
 
         // Save:
-        String key = HashCachedMessage.class.getAnnotation(RedisHash.class).value() + ":" + format(CACHE_MESSAGE_ID_PATTERN, DIALOG_ID_MOCK, "EN", serialNumberDesc, MESSAGE_ID_MOCK);
+        String key = HashCachedMessage.class.getAnnotation(RedisHash.class).value() + ":"
+                + format(CACHE_MESSAGE_ID_PATTERN, DIALOG_ID_MOCK, LANG_MOCK, serialNumberDesc, MESSAGE_ID_MOCK);
         cachedMessageRepository.saveMessageByKey(key, cachedMessage);
-//        cachedMessageRepository.save(cachedMessage);
 
         // Read:
         String keyPrefix = HashCachedMessage.class.getAnnotation(RedisHash.class).value();
-        String keyPattern = keyPrefix + ":" + format(CACHE_MESSAGE_ID_PATTERN, DIALOG_ID_MOCK, "EN", "*", "*");
+        String keyPattern = keyPrefix + ":" + format(CACHE_MESSAGE_ID_PATTERN, DIALOG_ID_MOCK, LANG_MOCK, "*", "*");
         var messages = cachedMessageRepository.getMessagesByKeyPattern(keyPattern);
 
         // Validate:
@@ -91,14 +102,17 @@ public class HashCachedMessageRepositoryTest {
         assertEquals(MESSAGE_ID_MOCK, msg.getInternalId());
     }
 
+    /**
+     * Test of more high level Redis implementation which using Spring Data:
+     */
     @Test
     void save_and_read_cached_message_by_dialog_id_and_lang() {
         Integer serialNumberDesc = 1;
-        String id = format(CACHE_MESSAGE_ID_PATTERN, DIALOG_ID_MOCK, "EN", serialNumberDesc, MESSAGE_ID_MOCK);
+        String id = format(CACHE_MESSAGE_ID_PATTERN, DIALOG_ID_MOCK, LANG_MOCK, serialNumberDesc, MESSAGE_ID_MOCK);
 
         var cachedMessage = HashCachedMessage.builder()
                 .id(id)
-                .lang("EN")
+                .lang(LANG_MOCK)
                 .internalId(MESSAGE_ID_MOCK)
                 .serialNumberDesc(serialNumberDesc)
                 .dialogId(DIALOG_ID_MOCK)
@@ -111,8 +125,7 @@ public class HashCachedMessageRepositoryTest {
         cachedMessageRepository.save(cachedMessage);
 
         // Read:
-        cachedMessageRepository.findById(id);
-        var messages = cachedMessageRepository.findAllByDialogIdAndLang(DIALOG_ID_MOCK, "EN");
+        var messages = cachedMessageRepository.findAllByDialogIdAndLang(DIALOG_ID_MOCK, LANG_MOCK);
 
         // Validate:
         assertEquals(1, messages.size());
