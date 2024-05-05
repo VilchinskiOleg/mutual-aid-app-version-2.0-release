@@ -1,34 +1,7 @@
-version: '3'
+include:
+  - ./kafka/docker-compose.yml
+  - ./kafka-avro/docker-compose.yml
 services:
-  zookeeper:
-    image: 'wurstmeister/zookeeper'
-    container_name: 'zookeeper'
-    ports:
-      - '2181:2181'
-  kafka:
-    build:
-      dockerfile: Dockerfile.Kafka.SSL
-      context: ./kafka-ssl
-    container_name: 'kafka'
-    image: 'kafka-ssl'
-    ports:
-      - '9092:9092'
-    depends_on:
-      - 'zookeeper'
-    environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: SSL://kafka:9092
-      KAFKA_ADVERTISED_LISTENERS: SSL://kafka:9092
-      # I explicitly defined protocol for communicate broker between each other:
-      # I have to define it and change default value (PLAINTEXT) because I didn't define any PLAINTEXT listeners before.
-      KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SSL
-      SSL_ENABLED_PROTOCOLS: 'TLSv1,TLSv1.1,TLSv1.2,TLSv1.3'
-      KAFKA_SSL_CLIENT_AUTH: 'required'
-      KAFKA_SSL_KEY_PASSWORD: '34rtsTb290'
-      KAFKA_SSL_KEYSTORE_LOCATION: '/serverkeystore.jks'
-      KAFKA_SSL_KEYSTORE_PASSWORD: '34rtsTb290'
-      KAFKA_SSL_TRUSTSTORE_LOCATION: '/servertruststore.jks'
-      KAFKA_SSL_TRUSTSTORE_PASSWORD: '34rtsTb290'
   postgres:
     image: postgres
     container_name: 'postgres'
@@ -64,6 +37,7 @@ services:
       - '5025:5005'
     depends_on:
       - 'auth-service'
+      - 'kafka-external'
     environment:
       - MONGO_DB_PASSWORD
       - auth-rest-client.url=http://auth-service:8100
@@ -89,7 +63,7 @@ services:
       - '8300:8300'
       - '5035:5005'
     depends_on:
-      - 'kafka'
+      - 'kafka-internal'
       - 'postgres'
       - 'auth-service'
       - 'profile-service'
@@ -115,7 +89,7 @@ services:
     depends_on:
       - 'auth-service'
       - 'order-service'
-      - 'kafka'
+      - 'kafka-internal'
     environment:
       - MONGO_DB_PASSWORD
       - kafka.bootstrapServers=kafka:9092

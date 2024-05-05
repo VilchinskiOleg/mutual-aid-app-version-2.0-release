@@ -38,5 +38,6 @@ scheduling-props:
   tasks-amount: 10
 
 kafka:
-  bootstrap-servers: localhost:9092
+  bootstrap-servers: localhost:9093
   schema-registry-url: http://localhost:8081
+  # SSL security:

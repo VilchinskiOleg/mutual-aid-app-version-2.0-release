@@ -44,6 +44,10 @@ That project is C2C application. One of user (Customer) can publish certain Job.
 
 ### Set up project
 
+##### Require:
+* Docker : v26.0.0
+* Docker Compose : v2.26.1
+
 ##### Global preparation for any set up approaches:
 * Install Apache Maven on your machine.
 * [Don't need to do, if use kubernetes approach] Create your own account in MongoDB Atlas (cloud repository) and make user by name 'admin'. You need to put on your password as MONGO_DB_PASSWORD environment variable, it will be fetched from env to URI during run the project.

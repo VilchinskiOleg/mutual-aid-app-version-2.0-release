@@ -41,11 +41,11 @@ auth-rest-client:
 email-sender-open-api:
   url: https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send
   host: rapidprod-sendgrid-v1.p.rapidapi.com
-  token: ${EMAIL_SENDER_API_TOKEN}
+  token: ${EMAIL_SENDER_API_TOKEN:test}
 
 kafka:
-  bootstrap-servers: localhost:9092
+  bootstrap-servers: localhost:9093
   schema-registry-url: http://localhost:8081
-  # for SSL security:
+  # SSL security:
 
 enable-task-retry: false
