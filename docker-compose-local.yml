@@ -1,5 +1,5 @@
 include:
-  - ./kafka/docker-compose.yml
+  - ./kafka-ssl/docker-compose.yml
   - ./kafka-avro/docker-compose.yml
 services:
   postgres:
@@ -121,6 +121,7 @@ services:
     depends_on:
       - 'auth-service'
       - 'profile-service'
+      - 'kafka-external'
     environment:
       - MONGO_DB_PASSWORD
       - profile-rest-client.url=http://profile-service:8200
