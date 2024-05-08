@@ -1,17 +1,18 @@
-version: '3'
 services:
-  zookeeper:
+  zookeeper-internal:
     image: 'wurstmeister/zookeeper'
-    container_name: 'zookeeper'
+    container_name: 'zookeeper-internal'
+    hostname: 'zookeeper'
     ports:
       - '2181:2181'
-  kafka:
+  kafka-internal:
     image: 'wurstmeister/kafka'
-    container_name: 'kafka'
+    container_name: 'kafka-internal'
+    hostname: 'kafka'
     ports:
       - '9092:9092'
     depends_on:
-      - 'zookeeper'
+      - 'zookeeper-internal'
     environment:
       - KAFKA_ADVERTISED_HOST_NAME=kafka
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181

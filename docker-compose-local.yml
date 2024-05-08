@@ -1,5 +1,5 @@
 include:
-  - ./kafka-ssl/docker-compose.yml
+  - ./kafka/docker-compose.yml
   - ./kafka-avro/docker-compose.yml
 services:
   postgres:
@@ -13,9 +13,11 @@ services:
       - POSTGRES_PASSWORD=${PG_PASSWORD}
     volumes:
       # For Windows:
-      - ${pwd}/postgres/backup:/var/lib/postgresql/data
+#      - ${pwd}/postgres/backup:/var/lib/postgresql/data
       # For Linux:
 #      - $(pwd)/postgres/backup:/var/lib/postgresql/data
+      # For MacOS (only particular dirs, like 'tmp' e.t.c., are allowed):
+      - /tmp/mutual-aid-app/postgres/backup:/var/lib/postgresql/data
   redis:
     image: redis
     container_name: 'redis'
