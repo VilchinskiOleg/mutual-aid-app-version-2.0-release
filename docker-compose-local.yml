@@ -1,5 +1,7 @@
 include:
+  # import Kafka internal :
   - ./kafka/docker-compose.yml
+  # import Kafka external :
   - ./kafka-avro/docker-compose.yml
 services:
   postgres:
@@ -8,16 +10,22 @@ services:
     ports:
       - '5432:5432'
     environment:
-      - POSTGRES_DB=apiDB
-      - POSTGRES_USER=${PG_USERNAME}
-      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_USER=${PG_DB_USERNAME}
+      - POSTGRES_PASSWORD=${PG_DB_PASSWORD}
     volumes:
+      # 1. To back up the current data state :
       # For Windows:
 #      - ${pwd}/postgres/backup:/var/lib/postgresql/data
       # For Linux:
 #      - $(pwd)/postgres/backup:/var/lib/postgresql/data
       # For MacOS (only particular dirs, like 'tmp' e.t.c., are allowed):
       - /tmp/mutual-aid-app/postgres/backup:/var/lib/postgresql/data
+      # ...
+      # 2. To initialize multiple databases before DB starting :
+      # For Linux:
+#      - ./postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      # For MacOS (only particular dirs, like 'tmp' e.t.c., are allowed):
+      - /tmp/mutual-aid-app/postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
   redis:
     image: redis
     container_name: 'redis'
@@ -32,6 +40,7 @@ services:
       - '8100:8100'
       - '5015:5005'
     environment:
+      - SPRING_PROFILES_ACTIVE=local
       - MONGO_DB_PASSWORD
       - EMAIL_SENDER_API_TOKEN
   profile-service:
@@ -45,22 +54,26 @@ services:
     depends_on:
       - 'auth-service'
       - 'kafka-external'
+      - 'schema-registry'
     environment:
+      - SPRING_PROFILES_ACTIVE=local
       - MONGO_DB_PASSWORD
-      - auth-rest-client.url=http://auth-service:8100
-  profile-soap-service:
-    build:
-      dockerfile: Dockerfile
-      context: ./profile-service-parent/profile-service-soap
-    container_name: 'profile-soap-service'
-    ports:
-      - '8250:8250'
-      - '5225:5005'
-    depends_on:
-      - 'auth-service'
-    environment:
-      - MONGO_DB_PASSWORD
-      - auth-rest-client.url=http://auth-service:8100
+      - AUTH_SERVICE_HOST=auth-service
+      - KAFKA_BROKER_HOST=${EXTERNAL_KAFKA_BROKER_HOST}
+      - KAFKA_SCHEMA_REGISTRY_HOST=${EXTERNAL_KAFKA_SCHEMA_REGISTRY_HOST}
+#  profile-soap-service:
+#    build:
+#      dockerfile: Dockerfile
+#      context: ./profile-service-parent/profile-service-soap
+#    container_name: 'profile-soap-service'
+#    ports:
+#      - '8250:8250'
+#      - '5225:5005'
+#    depends_on:
+#      - 'auth-service'
+#    environment:
+#      - MONGO_DB_PASSWORD=wrong_val
+#      - auth-rest-client.url=http://auth-service:8100
   order-service:
     build:
       dockerfile: Dockerfile
@@ -75,16 +88,18 @@ services:
       - 'auth-service'
       - 'profile-service'
     environment:
+      - SPRING_PROFILES_ACTIVE=local
       - MONGO_DB_PASSWORD
-      - PG_PASSWORD
-      - PG_USERNAME
+      - PG_HOST=${PG_DB_HOST}
+      - PG_USERNAME=${PG_DB_USERNAME}
+      - PG_PASSWORD=${PG_DB_PASSWORD}
       # It must be internal Port and Name of containers:
-      - kafka.bootstrapServers=kafka:9092
-      - kafka.ssl-keystore-location=/app/clientkeystore.jks
-      - kafka.ssl-truststore-location=/app/clienttruststore.jks
-      - datasource.api.jdbc-url=jdbc:postgresql://postgres:5432/apiDB
-      - auth-rest-client.url=http://auth-service:8100
-      - profile-rest-client.url=http://profile-service:8200
+      - kafka.bootstrapServers=${INTERNAL_KAFKA_BROKER_HOST}:9092
+#      - kafka.ssl-keystore-location=/app/clientkeystore.jks
+#      - kafka.ssl-truststore-location=/app/clienttruststore.jks
+#      - datasource.api.jdbc-url=jdbc:postgresql://postgres:5432/apiDB
+#      - auth-rest-client.url=http://auth-service:8100
+#      - profile-rest-client.url=http://profile-service:8200
   event-storage-service:
     build:
       dockerfile: Dockerfile
@@ -98,10 +113,11 @@ services:
       - 'order-service'
       - 'kafka-internal'
     environment:
+      - SPRING_PROFILES_ACTIVE=local
       - MONGO_DB_PASSWORD
-      - kafka.bootstrapServers=kafka:9092
-      - kafka.ssl-keystore-location=/app/clientkeystore.jks
-      - kafka.ssl-truststore-location=/app/clienttruststore.jks
+      - kafka.bootstrapServers=${INTERNAL_KAFKA_BROKER_HOST}:9092
+#      - kafka.ssl-keystore-location=/app/clientkeystore.jks
+#      - kafka.ssl-truststore-location=/app/clienttruststore.jks
   message-chat-service:
     build:
       dockerfile: Dockerfile
@@ -116,9 +132,13 @@ services:
       - 'auth-service'
       - 'profile-service'
     environment:
-      - MONGO_DB_PASSWORD
+      - SPRING_PROFILES_ACTIVE=local
+      - PG_HOST=${PG_DB_HOST}
+      - PG_USERNAME=${PG_DB_USERNAME}
+      - PG_PASSWORD=${PG_DB_PASSWORD}
       - TRANSLATE_API_TOKEN
       - profile-rest-client.url=http://profile-service:8200
+      - REDIS_HOST=redis
   task-executor-service:
     build:
       dockerfile: Dockerfile
@@ -131,6 +151,10 @@ services:
       - 'auth-service'
       - 'profile-service'
       - 'kafka-external'
+      - 'schema-registry'
     environment:
+      - SPRING_PROFILES_ACTIVE=local
       - MONGO_DB_PASSWORD
-      - profile-rest-client.url=http://profile-service:8200
+      - PROFILE_SERVICE_HOST=profile-service
+      - KAFKA_BROKER_HOST=${EXTERNAL_KAFKA_BROKER_HOST}
+      - KAFKA_SCHEMA_REGISTRY_HOST=${EXTERNAL_KAFKA_SCHEMA_REGISTRY_HOST}

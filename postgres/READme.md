@@ -1,0 +1,1 @@
+For MacOS system you should copy `./init-db.sh` file to `/tmp/mutual-aid-app/postgres/init-db.sh` and perform for it `chmod +x init-db.sh` .

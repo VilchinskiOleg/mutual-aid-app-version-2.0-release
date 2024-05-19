@@ -24,24 +24,40 @@ public class ProfileTaskForRetryingProducer {
 
     private static final String TOPIC = "mutual-aid-retry-tasks-topic";
     private static final String KEY = "profile-retry-task-key";
+    private static final int MAX_RETRY = 5;
 
     private final SchemaRegistryClient schemaRegistryClient;
     private final KafkaTemplate<String, TaskEvent> kafkaTemplate;
     private final CommonData commonData;
+    private int attemptsCounter = MAX_RETRY;
 
     @PostConstruct
     public void init() {
         try {
-            // reset schema:
+            // Reset schema:
             this.schemaRegistryClient.reset();
             for (String subject : this.schemaRegistryClient.getAllSubjects()) {
                 this.schemaRegistryClient.deleteSubject(subject);
             }
-            // register schema:
+
+            // Register schema:
             ParsedSchema avroSchema = new AvroSchema(TaskEvent.getClassSchema().toString());
             var res = this.schemaRegistryClient.register(TOPIC + "-value", avroSchema);
+            log.info("Registered avroSchema for topic= {} successfully", TOPIC);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.warn("Wasn't able to register avroSchema for topic= {}. Attempt= {}", TOPIC, MAX_RETRY - --attemptsCounter);
+            if (attemptsCounter > 0 ) {
+
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                init();
+            } else {
+                throw new RuntimeException(e);
+            }
         }
     }
 

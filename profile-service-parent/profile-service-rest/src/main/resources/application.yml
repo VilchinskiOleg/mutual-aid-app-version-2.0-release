@@ -33,6 +33,7 @@ feign:
           - org.tms.profile_service_core.configuration.client.email.RapidEmailSenderApiInterceptor
 
 auth-rest-client:
+  url: http://${AUTH_SERVICE_HOST:localhost}:8100
   user: profile-service-rest-client
   # for common auth config:
   read-timeout: 15000
@@ -44,8 +45,8 @@ email-sender-open-api:
   token: ${EMAIL_SENDER_API_TOKEN:test}
 
 kafka:
-  bootstrap-servers: localhost:9093
-  schema-registry-url: http://localhost:8081
+  bootstrap-servers: ${KAFKA_BROKER_HOST:localhost}:9093
+  schema-registry-url: http://${KAFKA_SCHEMA_REGISTRY_HOST:localhost}:8081
   # SSL security:
 
-enable-task-retry: false
+enable-task-retry: true

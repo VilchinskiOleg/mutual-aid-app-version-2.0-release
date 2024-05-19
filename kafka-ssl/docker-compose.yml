@@ -18,8 +18,8 @@ services:
         - 'zookeeper-internal'
       environment:
         KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-        KAFKA_LISTENERS: SSL://kafka:9092
-        KAFKA_ADVERTISED_LISTENERS: SSL://kafka:9092
+        KAFKA_LISTENERS: SSL://${INTERNAL_KAFKA_BROKER_HOST}:9092
+        KAFKA_ADVERTISED_LISTENERS: SSL://${INTERNAL_KAFKA_BROKER_HOST}:9092
         # I explicitly defined protocol for communicate broker between each other:
         # I have to define it and change default value (PLAINTEXT) because I didn't define any PLAINTEXT listeners before.
         KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SSL

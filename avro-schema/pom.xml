@@ -20,6 +20,7 @@
         <java.version>11</java.version>
         <avro.version>1.11.1</avro.version>
         <confluent.version>5.5.5</confluent.version>
+        <schema.registry.host>localhost</schema.registry.host>
     </properties>
 
     <pluginRepositories>
@@ -72,7 +73,7 @@
                 <version>${confluent.version}</version>
                 <configuration>
                     <schemaRegistryUrls>
-                        <param>http://localhost:8081</param>
+                        <param>http://${schema.registry.host}:8081</param>
                     </schemaRegistryUrls>
                     <subjects>
                         <mutual-aid-retry-tasks-topic-value>${project.basedir}/src/main/resources/avro/task_event.avsc</mutual-aid-retry-tasks-topic-value>

@@ -29,6 +29,7 @@ feign:
     enabled: true
 
 profile-rest-client:
+  url: http://${PROFILE_SERVICE_HOST:localhost}:8200
   user: task-executor-service-client
 
 scheduling-props:
@@ -38,6 +39,6 @@ scheduling-props:
   tasks-amount: 10
 
 kafka:
-  bootstrap-servers: localhost:9093
-  schema-registry-url: http://localhost:8081
+  bootstrap-servers: ${KAFKA_BROKER_HOST:localhost}:9093
+  schema-registry-url: http://${KAFKA_SCHEMA_REGISTRY_HOST:localhost}:8081
   # SSL security:

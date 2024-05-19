@@ -91,7 +91,7 @@ public class TaskForRetryingListener {
         log.info("Process record: topic={}, key={}, offset={}, value={}",
                 record.topic(), record.key(), record.offset(), taskEvent);
 
-        var typeOfTask = (String) taskEvent.getType();
+        var typeOfTask = taskEvent.getType().toString();
         if (SUPPORTED_TYPE_OF_TASKS.contains(typeOfTask) &&
                 commandsGroupManager.isContainAppropriateListener(Type.valueOf(typeOfTask).getCommandsGroupListenerImplClass())) {
             var dataTask = mapper.map(taskEvent, Task.class);
