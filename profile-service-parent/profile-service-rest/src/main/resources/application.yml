@@ -1,6 +1,11 @@
 server:
   port: 8200
 
+logging:
+  level:
+    root: INFO
+    org.tms.profile_service_core.domain.service.kafka.producer.ProfileTaskForRetryingProducer: DEBUG
+
 spring:
   mvc:
     pathmatch:

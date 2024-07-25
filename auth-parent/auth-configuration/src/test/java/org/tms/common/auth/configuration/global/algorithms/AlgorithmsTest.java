@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-import org.tms.common.auth.configuration.global.algorithms.model.BubbleSortUtil;
-import org.tms.common.auth.configuration.global.algorithms.model.FastSortUtil;
-import org.tms.common.auth.configuration.global.algorithms.model.FindPairToSumUtil;
-import org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher;
+import org.tms.common.auth.configuration.global.algorithms.model.*;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -74,7 +71,7 @@ public class AlgorithmsTest {
 
     //TODO: try to improve:
     @Test
-    void test() {
+    void testMergeUnsortedArrays() {
 
         int [] left = {1, 5, 7, 8, 16, 21};
         int [] right = {3, 13, 14, 15, 17, 23}; // bigger
@@ -159,5 +156,103 @@ public class AlgorithmsTest {
         } catch (IOException ex) {
             throw new RuntimeException("Unexpected error: cannot read MOCK from JSON file");
         }
+    }
+
+
+
+    /**
+     * LetCode Tasks :.......
+     */
+
+    @Test
+    void testMergingSortedArray(){
+        int[] result;
+
+        result = LetCodeUtils.mergeSortedArrays_IntoNewOne(new int[] {2,5,6}, 3, new int[] {1,2,3,0,0,0}, 3);
+        System.out.println(Arrays.toString(result));
+        result = LetCodeUtils.mergeSortedArrays_IntoNewOne(new int[] {2,5,6}, 3, new int[] {1,2,3}, 3);
+        System.out.println(Arrays.toString(result));
+        result = LetCodeUtils.mergeSortedArrays_IntoNewOne(new int[] {1,2,3,0,0,0}, 3, new int[] {2,5,6}, 3);
+        System.out.println(Arrays.toString(result));
+        result = LetCodeUtils.mergeSortedArrays_IntoNewOne(new int[] {1,2,3,}, 3, new int[] {2,5,6}, 3);
+        System.out.println(Arrays.toString(result));
+
+        result = LetCodeUtils.mergeSortedArrays_IntoNewOne(new int[] {0}, 0, new int[] {1}, 1);
+        System.out.println(Arrays.toString(result));
+        result = LetCodeUtils.mergeSortedArrays_IntoNewOne(new int[] {1}, 1, new int[] {}, 0);
+        System.out.println(Arrays.toString(result));
+    }
+
+    @Test
+    void testMergingIntoFirst(){
+        int[] num1 = {1,2,3,0,0,0};
+
+        LetCodeUtils.mergeSortedArrays_IntoFirstOne_NoExtraMemoryUsage(num1, 3, new int[] {2,5,6}, 3);
+        System.out.println(Arrays.toString(num1));
+    }
+
+    @Test
+    void testRemoveElement(){
+        int[] nums;
+        int limit;
+
+        nums = new int[] {3,2,2,3};
+        limit = LetCodeUtils.removeElement(nums, 3);
+
+        nums = new int[] {0,1,2,2,3,0,4,2};
+        limit = LetCodeUtils.removeElement(nums, 2);
+
+        nums = new int[] {1};
+        limit = LetCodeUtils.removeElement(nums, 1);
+
+        nums = new int[] {3,1,3,3,3};
+        limit = LetCodeUtils.removeElement(nums, 3);
+
+        System.out.println("OK");
+    }
+
+    @Test
+    void testRemoveDuplicatesFromSortedArray(){
+        int[] nums;
+        int limit;
+
+        nums = new int[] {0,0,1,1,1,1,2,3,3};
+        limit = LetCodeUtils.removeDuplicatesFromSortedArrayII(nums);
+
+        System.out.println("OK");
+    }
+
+    @Test
+    void testMajorityElement(){
+        int[] nums;
+        int res;
+
+        nums = new int[] {2,2,1,1,1,2,2};
+        res = LetCodeUtils.majorityElement(nums);
+
+        nums = new int[] {2,2,1,3,1,1,4,1,1,5,1,1,6};
+        res = LetCodeUtils.majorityElement(nums);
+
+        System.out.println("OK");
+    }
+
+    @Test
+    void testRotate(){
+        int[] nums = {1,2,3,4,5,6};
+
+        LetCodeUtils.rotate_solutionII(nums, 3);
+
+        System.out.println("OK");
+    }
+
+    @Test
+    void testTrap(){
+        System.out.println(LetCodeUtils.trapIV(new int[] {0,1,0,2,1,0,1,3,2,1,2,1}));
+        System.out.println(LetCodeUtils.trapIV(new int[] {4,2,0,3,2,5}));
+    }
+
+    @Test
+    void test(){
+        LetCodeUtils.longestCommonPrefix(new String[]{"flower","flow","flight"});
     }
 }
