@@ -1,6 +1,13 @@
 package kafka.core;
 
-import static org.awaitility.Awaitility.await;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.errors.WakeupException;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -11,14 +18,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.errors.WakeupException;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+
+import static org.awaitility.Awaitility.await;
 
 /**
  * Tests for custom ListenerConsumer impl witch uses org.apache.kafka.clients.consumer.KafkaConsumer inside.
@@ -134,7 +135,7 @@ public class CustomListenerConsumerTest {
 
     public void process(ConsumerRecords<String, String> records) {
       log.info("Got record: {}", records);
-      records.records("test").forEach(rec -> results.add(rec.value()));
+      records.forEach(rec -> results.add(rec.value()));
     }
 
     public void shutdown() throws InterruptedException {
