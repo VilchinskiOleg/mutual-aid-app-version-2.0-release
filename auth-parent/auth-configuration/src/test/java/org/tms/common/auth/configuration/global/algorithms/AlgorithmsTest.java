@@ -252,7 +252,46 @@ public class AlgorithmsTest {
     }
 
     @Test
-    void test(){
-        LetCodeUtils.longestCommonPrefix(new String[]{"flower","flow","flight"});
+    void test_copyRandomList_usingSerialization() {
+        var n1 = new LetCodeUtils.Node(3);
+        var n2 = new LetCodeUtils.Node(17);
+        var n3 = new LetCodeUtils.Node(7);
+        n1.next = n2;
+        n2.next = n3;
+        n2.random = n1;
+
+        var res = LetCodeUtils.copyRandomList_usingSerialization(n1);
+
+        System.out.println("OK");
+    }
+
+    @Test
+    void test_threeBuild() {
+        LetCodeUtils.TreeNode r = new LetCodeUtils.TreeNode(1,
+                new LetCodeUtils.TreeNode(-2,
+                        new LetCodeUtils.TreeNode(1,
+                                new LetCodeUtils.TreeNode(-1, null, null), null),
+                        new LetCodeUtils.TreeNode(3, null, null)),
+                new LetCodeUtils.TreeNode(-3,
+                        new LetCodeUtils.TreeNode(-2, null, null), null));
+        LetCodeUtils.maxPathSum(r);
+
+        System.out.println("OK");
+    }
+
+    @Test
+    void test_canFinish_forGraph() {
+//        int[][] array = {
+//                {1, 4},
+//                {2, 4},
+//                {3, 1},
+//                {3, 2}
+//        };
+        int[][] array = {
+                {1, 0},
+                {0, 1}
+        };
+        boolean result = LetCodeUtils.canFinish(5, array);
+        System.out.println("OK");
     }
 }

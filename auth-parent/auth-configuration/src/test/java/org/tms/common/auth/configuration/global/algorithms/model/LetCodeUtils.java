@@ -1,7 +1,13 @@
 package org.tms.common.auth.configuration.global.algorithms.model;
 
+import java.io.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static java.util.Optional.ofNullable;
 
 public class LetCodeUtils {
 
@@ -1059,5 +1065,922 @@ public class LetCodeUtils {
         }
         return sb.toString().trim();
     }
+
+
+    /**
+     * ----------------------------------- Task №? ------------------------------------------
+     * 36. Valid Sudoku
+     *
+     */
+
+    public static boolean isValidSudoku(char[][] board) {
+        // validate rows :
+        for (char[] row : board){
+            List<Integer> numbers = new ArrayList<>();
+            for(char ch : row){
+                if (ch != '.') numbers.add((int) ch);
+            }
+
+            if (!validateArray(numbers.toArray(new Integer[numbers.size()]))) return false;
+        }
+
+        // validate cols :
+        for (int i = 0; i < board[0].length; i++){
+            List<Integer> colsNumbers = new ArrayList<>();
+            for (int j = 0; j < board.length; j++){
+                if (board[j][i] != '.') colsNumbers.add((int) board[j][i]);
+            }
+            if (!validateArray(colsNumbers.toArray(new Integer[colsNumbers.size()]))) return false;
+        }
+
+        return true;
+    }
+
+    private static boolean validateArray(Integer[] arrInt){
+//        List<Integer> numbers = new ArrayList<>();
+//        for(char ch : arrCh){
+//            if (ch != '.') numbers.add((int) ch);
+//        }
+//
+//        Integer[] arrInt = numbers.toArray(new Integer[numbers.size()]);
+
+        Arrays.sort(arrInt);
+
+        for (int i = 1; i < arrInt.length; i++){
+            if (arrInt[i - 1] == arrInt[i]){
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 383. Ransom Note
+     */
+
+    public static boolean canConstruct(String ransomNote, String magazine) {
+        Map<Character, Integer> magazineMap = magazine.chars().mapToObj(c -> (char) c)
+                .collect(Collectors.toMap(Function.identity(), c -> 1, Integer::sum));
+        for (Character c : ransomNote.toCharArray()){
+            Integer counter = magazineMap.get(c);
+            if (counter != null && counter > 0){
+                magazineMap.put(c, --counter);
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 205. Isomorphic Strings
+     */
+
+    public static boolean isIsomorphic(String s, String t) {
+
+        Map<Character, Integer> indexS = new HashMap<>();
+        Map<Character, Integer> indexT = new HashMap<>();
+
+        int len = s.length();
+
+        if(len != t.length()) {
+            return false;
+        }
+
+        for(int i = 0; i < len; i++) {
+            int sVal = ofNullable( indexS.get(s.charAt(i)) ).orElse(0);
+            int tVal = ofNullable( indexT.get(t.charAt(i)) ).orElse(0);
+
+            if(sVal != tVal) {
+                return false;
+            }
+            indexS.put(s.charAt(i), i + 1);
+            indexT.put(t.charAt(i), i + 1);
+        }
+
+        return true;
+    }
+
+
+    /**
+     * 242. Valid Anagram
+     */
+
+    public static boolean isAnagram(String s, String t) {
+        if (s.length() != t.length()) return false;
+
+        var sChars = s.toCharArray();
+        Arrays.sort(sChars);
+        var tChars = t.toCharArray();
+        Arrays.sort(tChars);
+
+        return new String(sChars).equals(new String(tChars));
+    }
+
+
+    /**
+     * 228. Summary Ranges
+     */
+
+    public static List<String> summaryRanges(int[] nums) {
+        List<String> res = new ArrayList<>();
+
+        if (nums.length > 0) {
+            int first = nums[0];
+            for (int i = 1; i < nums.length; i++) {
+                if (nums[i] - nums[i - 1] != 1) {
+                    writeRange(res, first, nums[i - 1]);
+                    first = nums[i];
+                }
+            }
+            writeRange(res, first, nums[nums.length - 1]);
+        }
+
+        return res;
+    }
+
+    private static void writeRange(List<String> res, int first, int last) {
+        res.add(first == last ?
+                String.valueOf(first) : String.format("%s->%s", first, last));
+    }
+
+
+    /**
+     * 56. Merge Intervals
+     */
+
+    public static int[][] merge(int[][] intervals) {
+        if (intervals.length > 1) {
+            Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+            List<int[]> res = new ArrayList<>();
+            int[] prev = intervals[0];
+
+            for (int i = 1; i < intervals.length; i++) {
+                int[] cur = intervals[i];
+                if (cur[0] - prev[1] <= 0) {
+                    if (prev[1] < cur[1]) {
+                        // merge two intervals :
+                        int[] newInterval = new int[2];
+                        newInterval[0] = prev[0];
+                        newInterval[1] = cur[1];
+
+                        prev = newInterval;
+                    }
+
+                    // else: live 'prev' val as it was
+                } else {
+                    res.add(prev);
+                    prev = cur;
+                }
+            }
+            res.add(prev);
+
+            return res.toArray(new int[res.size()][2]);
+        } else {
+            return intervals;
+        }
+    }
+
+
+    /**
+     * 20. Valid Parentheses
+     *
+     * Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+     *
+     * An input string is valid if:
+     *
+     * Open brackets must be closed by the same type of brackets.
+     * Open brackets must be closed in the correct order.
+     * Every close bracket has a corresponding open bracket of the same type.
+     */
+
+    public static boolean isValid(String s) {
+        if (s.length() < 2) return false;
+
+        Deque<Character> openBracketStack = new LinkedList<>();
+        Map<Character, Character> bracketsPair = Map.of(')', '(', '}', '{', ']', '[');
+        List<Character> openBracketOptions = List.of('(', '{', '[');
+
+        for (int i = 0; i < s.length(); i++) {
+            if (openBracketOptions.contains(s.charAt(i))) {
+                openBracketStack.push(s.charAt(i));
+            } else {
+                if (openBracketStack.isEmpty()) return false;
+                Character expectedOpenBracket = bracketsPair.get(s.charAt(i));
+                Character actualOpenBracket = openBracketStack.pop();
+                if (!expectedOpenBracket.equals(actualOpenBracket)) return false;
+            }
+        }
+
+        return openBracketStack.isEmpty();
+    }
+
+
+    /**
+     * 71. Simplify Path
+     *
+     * You are given an absolute path for a Unix-style file system, which always begins with a slash '/'. Your task is to transform this absolute path into its simplified canonical path.
+     *
+     * The rules of a Unix-style file system are as follows:
+     *
+     * A single period '.' represents the current directory.
+     * A double period '..' represents the previous/parent directory.
+     * Multiple consecutive slashes such as '//' and '///' are treated as a single slash '/'.
+     * Any sequence of periods that does not match the rules above should be treated as a valid directory or file name. For example, '...' and '....' are valid directory or file names.
+     * The simplified canonical path should follow these rules:
+     *
+     * The path must start with a single slash '/'.
+     * Directories within the path must be separated by exactly one slash '/'.
+     * The path must not end with a slash '/', unless it is the root directory.
+     * The path must not have any single or double periods ('.' and '..') used to denote current or parent directories.
+     * Return the simplified canonical path.
+     */
+
+    public static String simplifyPath(String path) {
+        String backOneLayer = "..";
+        path = path.replaceAll("/+", "/");
+        Deque<String> pathItems = Arrays.stream(path.split("/"))
+                .filter(it -> it.length() > 0)
+                .collect(LinkedList::new, LinkedList::add, LinkedList::addAll);
+        while (!pathItems.isEmpty()) {
+            String pathItem = pathItems.pollLast();
+        }
+        return "OK";
+    }
+
+
+    /**
+     * 21. Merge Two Sorted Lists
+     *
+     * You are given the heads of two sorted linked lists list1 and list2.
+     *
+     * Merge the two lists into one sorted list. The list should be made by splicing together the nodes of the first two lists.
+     *
+     * Return the head of the merged linked list.
+     */
+
+    public static ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        // Validation :
+        if (list1 == null || list2 == null) {
+            return list1 != null ? list1 : list2;
+        }
+
+        // Initialization :
+        ListNode resultHead;
+        ListNode resultCurrent;
+        if (list1.val <= list2.val) {
+            resultHead = list1;
+            list1 = list1.next;
+        } else {
+            resultHead = list2;
+            list2 = list2.next;
+        }
+        resultCurrent = resultHead;
+
+        // Work cycle :
+        while (list1 != null && list2 != null) {
+            if (list1.val <= list2.val) {
+                resultCurrent.next = list1;
+                list1 = list1.next;
+            } else {
+                resultCurrent.next = list2;
+                list2 = list2.next;
+            }
+            resultCurrent = resultCurrent.next;
+        }
+        resultCurrent.next = list1 != null ? list1 : list2;
+
+        // Return the result :
+        return resultHead;
+    }
+
+    public static class ListNode {
+        int val;
+        ListNode next;
+
+        ListNode() {}
+        ListNode(int val) { this.val = val; }
+        ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+    }
+
+
+    /**
+     * 2. Add Two Numbers
+     *
+     * You are given two non-empty linked lists representing two non-negative integers.
+     * The digits are stored in reverse order, and each of their nodes contains a single digit.
+     * Add the two numbers and return the sum as a linked list.
+     *
+     * You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+     */
+
+    public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        // Validation :
+        if (l1 == null || l2 == null) {
+            return l1 != null ? l1 : l2;
+        }
+
+        // Initialization :
+        ListNode resultHead = l1;
+        int surplus = doCalculation(l1, l2, 0);
+
+        // Work cycle :
+        while (l1.next != null && l2.next != null) {
+            l1 = l1.next; l2 = l2.next;
+            surplus  = doCalculation(l1, l2, surplus);
+        }
+
+        if (l1.next == null) l1.next = l2.next;
+
+        while (surplus > 0 && l1.next != null) {
+            l1 = l1.next;
+            surplus = doCalculation(l1, surplus);
+        }
+
+        if (surplus > 0) {
+            l1.next = new ListNode(surplus, null);
+        }
+
+        // Return the result :
+        return resultHead;
+    }
+
+    public static int doCalculation(ListNode l1, ListNode l2, int surplus) {
+        int calcRes = l1.val + l2.val + surplus;
+        l1.val = calcRes % 10;
+        return calcRes / 10;
+    }
+
+    public static int doCalculation(ListNode l, int surplus) {
+        int calcRes = l.val + surplus;
+        l.val = calcRes % 10;
+        return calcRes / 10;
+    }
+
+
+    /**
+     * 138. Copy List with Random Pointer
+     *
+     * A linked list of length n is given such that each node contains an additional random pointer,
+     * which could point to any node in the list, or null.
+     *
+     * Construct a deep copy of the list. The deep copy should consist of exactly n brand new nodes,
+     * where each new node has its value set to the value of its corresponding original node. Both the next and random pointer of the new nodes should point to new nodes in the copied list such that the pointers in the original list and copied list represent the same list state. None of the pointers in the new list should point to nodes in the original list.
+     *
+     * For example, if there are two nodes X and Y in the original list, where X.random --> Y,
+     * then for the corresponding two nodes x and y in the copied list, x.random --> y.
+     *
+     * Return the head of the copied linked list.
+     *
+     * The linked list is represented in the input/output as a list of n nodes.
+     * Each node is represented as a pair of [val, random_index] where:
+     *
+     * val: an integer representing Node.val
+     * random_index: the index of the node (range from 0 to n-1) that the random pointer points to, or null if it does not point to any node.
+     * Your code will only be given the head of the original linked list.
+     */
+
+    public static Node copyRandomList(Node head) {
+        if (head == null) return head;
+
+        Node copyHead = new Node(head.val);
+
+        Map<Integer, Node> copyNodeByVal = new HashMap<>();
+        copyNodeByVal.put(copyHead.val, copyHead);
+
+        Node cur = head, copyCur = copyHead;
+        while (cur.next != null) {
+            copyCur.next = new Node(cur.next.val);
+            cur.next = cur; copyCur = copyCur.next;
+            copyNodeByVal.put(copyCur.val, copyCur);
+        }
+
+        cur = head; copyCur = copyHead;
+        do {
+            Optional<Integer> key = Optional.ofNullable(cur.random).map(node -> node.val);
+            if (key.isPresent()) {
+                copyCur.random = copyNodeByVal.get(key.get());
+            }
+        } while ((cur = cur.next) != null && (copyCur = copyCur.next) != null);
+
+        return copyHead;
+    }
+
+    /**
+     * Second approach. Using serialization / deserialization
+     * (typical and universal approach in Java to copy Object and whole its dependencies) :
+     *
+     * @param head - object to copy.
+     * @return copy of the provided Object
+     */
+    public static Node copyRandomList_usingSerialization(Node head) {
+        byte[] objBytes = null;
+        Node result = null;
+
+        // Serialization :
+        try ( var bArrOutStr = new ByteArrayOutputStream();
+              var objOutStr = new ObjectOutputStream(bArrOutStr)
+        ) {
+            objOutStr.writeObject(head);
+            objOutStr.flush();
+
+            objBytes = bArrOutStr.toByteArray();
+        } catch (IOException e) {
+            System.out.println("Failed..");
+        }
+
+        if (objBytes == null) return null;
+
+        // Deserialization :
+        try ( var bArrInStr = new ByteArrayInputStream(objBytes);
+              var objInStr = new ObjectInputStream(bArrInStr)
+        ) {
+            result = (Node) objInStr.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Failed..");
+        }
+
+        return result;
+    }
+
+    public static class Node implements Serializable {
+        int val;
+        public Node next;
+        public Node random;
+
+        public Node(int val) {
+            this.val = val;
+            this.next = null;
+            this.random = null;
+        }
+    }
+
+
+    /**
+     * 19. Remove Nth Node From End of List
+     */
+
+    public static ListNode removeNthFromEnd(ListNode head, int n) {
+        if (n == 0) return head;
+        if (head.next == null) return null;
+
+        ListNode pointer = head;
+        ListNode pointerWithDelay = head;
+        while (pointer.next != null) {
+            pointer = pointer.next;
+            if (n == 0) {
+                pointerWithDelay = pointerWithDelay.next;
+            } else --n;
+        }
+
+        if (n == 0) {
+            pointerWithDelay.next = pointerWithDelay.next.next;
+            return head;
+        } else { // n = 1
+            return head.next;
+        }
+    }
+
+
+    /**
+     * 82. Remove Duplicates from Sorted List II
+     */
+
+    public static ListNode deleteDuplicates(ListNode head) {
+        ListNode node = head;
+        boolean isTracking = false;
+        ListNode processedPart = null;
+
+        while (node != null && node.next != null) {
+            if (node.val == node.next.val) {
+                if (!isTracking) isTracking = true;
+            } else if (isTracking) {
+                if (processedPart != null) {
+                    processedPart.next = node.next;
+                } else {
+                    head = node.next;
+                    processedPart = null;
+                }
+                isTracking = false;
+            } else {
+                processedPart = node;
+            }
+            node = node.next;
+        }
+
+        if (isTracking) {
+            if (processedPart != null) {
+                processedPart.next = null;
+            } else {
+                head = null;
+            }
+        }
+
+        return head;
+    }
+
+
+    /**
+     * --------------------------Binary Tree--------------------------
+     */
+
+    public static class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+        TreeNode() {}
+        public TreeNode(int val) { this.val = val; }
+        public TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+
+    /**
+     * 104. Maximum Depth of Binary Tree
+     *
+     * Given the root of a binary tree, return its maximum depth.
+     *
+     * A binary tree's maximum depth is the number of nodes along the longest path from the root
+     * node down to the farthest leaf node.
+     */
+
+    public static int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        } else {
+            return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+        }
+    }
+
+
+    /**
+     * 100. Same Tree
+     *
+     * Given the roots of two binary trees p and q, write a function to check if they are the same or not.
+     *
+     * Two binary trees are considered the same if they are structurally identical, and the nodes have the same value.
+     */
+
+    public static boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) {
+            return true;
+        } else if ((p == null || q == null) || p.val != q.val) {
+            return false;
+        } else {
+            return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+        }
+    }
+
+
+    /**
+     * 105. Construct Binary Tree from Preorder and Inorder Traversal
+     *
+     * Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree
+     * and inorder is the inorder traversal of the same tree, construct and return the binary tree.
+     */
+
+    public static TreeNode buildTreeI(int[] preorder, int[] inorder) {
+        // It doesn't meter what to use for this block preorder or inorder (replaceable):
+        if (preorder.length == 1) {
+            return new TreeNode(preorder[0]);
+        }
+
+        int rootVal = preorder[0];
+        int rootPositionForInorder = 0;
+
+        while (rootVal != inorder[rootPositionForInorder]) rootPositionForInorder++;
+
+        int[] inorderLeft = null, preorderLeft = null, inorderRight = null, preorderRight = null;
+
+        // Prepare Left part if necessary :
+        if (rootPositionForInorder > 0) {
+            inorderLeft = Arrays.copyOfRange(inorder, 0, rootPositionForInorder);
+            preorderLeft = Arrays.copyOfRange(preorder, 1, rootPositionForInorder + 1);
+        }
+
+        // Prepare Right part if necessary :
+        if (rootPositionForInorder < inorder.length - 1) {
+            inorderRight = Arrays.copyOfRange(inorder, rootPositionForInorder + 1, inorder.length);
+            preorderRight = Arrays.copyOfRange(preorder, rootPositionForInorder + 1, preorder.length);
+        }
+
+        return new TreeNode(rootVal,
+                inorderLeft != null ? buildTreeI(preorderLeft, inorderLeft) : null,
+                inorderRight != null ? buildTreeI(preorderRight, inorderRight) : null);
+    }
+
+
+    /**
+     * 82. Remove Duplicates from Sorted List II
+     *
+     * Given the head of a sorted linked list, delete all nodes that have duplicate numbers,
+     * leaving only distinct numbers from the original list. Return the linked list sorted as well.
+     */
+
+    public static TreeNode buildTreeII(int[] inorder, int[] postorder) {
+        // It doesn't meter what to use for this block postorder or inorder (replaceable):
+        if (postorder.length == 1) {
+            return new TreeNode(postorder[0]);
+        }
+
+        int rootVal = postorder[postorder.length - 1];
+        int rootPositionForInorder = 0;
+
+        while (rootVal != inorder[rootPositionForInorder]) rootPositionForInorder++;
+
+        int[] inorderLeft = null, postorderLeft = null, inorderRight = null, postorderRight = null;
+
+        // Prepare Left part if necessary :
+        if (rootPositionForInorder > 0) {
+            inorderLeft = Arrays.copyOfRange(inorder, 0, rootPositionForInorder);
+            postorderLeft = Arrays.copyOfRange(postorder, 0, rootPositionForInorder);
+        }
+
+        // Prepare Right part if necessary :
+        if (rootPositionForInorder < inorder.length - 1) {
+            inorderRight = Arrays.copyOfRange(inorder, rootPositionForInorder + 1, inorder.length);
+            postorderRight = Arrays.copyOfRange(postorder, rootPositionForInorder, postorder.length - 1);
+        }
+
+        return new TreeNode(rootVal,
+                inorderLeft != null ? buildTreeII(inorderLeft, postorderLeft) : null,
+                inorderRight != null ? buildTreeII(inorderRight, postorderRight) : null);
+    }
+
+
+    /**
+     * 112. Path Sum
+     *
+     * Given the root of a binary tree and an integer targetSum, return true if the tree has a root-to-leaf path
+     * such that adding up all the values along the path equals targetSum.
+     *
+     * A leaf is a node with no children.
+     */
+
+    public static boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null) return false;
+        return (targetSum - root.val == 0 && Objects.isNull(root.left) && Objects.isNull(root.right))
+                || hasPathSum(root.left, targetSum - root.val)
+                || hasPathSum(root.right, targetSum - root.val);
+    }
+
+
+    /**
+     * 129. Sum Root to Leaf Numbers
+     *
+     * You are given the root of a binary tree containing digits from 0 to 9 only.
+     *
+     * Each root-to-leaf path in the tree represents a number.
+     *
+     * For example, the root-to-leaf path 1 -> 2 -> 3 represents the number 123.
+     * Return the total sum of all root-to-leaf numbers. Test cases are generated so that the answer will fit in a 32-bit integer.
+     *
+     * A leaf node is a node with no children.
+     */
+
+    public static int sumNumbers(TreeNode root) {
+        int leftSum = Objects.isNull(root.left) ? 0 : sumNumbers(root.left, String.valueOf(root.val));
+        int rightSum = Objects.isNull(root.right) ? 0 : sumNumbers(root.right, String.valueOf(root.val));
+        return (leftSum == 0 && rightSum == 0) ? root.val : (leftSum + rightSum);
+    }
+
+    private static int sumNumbers(TreeNode root, String prefix) {
+
+        if (root.left == null && root.right == null) {
+            return Integer.parseInt(prefix + root.val);
+        } else {
+            int leftSum = (root.left == null) ? 0
+                    : sumNumbers(root.left, prefix + root.val);
+            int rightSum = (root.right == null) ? 0
+                    : sumNumbers(root.right, prefix + root.val);
+            return leftSum + rightSum;
+        }
+    }
+
+
+    /**
+     * 124. Binary Tree Maximum Path Sum
+     *
+     * A path in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them.
+     * A node can only appear in the sequence at most once. Note that the path does not need to pass through the root.
+     *
+     * The path sum of a path is the sum of the node's values in the path.
+     *
+     * Given the root of a binary tree, return the maximum path sum of any non-empty path.
+     */
+
+    public static int maxPathSum(TreeNode root) {
+        if (root.left == null && root.right == null) {
+            return root.val;
+        } else {
+            AtomicInteger maxPathSumVal = new AtomicInteger(Integer.MIN_VALUE);
+            int leftSum = (root.left == null) ? 0 : maxPathSum(root.left, maxPathSumVal);
+            int rightSum = (root.right == null) ? 0 : maxPathSum(root.right, maxPathSumVal);
+            int newMaxPathSumCandidate = Math.max(leftSum, 0) + root.val + Math.max(rightSum, 0);
+            return Math.max(maxPathSumVal.get(), newMaxPathSumCandidate);
+        }
+    }
+
+    private static int maxPathSum(TreeNode root, AtomicInteger maxPathSumVal) {
+        if (root.left == null && root.right == null) {
+            maxPathSumVal.set(Math.max(maxPathSumVal.get(), root.val));
+            return root.val;
+        } else {
+            int leftSum = (root.left == null) ? 0 : maxPathSum(root.left, maxPathSumVal);
+            int rightSum = (root.right == null) ? 0 : maxPathSum(root.right, maxPathSumVal);
+            int newMaxPathSumCandidate = Math.max(leftSum, 0) + root.val + Math.max(rightSum, 0);
+            maxPathSumVal.set(Math.max(maxPathSumVal.get(), newMaxPathSumCandidate));
+            return Math.max(Math.max(leftSum, rightSum), 0) + root.val;
+        }
+    }
+
+
+    /**
+     * 98. Validate Binary Search Tree
+     *
+     * Given the root of a binary tree, determine if it is a valid binary search tree (BST).
+     *
+     * A valid BST is defined as follows:
+     *
+     * 1.The left subtree of a node contains only nodes with keys less than the node's key.
+     * 2.The right subtree of a node contains only nodes with keys greater than the node's key.
+     * 3.Both the left and right subtrees must also be binary search trees.
+     *
+     * BST example :
+     *                100
+     *               /     \
+     *             50       150
+     *            /  \     /    \
+     *          25   75  125    175
+     *         / \   /   / \    /   \
+     *       10  30 60  110 130 160  200
+     *                  /       \
+     *                 105       165
+     */
+
+    public static boolean isValidBST(TreeNode root) {
+        return validateBST(root.left, Integer.MIN_VALUE, root.val)
+                && validateBST(root.right, root.val, Integer.MAX_VALUE);
+    }
+
+    private static boolean validateBST(TreeNode node, int min, int max) {
+        if (node == null) return true;
+        if (!(min < node.val && node.val < max)) return false;
+        return validateBST(node.left, min, node.val) && validateBST(node.right, node.val, max);
+    }
+
+
+    /**
+     * 207. Course Schedule
+     *
+     * There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1.
+     * You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai.
+     *
+     * For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
+     * Return true if you can finish all courses. Otherwise, return false.
+     */
+
+    public static boolean canFinish_withDefect(int numCourses, int[][] prerequisites) {
+        Map<Integer, List<Integer>> coursesRelations = new HashMap<>();
+        for (int[] coursesRelation : prerequisites) {
+            List<Integer> relations = coursesRelations.computeIfAbsent(coursesRelation[0], key -> new LinkedList<>());
+            relations.add(coursesRelation[1]);
+        }
+
+        for (int i = 0; i < numCourses; i++) {
+            Deque<Integer> courseDependenciesGraph = new LinkedList<>();
+            List<Integer> countedCourses = new LinkedList<>();
+            courseDependenciesGraph.push(i);
+
+            while (!courseDependenciesGraph.isEmpty()) {
+                int course = courseDependenciesGraph.pop();
+                if (countedCourses.contains(course)) {
+                    return false;
+                } else {
+                    countedCourses.add(course);
+                }
+                Optional.ofNullable(coursesRelations.get(course))
+                        .ifPresent(relations -> relations.forEach(courseDependenciesGraph::push));
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * But there is issue with counting visited nodes (courses).
+     * I should consider only visited nods within one branch (not all related to root node, as in a code above).
+     *
+     * So that, I should have replaced Stack implementation from Collection.utils (Deque<Integer> courseDependenciesGraph)
+     * with recursion :
+     */
+
+    public static boolean canFinish_tooSlow(int numCourses, int[][] prerequisites) {
+        Map<Integer, List<Integer>> coursesRelations = new HashMap<>();
+        for (int[] coursesRelation : prerequisites) {
+            List<Integer> relations = coursesRelations.computeIfAbsent(coursesRelation[0], key -> new LinkedList<>());
+            relations.add(coursesRelation[1]);
+        }
+
+        for (int i = 0; i < numCourses; i++) {
+            if (!isAvailableI(i, coursesRelations, new LinkedList<>())) return false;
+        }
+
+        return true;
+    }
+
+
+    private static boolean isAvailableI(int courseToValidate, Map<Integer, List<Integer>> coursesRelations,
+                                        List<Integer> countedCourses) {
+
+        List<Integer> relatedCourses = coursesRelations.get(courseToValidate);
+        if (relatedCourses != null) {
+            if (countedCourses.removeAll(relatedCourses)) {
+                return false;
+            } else {
+                List<Integer> updatedCountedCourses = new LinkedList<>(countedCourses);
+                updatedCountedCourses.add(courseToValidate);
+                for (int relatedCourse : relatedCourses) {
+                    if (!isAvailableI(relatedCourse, coursesRelations, updatedCountedCourses)) return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static boolean isAvailableII(Integer courseToValidate,
+                                         Map<Integer, List<Integer>> coursesRelations,
+                                         List<Integer> countedCourses) {
+
+        List<Integer> relatedCourses = coursesRelations.get(courseToValidate);
+        if (relatedCourses != null) {
+            if (countedCourses.removeAll(relatedCourses)) {
+                return false;
+            } else {
+                countedCourses.add(courseToValidate);
+                for (int relatedCourse : relatedCourses) {
+                    if (!isAvailableII(relatedCourse, coursesRelations, countedCourses)) return false;
+                }
+                countedCourses.remove(courseToValidate);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * But, any way approaches above work slowly... (but work)
+     *
+     * In order to sped up it, you can just remove already checked courses from Map :
+     */
+
+    public static boolean canFinish(int numCourses, int[][] prerequisites) {
+        Map<Integer, List<Integer>> coursesRelations = new HashMap<>();
+        for (int[] coursesRelation : prerequisites) {
+            List<Integer> relations = coursesRelations.computeIfAbsent(coursesRelation[0], key -> new LinkedList<>());
+            relations.add(coursesRelation[1]);
+        }
+
+        for (int[] rout : prerequisites) {
+            if (rout[0] < numCourses) {
+                if (!isAvailable(rout[0], coursesRelations, new LinkedList<>())) return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static boolean isAvailable(Integer courseToValidate,
+                                         Map<Integer, List<Integer>> coursesRelations,
+                                         List<Integer> countedCourses) {
+
+        List<Integer> relatedCourses = coursesRelations.get(courseToValidate);
+        if (relatedCourses != null && !relatedCourses.isEmpty()) {
+
+            // 1. Validate :
+            if (countedCourses.removeAll(relatedCourses)) {
+                return false;
+            } else {
+                countedCourses.add(courseToValidate);
+                for (int relatedCourse : relatedCourses) {
+                    if (!isAvailable(relatedCourse, coursesRelations, countedCourses)) return false;
+                }
+            }
+
+            // 2. Clean up checked course :
+            countedCourses.remove(courseToValidate);
+            coursesRelations.remove(courseToValidate);
+        }
+        return true;
+    }
+
+    /**
+     * One more workable solution :
+     */
+
 
 }
