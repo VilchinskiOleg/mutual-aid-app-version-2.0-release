@@ -1,10 +1,17 @@
 package org.tms.common.auth.configuration.global.algorithms;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-import org.tms.common.auth.configuration.global.algorithms.model.*;
+import org.tms.common.auth.configuration.global.algorithms.let_code.Array;
+import org.tms.common.auth.configuration.global.algorithms.let_code.LetCodeUtils;
+import org.tms.common.auth.configuration.global.algorithms.let_code.TwoPointers;
+import org.tms.common.auth.configuration.global.algorithms.model.BubbleSortUtil;
+import org.tms.common.auth.configuration.global.algorithms.model.FastSortUtil;
+import org.tms.common.auth.configuration.global.algorithms.model.FindPairToSumUtil;
+import org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,6 +23,7 @@ import java.util.TreeSet;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher.Node;
 
 @Slf4j
@@ -293,5 +301,49 @@ public class AlgorithmsTest {
         };
         boolean result = LetCodeUtils.canFinish(5, array);
         System.out.println("OK");
+    }
+
+    @Test
+    @SneakyThrows
+    void test_minMutation() {
+        String [] arr = {"AAAAAAAA","AAAAAAAC","AAAAAACC","AAAAACCC","AAAACCCC","AACACCCC","ACCACCCC","ACCCCCCC","CCCCCCCA"};
+        int r = LetCodeUtils.minMutation("AAAAAAAA", "CCCCCCCC", arr);
+        System.out.println("OK");
+
+        String healthWorkersJsonArray = "[{\"id\":1,\"name\":\"RehamMuzzamil\",\"qualification\":\"MBBS\",\"yearsOfExperience\":1.5},{\"id\":2,\"name\":\"MichaelJohn\",\"qualification\":\"FCPS\",\"yearsOfExperience\":5}]";
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        System.out.println("OK");
+    }
+
+    @Test
+    @SneakyThrows
+    void test_exit() {
+
+        int [] arr1 = {1,2,3,4,5,6,7};
+        int [] arr2 = {-1,-100,3,99};
+
+        Array.rotate(arr1,3);
+        Array.rotate(arr2,2);
+        System.out.println("OK");
+    }
+
+    @Test
+    void testMaxProfit() {
+        int [] arr = {1,9,6,9,1,7,1,1,5,9,9,9};
+        assertEquals(25,  Array.maxProfit_II(arr));
+    }
+
+    @Test
+    void testCanCompleteCircuit() {
+        int [] gas = {1,2,3,4,5};
+        int [] cost = {3,4,5,1,2};
+        assertEquals(3,  Array.canCompleteCircuit_I(gas, cost));
+    }
+
+    @Test
+    void testIsPalindrome() {
+        assertTrue(TwoPointers.isPalindrome("A man, a plan, a canal: Panama"));
+        assertFalse(TwoPointers.isPalindrome("race a car"));
     }
 }
