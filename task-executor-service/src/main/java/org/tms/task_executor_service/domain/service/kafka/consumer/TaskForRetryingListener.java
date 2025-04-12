@@ -37,14 +37,13 @@ public class TaskForRetryingListener {
 
 
     /**
-     * Investigate: how to work with 'ConsumerRecords' properly ? [*]
-     *
      * @param records - map which contains list of records per every partition in the topic.
      */
 //    @KafkaListener(
 //            topics = {RETRY_TASKS_TOPIC},
 //            containerFactory = "taskEventListenerContainerFactory",
-//            groupId = GROUP_ID)
+//            groupId = GROUP_ID,
+//            batch = "true")
     public void insertAllNewRetryableTasks(ConsumerRecords<String, TaskEvent> records) {
         ConsumerRecord<String, TaskEvent> currentRecord = null;
         try {
