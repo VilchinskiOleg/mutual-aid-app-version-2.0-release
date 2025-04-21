@@ -1,0 +1,16 @@
+notification-context-configs:
+   - notificationKey: RESET_WEEK_PASSWORD
+     payloadParams:
+       - userName
+       - defaultPassword
+       - resetPasswordLink
+     templatePathByNotificationType:
+       MAIL: resetWeekPass
+       PHONE: templates/smsTemplate.txt # will be refactored
+   - notificationKey: RESET_PASSWORD
+     payloadParams:
+       - userName
+       - resetPasswordLink
+     templatePathByNotificationType:
+       MAIL: resetPass
+       PHONE: templates/smsTemplate.txt # will be refactored
