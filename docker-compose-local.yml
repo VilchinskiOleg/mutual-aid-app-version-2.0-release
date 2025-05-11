@@ -37,13 +37,6 @@ services:
     container_name: 'redis'
     ports:
       - '6379:6379'
-  nginx:
-    image: nginx
-    container_name: 'nginx-revers-proxy'
-    ports:
-      - 80:80
-    volumes:
-      - /tmp/mutual-aid-app/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
   notification-gateway-service:
     build:
       dockerfile: Dockerfile
@@ -177,6 +170,19 @@ services:
       - TRANSLATE_API_TOKEN
       - profile-rest-client.url=http://profile-service:8200
       - REDIS_HOST=redis
+  nginx:
+    image: nginx
+    container_name: 'nginx-revers-proxy'
+    ports:
+      - 80:80
+    volumes:
+      - /tmp/mutual-aid-app/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - 'auth-service'
+      - 'profile-service'
+      - 'order-service'
+      - 'event-storage-service'
+      - 'message-chat-service'
   task-executor-service:
     build:
       dockerfile: Dockerfile
