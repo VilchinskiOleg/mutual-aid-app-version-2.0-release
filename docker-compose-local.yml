@@ -37,6 +37,24 @@ services:
     container_name: 'redis'
     ports:
       - '6379:6379'
+  nginx:
+    image: nginx
+    container_name: 'nginx-revers-proxy'
+    ports:
+      - 80:80
+    volumes:
+      - /tmp/mutual-aid-app/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+  notification-gateway-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./notification-gateway-parent/notification-gateway-service
+    container_name: 'notification-gateway-service'
+    ports:
+      - '8180:8180'
+    depends_on:
+      - 'kafka-internal'
+    environment:
+      - KAFKA_BROKER_HOST=${INTERNAL_KAFKA_BROKER_HOST}
   auth-service:
     build:
       dockerfile: Dockerfile
@@ -45,8 +63,12 @@ services:
     ports:
       - '8100:8100'
       - '5015:5005'
+    depends_on:
+      - 'kafka-internal'
+      - 'notification-gateway-service'
     environment:
       - SPRING_PROFILES_ACTIVE=local
+      - KAFKA_BROKER_HOST=${INTERNAL_KAFKA_BROKER_HOST}
       # If value isn't defined in current file System will try to find value for this env variable among OS variables :
       - MONGO_DB_PASSWORD
   profile-service:

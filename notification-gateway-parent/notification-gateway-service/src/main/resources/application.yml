@@ -9,7 +9,7 @@ spring:
       ack-mode: MANUAL_IMMEDIATE
       concurrency: 5 # defined here because there is single consumer
     consumer:
-      bootstrap-servers: 127.0.0.1:9092
+      bootstrap-servers: ${KAFKA_BROKER_HOST:localhost}:9092
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       auto-offset-reset: latest

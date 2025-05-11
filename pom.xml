@@ -35,6 +35,7 @@
         <module>exception-handling-autoconfiguration</module>
         <module>model-mapper-autoconfiguration</module>
         <module>thread-save</module>
+        <module>notification-gateway-parent</module>
 
         <module>auth-parent</module>
         <module>profile-service-parent</module>
@@ -42,7 +43,6 @@
         <module>order-service</module>
         <module>event-storage-service</module>
         <module>message-chat-service</module>
-        <module>notification-gateway-parent</module>
 
         <!-- JUST GLOBAL TEST. They aren't business part of project-->
         <module>testcontainer-tests</module>
