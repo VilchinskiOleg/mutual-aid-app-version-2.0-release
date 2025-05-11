@@ -61,7 +61,7 @@ public class PasswordGenerator {
         StringBuilder password = new StringBuilder(length);
         Random random = new Random(System.nanoTime());
 
-        for (int i = 0; i < password.length(); i++) {
+        for (int i = 0; i < length; i++) {
             String category = characterCategories.get(random.nextInt(4));
             char character = category.charAt(random.nextInt(category.length()));
             password.insert(i, character);

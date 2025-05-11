@@ -5,6 +5,12 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+  # use Kafka auto-configuration :
+  kafka:
+    producer:
+      bootstrap-servers: 127.0.0.1:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 application:
   api-info:
@@ -15,18 +21,5 @@ application:
       name: OLEG
       url: https://mail.google.com
       email: vilchinskioleg@gmail.com
-
-feign:
-  client:
-    config:
-      emailSenderApiClient:
-        connectTimeout: 10000
-        readTimeout: 15000
-        loggerLevel: full
-        requestInterceptors:
-          - org.tms.authservicerest.configuration.client.RapidEmailSenderApiInterceptor
-
-email-sender-open-api:
-  url: https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send
-  host: rapidprod-sendgrid-v1.p.rapidapi.com
-  token: ${EMAIL_SENDER_API_TOKEN:test}
+  kafka:
+    topic: mutual-aid-notification-topic

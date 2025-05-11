@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Password Reset Notification</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; background-color: #f9f9f9; padding: 20px;">
+<div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1);">
+    <h2>Hello <span th:text="${userName}">User</span>,</h2>
+    <p>
+        We noticed that your password was set to a default weak password. For your account security, we recommend resetting it as soon as possible.
+    </p>
+    <p>
+        <strong>Your current (assigned automatically) password:</strong> <span th:text="${defaultPassword}">default-password</span>
+    </p>
+    <p>
+        Please reset your password by clicking the button below:
+    </p>
+    <div style="text-align: center; margin: 30px 0;">
+        <a th:href="${resetPasswordLink}" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px;">
+            Reset Password
+        </a>
+    </div>
+    <p>If you didn't request this, please ignore this email.</p>
+    <p>Thanks,<br/>Your Support Team</p>
+</div>
+</body>
+</html>

@@ -107,6 +107,11 @@ public class DialogServiceImpl implements DialogService {
         return saveDialog(dialog);
     }
 
+    @Transactional
+    public Dialog updateDialogWithPessimisticLock(Dialog dialogData, String authorId) {
+        return null;
+    }
+
     @Recover
     void recoverDialogUpdating(Exception ex, Dialog dialogData, String authorId) {
         log.error("Max attempts for update Dialog with ID= {} by Dialog Data= {} was surpassed!",

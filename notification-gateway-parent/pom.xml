@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.tms</groupId>
         <artifactId>mutual-aid-app</artifactId>
@@ -9,17 +10,15 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>profile-service-parent</artifactId>
+    <artifactId>notification-gateway-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>profile-service-parent</name>
-    <description>Profile service parent</description>
+    <name>notification-gateway-parent</name>
+    <description>Notification gateway parent</description>
     <packaging>pom</packaging>
 
     <modules>
-        <module>profile-service-core</module>
-        <module>profile-service-rest</module>
-        <module>profile-service-soap</module>
-        <module>profile-service-client</module>
+        <module>notification-config</module>
+        <module>notification-gateway-service</module>
     </modules>
 
 </project>

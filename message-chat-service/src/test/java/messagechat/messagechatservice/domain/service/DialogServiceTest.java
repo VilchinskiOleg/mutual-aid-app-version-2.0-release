@@ -163,6 +163,11 @@ public class DialogServiceTest extends DatabaseSourceTestConfig implements Profi
         }
     }
 
+    @Test
+    void check_pessimistic_lock_for_update_one_Dialog_by_several_users_simultaneously() {
+
+    }
+
     /**
      * Clear DB after each Test :
      */

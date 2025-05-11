@@ -49,7 +49,6 @@ services:
       - SPRING_PROFILES_ACTIVE=local
       # If value isn't defined in current file System will try to find value for this env variable among OS variables :
       - MONGO_DB_PASSWORD
-      - EMAIL_SENDER_API_TOKEN
   profile-service:
     build:
       dockerfile: Dockerfile
