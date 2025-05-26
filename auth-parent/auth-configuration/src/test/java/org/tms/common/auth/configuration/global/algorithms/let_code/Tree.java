@@ -121,20 +121,22 @@ public class Tree {
             preorderQueue.add(num);
         }
 
+        // Initialization :
         TreeNode head = null;
         Deque<ChildNodeInfo> work = new LinkedList<>(); // Use as stack
         work.push(new ChildNodeInfo(null, inorder, true)); // Let's assume our root node - is left node, for some another one (could be in theory)
 
-        // Work cycle
+        // Work cycle :
         while (!work.isEmpty()) {
             int rootValIndex, rootVal = preorderQueue.poll();
+            var child = new TreeNode(rootVal, null, null);
+
             ChildNodeInfo nodeInfo = work.pop();
             TreeNode parent = nodeInfo.getParent();
             inorder = nodeInfo.getInorder();
 
             // A) Reduce stack :
             if (inorder.length == 1) {
-                var child = new TreeNode(rootVal, null, null);
                 if (parent == null) {
                     return child; // Tree with single Node
                 } else if (nodeInfo.isLeftChild) {
@@ -144,33 +146,26 @@ public class Tree {
                 }
                 // B) Increase stack :
             } else {
-                for (rootValIndex = 0; inorder[rootValIndex] != rootVal; rootValIndex++); // calculate index of rootVal into inorder
-
-                var inorderLeft = (rootValIndex == 0) ?
-                        null : Arrays.copyOfRange(inorder, 0, rootValIndex);
-                var inorderRight = (rootValIndex == inorder.length - 1) ?
-                        null : Arrays.copyOfRange(inorder, rootValIndex + 1, inorder.length);
-
-                var newParent = new TreeNode(rootVal, null, null);
-
-                // 1. Link Nodes :
-                if (parent == null) {
-                    head = newParent;
+                // 1. Link Nodes in a Tree :
+                if (head == null) {
+                    head = child;
                 } else if (nodeInfo.isLeftChild) {
-                    parent.left = newParent;
+                    parent.left = child;
                 } else {
-                    parent.right = newParent;
+                    parent.right = child;
                 }
 
-                // 2. Add new data to stack :
-                if (inorderRight != null) {
-                    work.push(new ChildNodeInfo(newParent, inorderRight, false));
+                // 2. Add new NodeInfo to Stack (put child as a parent for next nodes) :
+                for (rootValIndex = 0; inorder[rootValIndex] != rootVal; rootValIndex++); // calculate index of rootVal into inorder
+                if (rootValIndex < inorder.length - 1) {
+                    var inorderRight = Arrays.copyOfRange(inorder, rootValIndex + 1, inorder.length);
+                    work.push(new ChildNodeInfo(child, inorderRight, false));
                 }
-                if (inorderLeft != null) {
-                    work.push(new ChildNodeInfo(newParent, inorderLeft, true));
+                if (rootValIndex > 0) {
+                    var inorderLeft = Arrays.copyOfRange(inorder, 0, rootValIndex);
+                    work.push(new ChildNodeInfo(child, inorderLeft, true));
                 }
             }
-
         }
 
         return head;
