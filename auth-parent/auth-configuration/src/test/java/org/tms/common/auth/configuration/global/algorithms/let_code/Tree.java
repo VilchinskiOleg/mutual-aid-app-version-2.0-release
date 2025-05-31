@@ -108,6 +108,7 @@ public class Tree {
             var inorderRight = (rootValIndex == inorder.length - 1) ?
                     null : Arrays.copyOfRange(inorder, rootValIndex + 1, inorder.length);
 
+            // Calculate Left Child first :
             return new TreeNode(rootVal,
                     inorderLeft != null ? doBuildTree(preorder, inorderLeft) : null,
                     inorderRight != null ? doBuildTree(preorder, inorderRight) : null);
@@ -177,6 +178,61 @@ public class Tree {
         private final TreeNode parent;
         private final int[] inorder;
         private final Boolean isLeftChild;
+    }
+
+
+
+    /**
+     * 106. Construct Binary Tree from Inorder and Postorder Traversal
+     *
+     * [Construct Binary Tree using -> Inorder Traversal + Postorder Traversal]
+     *
+     * Given two integer arrays inorder and postorder where inorder is the inorder traversal of a binary tree
+     * and postorder is the postorder traversal of the same tree, construct and return the binary tree.
+     *
+     * example :
+     *
+     *          3
+     *        /  \
+     *       9   20
+     *          /  \
+     *         15   7
+     *
+     * Input:   inorder = [9,3,15,20,7], postorder = [9,15,7,20,3]
+     * Output:  [3,9,20,null,null,15,7]
+     */
+
+    public static TreeNode buildTree_fromInorderAndPostorder_usingRecursion(int[] inorder, int[] postorder) {
+        // It doesn't meter what to use for this block preorder or inorder (replaceable):
+        if (inorder.length == 1) {
+            return new TreeNode(inorder[0]);
+        }
+
+        Queue<Integer> postorderReversedQueue = new LinkedList<>();
+        for (int i = postorder.length - 1; i >= 0; i--) {
+            postorderReversedQueue.add(postorder[i]);
+        }
+
+        return doBuild(inorder, postorderReversedQueue);
+    }
+
+    private static TreeNode doBuild(int[] inorder, Queue<Integer> postorder) {
+        int rootValIndex, rootVal = postorder.poll();
+
+        if (inorder.length == 1) {
+            return new TreeNode(rootVal, null, null);
+        } else {
+            for (rootValIndex = 0; inorder[rootValIndex] != rootVal; rootValIndex++); // calculate index of rootVal into inorder
+            var inorderLeft = (rootValIndex == 0) ?
+                    null : Arrays.copyOfRange(inorder, 0, rootValIndex);
+            var inorderRight = (rootValIndex == inorder.length - 1) ?
+                    null : Arrays.copyOfRange(inorder, rootValIndex + 1, inorder.length);
+
+            // Calculate Right Child first :
+            TreeNode rightChild = inorderRight != null ? doBuild(inorderRight, postorder) : null;
+            TreeNode leftChild = inorderLeft != null ? doBuild(inorderLeft, postorder) : null;
+            return new TreeNode(rootVal, leftChild, rightChild);
+        }
     }
 
 
