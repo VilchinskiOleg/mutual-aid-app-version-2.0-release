@@ -63,6 +63,45 @@ public class Tree {
 
 
     /**
+     * 100. Same Tree
+     *
+     * Given the roots of two binary trees p and q, write a function to check if they are the same or not.
+     *
+     * Two binary trees are considered the same if they are structurally identical, and the nodes have the same value.
+     */
+
+    public static boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) {
+            return true;
+        } else if ((p == null || q == null) || p.val != q.val) {
+            return false;
+        } else {
+            return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+        }
+    }
+
+
+
+    /**
+     * 104. Maximum Depth of Binary Tree
+     *
+     * Given the root of a binary tree, return its maximum depth.
+     *
+     * A binary tree's maximum depth is the number of nodes along the longest path from the root
+     * node down to the farthest leaf node.
+     */
+
+    public static int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        } else {
+            return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+        }
+    }
+
+
+
+    /**
      * 105. Construct Binary Tree from Preorder and Inorder Traversal
      *
      * [Construct Binary Tree using -> Preorder Traversal + Inorder Traversal]
@@ -375,4 +414,127 @@ public class Tree {
         }
         return 1 + countNodes(root.left) + countNodes(root.right);
     }
+
+
+
+    /**
+     * 226. Invert Binary Tree
+     *
+     * Given the root of a binary tree, invert the tree, and return its root.
+     */
+
+    public static TreeNode invertTree_withRecursion(TreeNode root) {
+        if (root == null) return null;
+
+        TreeNode left = root.left;
+        root.left = root.right;
+        root.right = left;
+
+        invertTree_withRecursion(root.left);
+        invertTree_withRecursion(root.right);
+
+        return root;
+    }
+
+    public static TreeNode invertTree_withCycle(TreeNode root) {
+        if (root == null) return null;
+
+        Deque<TreeNode> work = new LinkedList<>(); // Use as stack
+        work.push(root);
+
+        while (!work.isEmpty()) {
+            var node = work.pop();
+
+            TreeNode left = node.left;
+            node.left = node.right;
+            node.right = left;
+
+            if (node.left != null) work.push(node.left);
+            if (node.right != null) work.push(node.right);
+        }
+
+        return root;
+    }
+
+
+
+    /**
+     * 101. Symmetric Tree
+     *
+     * Given the root of a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).
+     */
+
+    // 1. поиск в ширину по уровням и сравнивать на каждом уровне
+    public static boolean isSymmetric(TreeNode root) {
+        if (root == null) return false;
+
+        // Init :
+        int count = 1;
+        Queue<TreeNode> leftSubTreeWork = new LinkedList<>();
+        leftSubTreeWork.add(root.left);
+        Queue<TreeNode> rightSubTreeWork = new LinkedList<>();
+        rightSubTreeWork.add(root.right);
+
+        while (!leftSubTreeWork.isEmpty() || !rightSubTreeWork.isEmpty()) {
+            var lRes = processSubTree(leftSubTreeWork, count);
+            var rRes = processSubTree(rightSubTreeWork, count);
+
+            if (!lRes.getKey().equals(rRes.getKey()) || lRes.getValue().length != rRes.getValue().length
+                    || !validateSymmetric(lRes.getValue(), rRes.getValue())) return false;
+
+            count = lRes.getKey(); // no matter which one to use
+        }
+
+        return true;
+    }
+
+    private static Map.Entry<Integer, Integer[]> processSubTree(Queue<TreeNode> subTreeWork, int count) {
+        var values = new Integer [count];
+        int newCount = 0;
+
+        while (count-- > 0) {
+            var node = subTreeWork.poll();
+
+            if (node != null) {
+                values[count] = node.val;
+                subTreeWork.add(node.left);
+                subTreeWork.add(node.right);
+                newCount += 2;
+            } else {
+                values[count] = null;
+            }
+        }
+
+        return Map.entry(newCount, values);
+    }
+
+    private static boolean validateSymmetric(Integer[] arrInAcs, Integer[] arrInDesc) {
+        int lastElemInd = arrInAcs.length - 1;
+        for (int i = 0; i <= lastElemInd; i++) {
+            if (!Objects.equals(arrInAcs[i], arrInDesc[lastElemInd - i])) return false;
+        }
+        return true;
+    }
+
+
+    // 2. Best Solution [!] :
+    public static boolean isSymmetric_recursive(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        return isMirror(root.left, root.right);
+    }
+
+    private static boolean isMirror(TreeNode node1, TreeNode node2) {
+        if (node1 == null && node2 == null) {
+            return true;
+        } else if (node1 == null || node2 == null) {
+            return false;
+        }
+
+        return node1.val == node2.val
+                && isMirror(node1.left, node2.right)
+                && isMirror(node1.right, node2.left);
+    }
+
 }
