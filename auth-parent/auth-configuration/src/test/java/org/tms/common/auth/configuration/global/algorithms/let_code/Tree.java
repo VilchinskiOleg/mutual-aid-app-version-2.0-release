@@ -615,6 +615,7 @@ public class Tree {
      * The "linked list" should be in the same order as a pre-order traversal of the binary tree.
      */
 
+    // WRONG! solution
     public static void flatten(TreeNode root) {
         if (root != null) {
            var leftChild = root.left;
