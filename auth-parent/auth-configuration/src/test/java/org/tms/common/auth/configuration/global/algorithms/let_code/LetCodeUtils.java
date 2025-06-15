@@ -1,8 +1,7 @@
-package org.tms.common.auth.configuration.global.algorithms.model;
+package org.tms.common.auth.configuration.global.algorithms.let_code;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -275,56 +274,6 @@ public class LetCodeUtils {
     public static void rotate_solutionII(int[] nums, int k) {
 
     }
-
-
-    /**
-     * ----------------------------------- Task №7 ------------------------------------------
-     */
-
-    public static int maxProfit(int[] prices) {
-
-        Integer priceToBuy = null;
-        int delta = 0;
-
-        // V.1 :
-        for (int i = 1; i < prices.length; i++){
-
-            if (prices[i] > prices[i - 1]){
-
-                int delta2 = prices[i] - prices[i - 1];
-                int delta3 = priceToBuy != null ? prices[i] - priceToBuy : -1;
-
-                delta = Math.max(delta, Math.max(delta2, delta3));
-
-                priceToBuy = priceToBuy != null ? Math.min(prices[i - 1], priceToBuy) : prices[i - 1];
-            }
-        }
-
-        // V.2 :
-//        for (int i = 1; i < prices.length; i++){
-//
-//            if (prices[i] > prices[i - 1]){
-//
-//                int delta1 = delta;
-//                int delta2 = prices[i] - prices[i - 1];
-//                int delta3 = priceToBuy != null ? prices[i] - priceToBuy : -1;
-//
-//                int maxDelta = Math.max(delta1, Math.max(delta2, delta3));
-//
-//                if (maxDelta == delta2){
-//                    priceToBuy = prices[i - 1];
-//                    delta = delta2;
-//                } else if (maxDelta == delta3) {
-//                    delta = delta3;
-//                } else {
-//                    priceToBuy = Math.min(prices[i - 1], priceToBuy);
-//                }
-//            }
-//        }
-
-        return delta;
-    }
-
 
     /**
      * ----------------------------------- Task №8 ------------------------------------------
@@ -1366,59 +1315,6 @@ public class LetCodeUtils {
     }
 
 
-    /**
-     * 2. Add Two Numbers
-     *
-     * You are given two non-empty linked lists representing two non-negative integers.
-     * The digits are stored in reverse order, and each of their nodes contains a single digit.
-     * Add the two numbers and return the sum as a linked list.
-     *
-     * You may assume the two numbers do not contain any leading zero, except the number 0 itself.
-     */
-
-    public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        // Validation :
-        if (l1 == null || l2 == null) {
-            return l1 != null ? l1 : l2;
-        }
-
-        // Initialization :
-        ListNode resultHead = l1;
-        int surplus = doCalculation(l1, l2, 0);
-
-        // Work cycle :
-        while (l1.next != null && l2.next != null) {
-            l1 = l1.next; l2 = l2.next;
-            surplus  = doCalculation(l1, l2, surplus);
-        }
-
-        if (l1.next == null) l1.next = l2.next;
-
-        while (surplus > 0 && l1.next != null) {
-            l1 = l1.next;
-            surplus = doCalculation(l1, surplus);
-        }
-
-        if (surplus > 0) {
-            l1.next = new ListNode(surplus, null);
-        }
-
-        // Return the result :
-        return resultHead;
-    }
-
-    public static int doCalculation(ListNode l1, ListNode l2, int surplus) {
-        int calcRes = l1.val + l2.val + surplus;
-        l1.val = calcRes % 10;
-        return calcRes / 10;
-    }
-
-    public static int doCalculation(ListNode l, int surplus) {
-        int calcRes = l.val + surplus;
-        l.val = calcRes % 10;
-        return calcRes / 10;
-    }
-
 
     /**
      * 138. Copy List with Random Pointer
@@ -1586,93 +1482,8 @@ public class LetCodeUtils {
      * --------------------------Binary Tree--------------------------
      */
 
-    public static class TreeNode {
-        int val;
-        TreeNode left;
-        TreeNode right;
-        TreeNode() {}
-        public TreeNode(int val) { this.val = val; }
-        public TreeNode(int val, TreeNode left, TreeNode right) {
-            this.val = val;
-            this.left = left;
-            this.right = right;
-        }
-    }
 
 
-    /**
-     * 104. Maximum Depth of Binary Tree
-     *
-     * Given the root of a binary tree, return its maximum depth.
-     *
-     * A binary tree's maximum depth is the number of nodes along the longest path from the root
-     * node down to the farthest leaf node.
-     */
-
-    public static int maxDepth(TreeNode root) {
-        if (root == null) {
-            return 0;
-        } else {
-            return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
-        }
-    }
-
-
-    /**
-     * 100. Same Tree
-     *
-     * Given the roots of two binary trees p and q, write a function to check if they are the same or not.
-     *
-     * Two binary trees are considered the same if they are structurally identical, and the nodes have the same value.
-     */
-
-    public static boolean isSameTree(TreeNode p, TreeNode q) {
-        if (p == null && q == null) {
-            return true;
-        } else if ((p == null || q == null) || p.val != q.val) {
-            return false;
-        } else {
-            return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
-        }
-    }
-
-
-    /**
-     * 105. Construct Binary Tree from Preorder and Inorder Traversal
-     *
-     * Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree
-     * and inorder is the inorder traversal of the same tree, construct and return the binary tree.
-     */
-
-    public static TreeNode buildTreeI(int[] preorder, int[] inorder) {
-        // It doesn't meter what to use for this block preorder or inorder (replaceable):
-        if (preorder.length == 1) {
-            return new TreeNode(preorder[0]);
-        }
-
-        int rootVal = preorder[0];
-        int rootPositionForInorder = 0;
-
-        while (rootVal != inorder[rootPositionForInorder]) rootPositionForInorder++;
-
-        int[] inorderLeft = null, preorderLeft = null, inorderRight = null, preorderRight = null;
-
-        // Prepare Left part if necessary :
-        if (rootPositionForInorder > 0) {
-            inorderLeft = Arrays.copyOfRange(inorder, 0, rootPositionForInorder);
-            preorderLeft = Arrays.copyOfRange(preorder, 1, rootPositionForInorder + 1);
-        }
-
-        // Prepare Right part if necessary :
-        if (rootPositionForInorder < inorder.length - 1) {
-            inorderRight = Arrays.copyOfRange(inorder, rootPositionForInorder + 1, inorder.length);
-            preorderRight = Arrays.copyOfRange(preorder, rootPositionForInorder + 1, preorder.length);
-        }
-
-        return new TreeNode(rootVal,
-                inorderLeft != null ? buildTreeI(preorderLeft, inorderLeft) : null,
-                inorderRight != null ? buildTreeI(preorderRight, inorderRight) : null);
-    }
 
 
     /**
@@ -1682,157 +1493,8 @@ public class LetCodeUtils {
      * leaving only distinct numbers from the original list. Return the linked list sorted as well.
      */
 
-    public static TreeNode buildTreeII(int[] inorder, int[] postorder) {
-        // It doesn't meter what to use for this block postorder or inorder (replaceable):
-        if (postorder.length == 1) {
-            return new TreeNode(postorder[0]);
-        }
-
-        int rootVal = postorder[postorder.length - 1];
-        int rootPositionForInorder = 0;
-
-        while (rootVal != inorder[rootPositionForInorder]) rootPositionForInorder++;
-
-        int[] inorderLeft = null, postorderLeft = null, inorderRight = null, postorderRight = null;
-
-        // Prepare Left part if necessary :
-        if (rootPositionForInorder > 0) {
-            inorderLeft = Arrays.copyOfRange(inorder, 0, rootPositionForInorder);
-            postorderLeft = Arrays.copyOfRange(postorder, 0, rootPositionForInorder);
-        }
-
-        // Prepare Right part if necessary :
-        if (rootPositionForInorder < inorder.length - 1) {
-            inorderRight = Arrays.copyOfRange(inorder, rootPositionForInorder + 1, inorder.length);
-            postorderRight = Arrays.copyOfRange(postorder, rootPositionForInorder, postorder.length - 1);
-        }
-
-        return new TreeNode(rootVal,
-                inorderLeft != null ? buildTreeII(inorderLeft, postorderLeft) : null,
-                inorderRight != null ? buildTreeII(inorderRight, postorderRight) : null);
-    }
 
 
-    /**
-     * 112. Path Sum
-     *
-     * Given the root of a binary tree and an integer targetSum, return true if the tree has a root-to-leaf path
-     * such that adding up all the values along the path equals targetSum.
-     *
-     * A leaf is a node with no children.
-     */
-
-    public static boolean hasPathSum(TreeNode root, int targetSum) {
-        if (root == null) return false;
-        return (targetSum - root.val == 0 && Objects.isNull(root.left) && Objects.isNull(root.right))
-                || hasPathSum(root.left, targetSum - root.val)
-                || hasPathSum(root.right, targetSum - root.val);
-    }
-
-
-    /**
-     * 129. Sum Root to Leaf Numbers
-     *
-     * You are given the root of a binary tree containing digits from 0 to 9 only.
-     *
-     * Each root-to-leaf path in the tree represents a number.
-     *
-     * For example, the root-to-leaf path 1 -> 2 -> 3 represents the number 123.
-     * Return the total sum of all root-to-leaf numbers. Test cases are generated so that the answer will fit in a 32-bit integer.
-     *
-     * A leaf node is a node with no children.
-     */
-
-    public static int sumNumbers(TreeNode root) {
-        int leftSum = Objects.isNull(root.left) ? 0 : sumNumbers(root.left, String.valueOf(root.val));
-        int rightSum = Objects.isNull(root.right) ? 0 : sumNumbers(root.right, String.valueOf(root.val));
-        return (leftSum == 0 && rightSum == 0) ? root.val : (leftSum + rightSum);
-    }
-
-    private static int sumNumbers(TreeNode root, String prefix) {
-
-        if (root.left == null && root.right == null) {
-            return Integer.parseInt(prefix + root.val);
-        } else {
-            int leftSum = (root.left == null) ? 0
-                    : sumNumbers(root.left, prefix + root.val);
-            int rightSum = (root.right == null) ? 0
-                    : sumNumbers(root.right, prefix + root.val);
-            return leftSum + rightSum;
-        }
-    }
-
-
-    /**
-     * 124. Binary Tree Maximum Path Sum
-     *
-     * A path in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them.
-     * A node can only appear in the sequence at most once. Note that the path does not need to pass through the root.
-     *
-     * The path sum of a path is the sum of the node's values in the path.
-     *
-     * Given the root of a binary tree, return the maximum path sum of any non-empty path.
-     */
-
-    public static int maxPathSum(TreeNode root) {
-        if (root.left == null && root.right == null) {
-            return root.val;
-        } else {
-            AtomicInteger maxPathSumVal = new AtomicInteger(Integer.MIN_VALUE);
-            int leftSum = (root.left == null) ? 0 : maxPathSum(root.left, maxPathSumVal);
-            int rightSum = (root.right == null) ? 0 : maxPathSum(root.right, maxPathSumVal);
-            int newMaxPathSumCandidate = Math.max(leftSum, 0) + root.val + Math.max(rightSum, 0);
-            return Math.max(maxPathSumVal.get(), newMaxPathSumCandidate);
-        }
-    }
-
-    private static int maxPathSum(TreeNode root, AtomicInteger maxPathSumVal) {
-        if (root.left == null && root.right == null) {
-            maxPathSumVal.set(Math.max(maxPathSumVal.get(), root.val));
-            return root.val;
-        } else {
-            int leftSum = (root.left == null) ? 0 : maxPathSum(root.left, maxPathSumVal);
-            int rightSum = (root.right == null) ? 0 : maxPathSum(root.right, maxPathSumVal);
-            int newMaxPathSumCandidate = Math.max(leftSum, 0) + root.val + Math.max(rightSum, 0);
-            maxPathSumVal.set(Math.max(maxPathSumVal.get(), newMaxPathSumCandidate));
-            return Math.max(Math.max(leftSum, rightSum), 0) + root.val;
-        }
-    }
-
-
-    /**
-     * 98. Validate Binary Search Tree
-     *
-     * Given the root of a binary tree, determine if it is a valid binary search tree (BST).
-     *
-     * A valid BST is defined as follows:
-     *
-     * 1.The left subtree of a node contains only nodes with keys less than the node's key.
-     * 2.The right subtree of a node contains only nodes with keys greater than the node's key.
-     * 3.Both the left and right subtrees must also be binary search trees.
-     *
-     * BST example :
-     *                100
-     *               /     \
-     *             50       150
-     *            /  \     /    \
-     *          25   75  125    175
-     *         / \   /   / \    /   \
-     *       10  30 60  110 130 160  200
-     *                  /       \
-     *                 105       165
-     */
-
-    public static boolean isValidBST(TreeNode root) {
-        return validateBST(root.left, Integer.MIN_VALUE, root.val)
-                && validateBST(root.right, root.val, Integer.MAX_VALUE);
-    }
-
-    private static boolean validateBST(TreeNode node, int min, int max) {
-        if (node == null) return true;
-        if (!(min < node.val && node.val < max)) return false;
-        return validateBST(node.left, min, node.val) && validateBST(node.right, node.val, max);
-    }
 
 
     /**
@@ -1843,6 +1505,15 @@ public class LetCodeUtils {
      *
      * For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
      * Return true if you can finish all courses. Otherwise, return false.
+     *
+     *
+     * Constraints:
+     *
+     * 1 <= numCourses <= 2000
+     * 0 <= prerequisites.length <= 5000
+     * prerequisites[i].length == 2
+     * 0 <= ai, bi < numCourses
+     * All the pairs prerequisites[i] are unique.
      */
 
     public static boolean canFinish_withDefect(int numCourses, int[][] prerequisites) {
@@ -1979,8 +1650,72 @@ public class LetCodeUtils {
     }
 
     /**
-     * One more workable solution :
+     * One more workable solution (in Progress..) :
      */
 
+    public static boolean canFinishX(int numCourses, int[][] prerequisites) {
+        Map<Integer, Set<Integer>> parentsByChildCourse = new HashMap<>();
+        Set<Integer> coursesWithDeps = new HashSet<>();
+        Set<Integer> appliedCourses = new HashSet<>();
 
+        for (int[] courseRelation : prerequisites) {
+            coursesWithDeps.add(courseRelation[0]);
+            Set<Integer> parentCourses =
+                    parentsByChildCourse.computeIfAbsent(courseRelation[1], key -> new HashSet<>());
+            parentCourses.add(courseRelation[0]);
+        }
+
+        int counter = 0;
+        for (int i = 0; i < numCourses; i++) {
+            if (!coursesWithDeps.contains(i) && parentsByChildCourse.get(i) != null) {
+                appliedCourses.add(i);
+                Set<Integer> parents = parentsByChildCourse.get(i);
+                while (!parents.isEmpty()) {
+                    if (parents.removeAll(appliedCourses)) return false;
+                    appliedCourses.addAll(parents);
+                    parents = parents.stream()
+                                     .flatMap(childCourse -> parentsByChildCourse.computeIfAbsent(childCourse, key -> new HashSet<>()).stream())
+                                                                                                                                      .collect(Collectors.toSet());
+                }
+                counter++;
+            }
+        }
+
+        return counter > 0 || coursesWithDeps.isEmpty();
+    }
+
+
+    /**
+     * 433. Minimum Genetic Mutation
+     */
+
+    public static int minMutation(String startGene, String endGene, String[] bank) {
+        if (bank.length == 0) return -1;
+
+        List<String> passedGenes = new LinkedList<>();
+        Queue<Map.Entry<String, Integer>> currGeneOptions = new LinkedList<>();
+        currGeneOptions.add(Map.entry(startGene, 0));
+
+        while (!currGeneOptions.isEmpty()) {
+            Map.Entry<String, Integer> option = currGeneOptions.poll();
+            for (String candidate : bank) {
+                if (passedGenes.contains(candidate)) continue;
+                long diffs = IntStream.range(0, option.getKey().length())
+                        .filter(i -> option.getKey().charAt(i) != candidate.charAt(i))
+                        .count();
+                if (1 == diffs) {
+                    Map.Entry<String, Integer> newGeneOption = Map.entry(candidate, option.getValue() + 1);
+
+                    if (endGene.equals(newGeneOption.getKey())) {
+                        return newGeneOption.getValue();
+                    } else {
+                        currGeneOptions.add(newGeneOption);
+                    }
+                }
+            }
+            passedGenes.add(option.getKey());
+        }
+
+        return -1;
+    }
 }

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.tms.common.auth.configuration.global.algorithms.let_code.Array;
 import org.tms.common.auth.configuration.global.algorithms.let_code.LetCodeUtils;
+import org.tms.common.auth.configuration.global.algorithms.let_code.Stack;
 import org.tms.common.auth.configuration.global.algorithms.let_code.TwoPointers;
 import org.tms.common.auth.configuration.global.algorithms.model.BubbleSortUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.FastSortUtil;
@@ -346,4 +347,32 @@ public class AlgorithmsTest {
         assertTrue(TwoPointers.isPalindrome("A man, a plan, a canal: Panama"));
         assertFalse(TwoPointers.isPalindrome("race a car"));
     }
+
+    @Test
+    void testSorting() {
+        NavigableSet<String> set = new TreeSet<>(Comparator.comparing(String::length));
+        set.add("abc");
+        set.add("aaaaaa");
+        set.add("abbc");
+        System.out.println(set);
+        var c = set.comparator();
+
+        List<String> list1 = Arrays.asList("a", "b", "c");
+        List<String> list2 = Arrays.asList("a", "b", "c");
+        List<String> list3 = Arrays.asList("c", "b", "a");
+
+        System.out.println(list1.equals(list2)); // true
+        System.out.println(list1.equals(list3)); // false (order matters)
+
+
+
+    }
+
+    @Test
+    void myTest() {
+        //assertEquals(11, Stack.performCalculationsByStrScenario("add(5,mul(2,pow(5,2)))"));
+        assertEquals(36, Stack.performCalculationsByStrScenario("add(mul(5,mul(2,pow(5,2))),mul(2,pow(5,2)))"));
+    }
+
+
 }

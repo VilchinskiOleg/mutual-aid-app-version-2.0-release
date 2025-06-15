@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Tree {
 
     /**
-     * Definition for a binary tree node.
+     * Definition for a binary Tree Node
      */
     public static class TreeNode {
         int val;
@@ -23,6 +23,29 @@ public class Tree {
             this.right = right;
         }
     }
+
+    /**
+     * Definition for a Node
+     */
+    public static class Node {
+        public int val;
+        public Node left;
+        public Node right;
+        public Node next;
+
+        public Node() {}
+
+        public Node(int _val) {
+            val = _val;
+        }
+
+        public Node(int _val, Node _left, Node _right, Node _next) {
+            val = _val;
+            left = _left;
+            right = _right;
+            next = _next;
+        }
+    };
 
 
 
@@ -464,7 +487,7 @@ public class Tree {
      * Given the root of a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).
      */
 
-    // 1. поиск в ширину по уровням и сравнивать на каждом уровне
+    // 1. поиск в ширину по уровням и сравнивать на каждом уровне :..................................
     public static boolean isSymmetric(TreeNode root) {
         if (root == null) return false;
 
@@ -517,7 +540,7 @@ public class Tree {
     }
 
 
-    // 2. Best Solution [!] :
+    // 2. Best Solution [!] :.................................................................
     public static boolean isSymmetric_recursive(TreeNode root) {
         if (root == null) {
             return true;
@@ -537,4 +560,77 @@ public class Tree {
                 && isMirror(node1.right, node2.left);
     }
 
+
+
+    /**
+     * 117. Populating Next Right Pointers in Each Node II
+     *
+     * Populate each next pointer to point to its next right node.
+     * If there is no next right node, the next pointer should be set to NULL.
+     *
+     * Initially, all next pointers are set to NULL.
+     */
+
+    public static Node connect(Node root) {
+        if(root != null) {
+            bindNeighbour(root);
+        }
+        return root;
+    }
+
+    private static void bindNeighbour(Node parent) {
+        Node closestNodeFromRightSubTree = findClosestChildFromRightSubTree(parent);
+
+        if (parent.right != null) {
+            parent.right.next = closestNodeFromRightSubTree;
+            bindNeighbour(parent.right);
+        }
+
+        if (parent.left != null) {
+            parent.left.next = parent.right != null ? parent.right : closestNodeFromRightSubTree;
+            bindNeighbour(parent.left);
+        }
+    }
+
+    private static Node findClosestChildFromRightSubTree(Node parent) {
+        Node candidate = parent.next;
+        while (candidate != null) {
+            if (candidate.left != null || candidate.right != null) {
+                candidate = candidate.left != null ? candidate.left : candidate.right;
+                break;
+            }
+            candidate = candidate.next;
+        }
+        return candidate;
+    }
+
+
+
+    /**
+     * 114. Flatten Binary Tree to Linked List
+     *
+     * Given the root of a binary tree, flatten the tree into a "linked list":
+     *
+     * The "linked list" should use the same TreeNode class where the right child pointer points to the next node in the list and the left child pointer is always null.
+     * The "linked list" should be in the same order as a pre-order traversal of the binary tree.
+     */
+
+    public static void flatten(TreeNode root) {
+        if (root != null) {
+           var leftChild = root.left;
+           var rightChild = root.right;
+
+           if (leftChild != null) {
+               root.right = leftChild;
+               root = root.right;
+               flatten(root);
+           }
+
+            if (rightChild != null) {
+                root.right = rightChild;
+                root = root.right;
+                flatten(root);
+            }
+        }
+    }
 }
