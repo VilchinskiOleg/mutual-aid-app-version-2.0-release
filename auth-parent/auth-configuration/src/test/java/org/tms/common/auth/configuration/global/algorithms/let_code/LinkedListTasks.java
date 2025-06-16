@@ -36,8 +36,7 @@ public class LinkedListTasks {
      */
 
     public static boolean hasCycle(ListNode head) {
-        // WRONG solution :
-
+        // WRONG solution :........
         List<Integer> visited = new ArrayList<>();
         while(head != null) {
             if (visited.contains(head.val)) return true;
@@ -101,5 +100,52 @@ public class LinkedListTasks {
         int calcRes = l.val + surplus;
         l.val = calcRes % 10;
         return calcRes / 10;
+    }
+
+
+
+    /**
+     * 21. Merge Two Sorted Lists
+     *
+     * You are given the heads of two sorted linked lists list1 and list2.
+     *
+     * Merge the two lists into one sorted list. The list should be made by splicing together the nodes of the first two lists.
+     *
+     * Return the head of the merged linked list.
+     */
+
+    public static ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        // Validation :
+        if (list1 == null || list2 == null) {
+            return list1 != null ? list1 : list2;
+        }
+
+        // Initialization :
+        ListNode resultHead;
+        ListNode resultCurrent;
+        if (list1.val <= list2.val) {
+            resultHead = list1;
+            list1 = list1.next;
+        } else {
+            resultHead = list2;
+            list2 = list2.next;
+        }
+        resultCurrent = resultHead;
+
+        // Work cycle :
+        while (list1 != null && list2 != null) {
+            if (list1.val <= list2.val) {
+                resultCurrent.next = list1;
+                list1 = list1.next;
+            } else {
+                resultCurrent.next = list2;
+                list2 = list2.next;
+            }
+            resultCurrent = resultCurrent.next;
+        }
+        resultCurrent.next = list1 != null ? list1 : list2;
+
+        // Return the result :
+        return resultHead;
     }
 }
