@@ -12,6 +12,8 @@ public class LinkedListTasks {
     public static class ListNode {
         int val;
         ListNode next;
+
+        public ListNode() {}
         public ListNode(int val) {
             this.val = val;
             this.next = null;
@@ -120,19 +122,11 @@ public class LinkedListTasks {
             return list1 != null ? list1 : list2;
         }
 
-        // Initialization :
-        ListNode resultHead;
-        ListNode resultCurrent;
-        if (list1.val <= list2.val) {
-            resultHead = list1;
-            list1 = list1.next;
-        } else {
-            resultHead = list2;
-            list2 = list2.next;
-        }
-        resultCurrent = resultHead;
+        // Initialization (first node will be just a mock) :
+        ListNode resultHead = new ListNode();
+        ListNode resultCurrent = resultHead;
 
-        // Work cycle :
+        // 1.Work cycle :
         while (list1 != null && list2 != null) {
             if (list1.val <= list2.val) {
                 resultCurrent.next = list1;
@@ -143,9 +137,10 @@ public class LinkedListTasks {
             }
             resultCurrent = resultCurrent.next;
         }
+
+        // 2.Add tail to result :
         resultCurrent.next = list1 != null ? list1 : list2;
 
-        // Return the result :
-        return resultHead;
+        return resultHead.next;
     }
 }
