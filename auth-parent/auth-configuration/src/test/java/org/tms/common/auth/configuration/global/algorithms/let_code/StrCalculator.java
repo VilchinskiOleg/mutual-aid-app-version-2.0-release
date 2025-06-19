@@ -1,4 +1,4 @@
-package org.tms.common.auth.configuration.global.algorithms.let_code.stack;
+package org.tms.common.auth.configuration.global.algorithms.let_code;
 
 import java.util.Map;
 import java.util.function.BiFunction;
