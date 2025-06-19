@@ -247,7 +247,7 @@ public class LinkedListTasks {
      */
 
     public static ListNode reverseBetween(ListNode head, int left, int right) {
-
+        return null;
     }
 
 

@@ -5,10 +5,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-import org.tms.common.auth.configuration.global.algorithms.let_code.Array;
-import org.tms.common.auth.configuration.global.algorithms.let_code.LetCodeUtils;
-import org.tms.common.auth.configuration.global.algorithms.let_code.Stack;
-import org.tms.common.auth.configuration.global.algorithms.let_code.TwoPointers;
+import org.tms.common.auth.configuration.global.algorithms.let_code.*;
+import org.tms.common.auth.configuration.global.algorithms.let_code.stack.StrCalculator;
 import org.tms.common.auth.configuration.global.algorithms.model.BubbleSortUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.FastSortUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.FindPairToSumUtil;
@@ -17,10 +15,7 @@ import org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSe
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -369,9 +364,13 @@ public class AlgorithmsTest {
     }
 
     @Test
-    void myTest() {
-        //assertEquals(11, Stack.performCalculationsByStrScenario("add(5,mul(2,pow(5,2)))"));
-        assertEquals(36, Stack.performCalculationsByStrScenario("add(mul(5,mul(2,pow(5,2))),mul(2,pow(5,2)))"));
+    void strCalculatorTest() {
+        var calculator = new StrCalculator();
+        assertEquals(30, calculator.calculate("mul(3,div(pow(10,2),add(4,6)))"));
+        assertEquals(125, calculator.calculate("pow(add(2,3),3)"));
+        assertEquals(14, calculator.calculate("add(add(1,2),add(3,mul(2,4)))"));
+        assertEquals(17, calculator.calculate("div(add(mul(3,pow(2,3)),10),2)"));
+        assertEquals(225, calculator.calculate("pow(add(1,mul(2,add(3,pow(2,2)))),2)"));
     }
 
 
