@@ -1359,73 +1359,8 @@ public class LetCodeUtils {
 
 
     /**
-     * 19. Remove Nth Node From End of List
-     */
-
-    public static ListNode removeNthFromEnd(ListNode head, int n) {
-        if (n == 0) return head;
-        if (head.next == null) return null;
-
-        ListNode pointer = head;
-        ListNode pointerWithDelay = head;
-        while (pointer.next != null) {
-            pointer = pointer.next;
-            if (n == 0) {
-                pointerWithDelay = pointerWithDelay.next;
-            } else --n;
-        }
-
-        if (n == 0) {
-            pointerWithDelay.next = pointerWithDelay.next.next;
-            return head;
-        } else { // n = 1
-            return head.next;
-        }
-    }
-
-
-    /**
-     * 82. Remove Duplicates from Sorted List II
-     */
-
-    public static ListNode deleteDuplicates(ListNode head) {
-        ListNode node = head;
-        boolean isTracking = false;
-        ListNode processedPart = null;
-
-        while (node != null && node.next != null) {
-            if (node.val == node.next.val) {
-                if (!isTracking) isTracking = true;
-            } else if (isTracking) {
-                if (processedPart != null) {
-                    processedPart.next = node.next;
-                } else {
-                    head = node.next;
-                    processedPart = null;
-                }
-                isTracking = false;
-            } else {
-                processedPart = node;
-            }
-            node = node.next;
-        }
-
-        if (isTracking) {
-            if (processedPart != null) {
-                processedPart.next = null;
-            } else {
-                head = null;
-            }
-        }
-
-        return head;
-    }
-
-
-    /**
      * --------------------------Binary Tree--------------------------
      */
-
 
 
 

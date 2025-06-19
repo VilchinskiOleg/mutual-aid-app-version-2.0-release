@@ -1,12 +1,11 @@
 package org.tms.common.auth.configuration.global.algorithms.let_code;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class LinkedListTasks {
 
     /**
-     * Definition for singly-linked list.
+     * Definition for singly-linked list Node :
      */
 
     public static class ListNode {
@@ -21,6 +20,21 @@ public class LinkedListTasks {
         public ListNode(int val, ListNode next) {
             this.val = val;
             this.next = next;
+        }
+    }
+
+    /**
+     * Definition for a Node :
+     */
+    public static class Node {
+        int val;
+        public Node next;
+        public Node random;
+
+        public Node(int val) {
+            this.val = val;
+            this.next = null;
+            this.random = null;
         }
     }
 
@@ -142,5 +156,166 @@ public class LinkedListTasks {
         resultCurrent.next = list1 != null ? list1 : list2;
 
         return resultHead.next;
+    }
+
+
+
+    /**
+     * 138. Copy List with Random Pointer
+     */
+
+    /**
+     * [1.] ... Works only if all values are unique ...:
+     */
+    public static Node copyRandomList_partlySolution(Node head) {
+        Node replicaHead = new Node(0); // mock-node
+        Node replica = replicaHead;
+        // key to associate node position inside the list + node itself :
+        Map<Integer, Node> futureNodes = new HashMap<>();
+        Map<Integer, Node> visitedNodes = new HashMap<>();
+
+        while (head != null) {
+            replica.next = futureNodes.containsKey(head.val)
+                    ? futureNodes.remove(head.val) : new Node(head.val);
+            replica = replica.next;
+
+            if (head.random != null) {
+                if (head.val == head.random.val) {
+                    replica.random = replica;
+                } else if (visitedNodes.containsKey(head.random.val)) {
+                    replica.random = visitedNodes.get(head.random.val);
+                } else {
+                    var random = new Node(head.random.val);
+                    replica.random = random;
+                    futureNodes.put(random.val, random);
+                }
+            }
+
+            head = head.next;
+            visitedNodes.put(replica.val, replica);
+        }
+
+        return replicaHead.next != null ? replicaHead.next : null;
+    }
+
+    /**
+     * [2.] ... The best solution ...:
+     */
+    public static Node copyRandomList(Node head) {
+        if (head == null) return null;
+
+        // 1. Create replica nodes and incorporate them into existed list (A -> A' -> B -> B') :
+        var nodeCur = head;
+        while (nodeCur != null) {
+            // Create deap copy :
+            var nodeReplica = new Node(nodeCur.val);
+            nodeReplica.next = nodeCur.next;
+            nodeReplica.random = nodeCur.random;
+            // Do like so : A -> A' :
+            nodeCur.next = nodeReplica;
+
+            nodeCur = nodeReplica.next;
+        }
+
+        // 2. Shifts random node reference from original node to replica :
+        nodeCur = head.next; // starts from replica head
+        while (nodeCur != null) {
+            if (nodeCur.random != null) nodeCur.random = nodeCur.random.next;
+            nodeCur = nodeCur.next != null ? nodeCur.next.next : null;
+        }
+
+        // 3. Transform   A -> A' -> B -> B'   to   A' -> B'  and  A -> B :
+        Node headReplica = null;
+        Node nodeReplica = null;
+        nodeCur = head;
+        while (nodeCur != null) {
+            if (nodeReplica != null) nodeReplica.next = nodeCur.next;
+            nodeReplica = nodeCur.next;
+            if (headReplica == null) headReplica = nodeReplica;
+
+            nodeCur.next = nodeReplica.next;
+            nodeCur = nodeCur.next;
+        }
+
+        return headReplica;
+    }
+
+
+
+    /**
+     * 92. Reverse Linked List II
+     */
+
+    public static ListNode reverseBetween(ListNode head, int left, int right) {
+
+    }
+
+
+
+
+
+
+    /**
+     * 19. Remove Nth Node From End of List
+     */
+
+    public static ListNode removeNthFromEnd(ListNode head, int n) {
+        if (n == 0) return head;
+        if (head.next == null) return null;
+
+        ListNode pointer = head;
+        ListNode pointerWithDelay = head;
+        while (pointer.next != null) {
+            pointer = pointer.next;
+            if (n == 0) {
+                pointerWithDelay = pointerWithDelay.next;
+            } else --n;
+        }
+
+        if (n == 0) {
+            pointerWithDelay.next = pointerWithDelay.next.next;
+            return head;
+        } else { // n = 1
+            return head.next;
+        }
+    }
+
+
+
+    /**
+     * 82. Remove Duplicates from Sorted List II
+     */
+
+    public static ListNode deleteDuplicates(ListNode head) {
+        ListNode node = head;
+        boolean isTracking = false;
+        ListNode processedPart = null;
+
+        while (node != null && node.next != null) {
+            if (node.val == node.next.val) {
+                if (!isTracking) isTracking = true;
+            } else if (isTracking) {
+                if (processedPart != null) {
+                    processedPart.next = node.next;
+                } else {
+                    head = node.next;
+                    processedPart = null;
+                }
+                isTracking = false;
+            } else {
+                processedPart = node;
+            }
+            node = node.next;
+        }
+
+        if (isTracking) {
+            if (processedPart != null) {
+                processedPart.next = null;
+            } else {
+                head = null;
+            }
+        }
+
+        return head;
     }
 }
