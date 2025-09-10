@@ -49,15 +49,28 @@ public class LinkedListTasks {
      * Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter.
      *
      * Return true if there is a cycle in the linked list. Otherwise, return false.
+     *
+     *
+     *
+     * Solution Approach :
+     * 1 . Start both pointers at the head of the list.
+     *
+     * 2 . Move slow by 1 step and fast by 2 steps.
+     *
+     * 3 . If fast meets slow, a cycle exists.
+     *
+     * 4 . If fast reaches the end (null), no cycle exists.
+     *
+     * 🐢 moves 1 step, 🐇 moves 2 steps. If they meet, there's a cycle! 🎯
      */
 
     public static boolean hasCycle(ListNode head) {
-        // WRONG solution :........
-        List<Integer> visited = new ArrayList<>();
-        while(head != null) {
-            if (visited.contains(head.val)) return true;
-            visited.add(head.val);
-            head = head.next;
+        ListNode slowPointer = head;
+        ListNode fastPointer = head;
+        while(fastPointer != null && fastPointer.next != null) {
+            slowPointer = slowPointer.next;
+            fastPointer = fastPointer.next.next;
+            if (slowPointer == fastPointer) return true;
         }
         return false;
     }
@@ -244,14 +257,46 @@ public class LinkedListTasks {
 
     /**
      * 92. Reverse Linked List II
+     *
+     * Given the head of a singly linked list and two integers left and right where left <= right,
+     * reverse the nodes of the list from position left to position right, and return the reversed list.
      */
 
     public static ListNode reverseBetween(ListNode head, int left, int right) {
-        return null;
+
+        if (head.next == null || left == right) return head;
+
+        head = new ListNode(0, head); // Add mock-node at the beginning
+        ListNode current = head;
+        int counter = 0; // Count each iteration to detect borders
+
+        ListNode leftNode = null;
+        ListNode rightNode = null;
+        ArrayList<ListNode> nodesToReverse = new ArrayList<>();
+
+        while (current != null) {
+            if (leftNode != null) {
+                nodesToReverse.add(current);
+            }
+            if (counter == right) {
+                rightNode = current.next;
+                break;
+            }
+            if (leftNode == null && counter + 1 == left) {
+                leftNode = current;
+            }
+            current = current.next;
+            counter += 1;
+        }
+
+        for (int i = nodesToReverse.size() - 1; i >= 0; i--) {
+            leftNode.next = nodesToReverse.get(i);
+            leftNode = leftNode.next;
+        }
+
+        leftNode.next = rightNode;
+        return head.next;
     }
-
-
-
 
 
 
