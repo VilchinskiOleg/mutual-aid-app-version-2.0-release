@@ -43,4 +43,36 @@ public class SlidingWindow {
 
     return Math.max(maxSubStringVal, rightBorder - leftBorder);
   }
+
+
+
+  /**
+   * 209. Minimum Size Subarray Sum
+   *
+   * Given an array of positive integers nums and a positive integer target, return the minimal
+   * length of a subarray whose sum is greater than or equal to target. If there is no such subarray,
+   * return 0 instead.
+   */
+
+  public int minSubArrayLen(int target, int[] nums) {
+    int leftBorder = 0;
+    int rightBorder = 0;
+    int subArraySum = 0;
+    int minSubArrayLength = Integer.MAX_VALUE;
+
+    while(rightBorder < nums.length || subArraySum >= target) {
+      if (subArraySum < target) {
+        subArraySum += nums[rightBorder];
+        rightBorder++;
+      } else {
+        do {
+          minSubArrayLength = Math.min(minSubArrayLength, rightBorder - leftBorder);
+          subArraySum -= nums[leftBorder];
+          leftBorder++;
+        } while (subArraySum >= target);
+      }
+    }
+
+    return minSubArrayLength <= nums.length ? minSubArrayLength : 0;
+  }
 }
