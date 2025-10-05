@@ -2,6 +2,7 @@ package org.tms.common.auth.configuration.global.algorithms.let_code;
 
 import java.util.Map;
 import java.util.function.BiFunction;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class StrCalculator {
 
@@ -20,6 +21,18 @@ public class StrCalculator {
         String operationAlias = scenario.substring(0, 3);
         String expression = scenario.substring(4, scenario.length() - 1);
 
+        Pair<String, String> members = splitExpToTwoMembers(expression);
+
+        if (members.getLeft() == null) {
+            throw new RuntimeException(EXPR_PART_IS_NULL_ERROR_MSG);
+        }
+
+        Integer left = parseStrRepresentation(members.getLeft());
+        Integer right = parseStrRepresentation(members.getRight());
+        return actionPerAlias.get(operationAlias).apply(left, right);
+    }
+
+    private Pair<String, String> splitExpToTwoMembers(String expression) {
         int bracketCounter = 0;
         String leftStr = null;
         String rightStr = null;
@@ -35,20 +48,14 @@ public class StrCalculator {
                     break;
                 case ',':
                     if (bracketCounter == 0) {
-                       leftStr = expression.substring(0, i);
-                       rightStr = expression.substring(i + 1);
-                       break loop;
+                        leftStr = expression.substring(0, i);
+                        rightStr = expression.substring(i + 1);
+                        break loop;
                     }
             }
         }
 
-        if (leftStr == null) {
-            throw new RuntimeException(EXPR_PART_IS_NULL_ERROR_MSG);
-        }
-
-        Integer left = parseStrRepresentation(leftStr);
-        Integer right = parseStrRepresentation(rightStr);
-        return actionPerAlias.get(operationAlias).apply(left, right);
+        return Pair.of(leftStr, rightStr);
     }
 
     private int parseStrRepresentation(String subExpression) {

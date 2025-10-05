@@ -1,12 +1,27 @@
 package org.tms.common.auth.configuration.global.algorithms.let_code;
 
-import java.io.*;
-import java.util.*;
+import static java.util.Optional.ofNullable;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static java.util.Optional.ofNullable;
 
 public class LetCodeUtils {
 
@@ -1190,40 +1205,6 @@ public class LetCodeUtils {
         } else {
             return intervals;
         }
-    }
-
-
-    /**
-     * 20. Valid Parentheses
-     *
-     * Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
-     *
-     * An input string is valid if:
-     *
-     * Open brackets must be closed by the same type of brackets.
-     * Open brackets must be closed in the correct order.
-     * Every close bracket has a corresponding open bracket of the same type.
-     */
-
-    public static boolean isValid(String s) {
-        if (s.length() < 2) return false;
-
-        Deque<Character> openBracketStack = new LinkedList<>();
-        Map<Character, Character> bracketsPair = Map.of(')', '(', '}', '{', ']', '[');
-        List<Character> openBracketOptions = List.of('(', '{', '[');
-
-        for (int i = 0; i < s.length(); i++) {
-            if (openBracketOptions.contains(s.charAt(i))) {
-                openBracketStack.push(s.charAt(i));
-            } else {
-                if (openBracketStack.isEmpty()) return false;
-                Character expectedOpenBracket = bracketsPair.get(s.charAt(i));
-                Character actualOpenBracket = openBracketStack.pop();
-                if (!expectedOpenBracket.equals(actualOpenBracket)) return false;
-            }
-        }
-
-        return openBracketStack.isEmpty();
     }
 
 

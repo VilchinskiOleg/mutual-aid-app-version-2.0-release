@@ -1,26 +1,35 @@
 package org.tms.common.auth.configuration.global.algorithms;
 
+import static java.lang.String.format;
+import static java.util.Objects.isNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher.Node;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.NavigableSet;
+import java.util.TreeSet;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-import org.tms.common.auth.configuration.global.algorithms.let_code.*;
-import org.tms.common.auth.configuration.global.algorithms.let_code.stack.StrCalculator;
+import org.tms.common.auth.configuration.global.algorithms.let_code.Array;
+import org.tms.common.auth.configuration.global.algorithms.let_code.LetCodeUtils;
+import org.tms.common.auth.configuration.global.algorithms.let_code.Stack;
+import org.tms.common.auth.configuration.global.algorithms.let_code.StrCalculator;
+import org.tms.common.auth.configuration.global.algorithms.let_code.TwoPointers;
 import org.tms.common.auth.configuration.global.algorithms.model.BubbleSortUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.FastSortUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.FindPairToSumUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher;
-
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
-
-import static java.lang.String.format;
-import static java.util.Objects.isNull;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher.Node;
 
 @Slf4j
 public class AlgorithmsTest {
@@ -270,20 +279,6 @@ public class AlgorithmsTest {
     }
 
     @Test
-    void test_threeBuild() {
-        LetCodeUtils.TreeNode r = new LetCodeUtils.TreeNode(1,
-                new LetCodeUtils.TreeNode(-2,
-                        new LetCodeUtils.TreeNode(1,
-                                new LetCodeUtils.TreeNode(-1, null, null), null),
-                        new LetCodeUtils.TreeNode(3, null, null)),
-                new LetCodeUtils.TreeNode(-3,
-                        new LetCodeUtils.TreeNode(-2, null, null), null));
-        LetCodeUtils.maxPathSum(r);
-
-        System.out.println("OK");
-    }
-
-    @Test
     void test_canFinish_forGraph() {
 //        int[][] array = {
 //                {1, 4},
@@ -373,5 +368,18 @@ public class AlgorithmsTest {
         assertEquals(225, calculator.calculate("pow(add(1,mul(2,add(3,pow(2,2)))),2)"));
     }
 
+    @Test
+    void test_stack_simplifyPath() {
+        String res = new Stack().simplifyPath("/home/user/Documents/../Pictures");
+        assertEquals("/home/user/Pictures", res);
+    }
 
+    @Test
+    void testEvalRPN() {
+        var rpnCalculator = new Stack();
+        assertEquals(9, rpnCalculator.evalRPN(new String [] {"2","1","+","3","*"}));
+        assertEquals(6, rpnCalculator.evalRPN(new String [] {"4","13","5","/","+"}));
+        assertEquals(22,
+            rpnCalculator.evalRPN(new String [] {"10","6","9","3","+","-11","*","/","*","17","+","5","+"}));
+    }
 }
