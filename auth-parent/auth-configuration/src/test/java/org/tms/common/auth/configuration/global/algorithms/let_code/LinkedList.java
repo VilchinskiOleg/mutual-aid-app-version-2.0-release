@@ -2,7 +2,7 @@ package org.tms.common.auth.configuration.global.algorithms.let_code;
 
 import java.util.*;
 
-public class LinkedListTasks {
+public class LinkedList {
 
     /**
      * Definition for singly-linked list Node :
@@ -331,7 +331,10 @@ public class LinkedListTasks {
      * 82. Remove Duplicates from Sorted List II
      */
 
-    public static ListNode deleteDuplicates(ListNode head) {
+    /**
+     * [1.] Straightforward solution :
+     */
+    public static ListNode deleteDuplicates_straightforward(ListNode head) {
         ListNode node = head;
         boolean isTracking = false;
         ListNode processedPart = null;
@@ -359,6 +362,119 @@ public class LinkedListTasks {
             } else {
                 head = null;
             }
+        }
+
+        return head;
+    }
+
+    /**
+     * [2.] More elegant solution :
+     */
+    public static ListNode deleteDuplicates_elegant(ListNode head) {
+
+        // Initialize "dummy" node to handle head removals :
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+
+        ListNode prev = dummy;
+        ListNode cur = head;
+
+        while (cur != null && cur.next != null) {
+            if (cur.val == cur.next.val) {
+                // 1.1. Skip all nodes with the same value :
+                while (cur.next != null && cur.val == cur.next.val) {
+                    cur = cur.next;
+                }
+                // 1.2. Remove duplicates :
+                prev.next = cur.next;
+            } else {
+                // 2. Move to next distinct node :
+                prev = prev.next; // or just -> prev = cur;
+            }
+            cur = cur.next;
+        }
+
+        return dummy.next;
+    }
+
+
+
+    /**
+     * 61. Rotate List
+     *
+     * Given the head of a linked list, rotate the list to the right by k places.
+     */
+
+    /**
+     * 1. Not optimised
+     */
+    public ListNode rotateRight(ListNode head, int k) {
+        if (k == 0 || head == null || head.next == null) return head;
+
+        ListNode pointer = head;
+        ListNode delayedPointer = head;
+
+        // 1. Define intermediate node, where list should be splitted :
+        while (pointer.next != null || k > 0) {
+            if (k == 0) {
+                pointer = pointer.next;
+                delayedPointer = delayedPointer.next;
+            } else {
+                pointer = (pointer.next == null) ? head : pointer.next;
+                k--;
+            }
+        }
+
+        // 2. Rebuild (concat) new list using sub-lists :
+        if (pointer != delayedPointer) {
+            ListNode newHead = delayedPointer.next; // delayedPointer.next -> becomes a head of new list
+            delayedPointer.next = null;             // delayedPointer      -> becomes a tail of new list
+
+            pointer.next = head;                    // join two sub-lists together
+            head = newHead;
+        }
+
+        return head;
+    }
+
+    /**
+     * 2. Optimised. Calculates size of list after first completed loop
+     * and then reduce 'k' in order to avoid additional loops.
+     */
+    public ListNode rotateRight_optimized(ListNode head, int k) {
+        if (k == 0 || head == null || head.next == null) return head;
+
+        ListNode pointer = head;
+        ListNode delayedPointer = head;
+
+        int counter = 0;
+        int listSize = 0;
+
+        // 1. Define intermediate node, where list should be splitted :
+        while (pointer.next != null || counter < k) {
+            if (counter == k) {
+                pointer = pointer.next;
+                delayedPointer = delayedPointer.next;
+            } else {
+                // Optimisation :
+                if (listSize++ < k && pointer.next == null) {
+                    k = k % listSize;
+                    counter = 0;
+                } else {
+                    counter++;
+                }
+
+                pointer = (pointer.next == null) ? head : pointer.next;
+            }
+        }
+
+        // 2. Rebuild (concat) new list using sub-lists :
+        if (pointer != delayedPointer) {
+            ListNode newHead = delayedPointer.next;
+            delayedPointer.next = null;
+
+            pointer.next = head;
+            head = newHead;
         }
 
         return head;

@@ -23,6 +23,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.tms.common.auth.configuration.global.algorithms.let_code.Array;
 import org.tms.common.auth.configuration.global.algorithms.let_code.LetCodeUtils;
+import org.tms.common.auth.configuration.global.algorithms.let_code.LinkedList;
+import org.tms.common.auth.configuration.global.algorithms.let_code.LinkedList.ListNode;
 import org.tms.common.auth.configuration.global.algorithms.let_code.Stack;
 import org.tms.common.auth.configuration.global.algorithms.let_code.StrCalculator;
 import org.tms.common.auth.configuration.global.algorithms.let_code.TwoPointers;
@@ -381,5 +383,18 @@ public class AlgorithmsTest {
         assertEquals(6, rpnCalculator.evalRPN(new String [] {"4","13","5","/","+"}));
         assertEquals(22,
             rpnCalculator.evalRPN(new String [] {"10","6","9","3","+","-11","*","/","*","17","+","5","+"}));
+    }
+
+    @Test
+    void test_linkedList_rotateRight() {
+        var ll = new LinkedList();
+
+        var head1 = new ListNode(1, new ListNode(2, new ListNode(3, new ListNode(4, new ListNode(5)))));
+        var res1 = ll.rotateRight_optimized(head1, 2);
+
+        var head2 = new ListNode(0, new ListNode(1, new ListNode(2)));
+        var res2 = ll.rotateRight_optimized(head2, 4);
+
+        System.out.println("OK");
     }
 }
