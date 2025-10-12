@@ -1,6 +1,8 @@
 package org.tms.common.auth.configuration.global.algorithms.let_code;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LinkedList {
 
@@ -332,7 +334,7 @@ public class LinkedList {
      */
 
     /**
-     * [1.] Straightforward solution :
+     * 82.1. Straightforward solution :
      */
     public static ListNode deleteDuplicates_straightforward(ListNode head) {
         ListNode node = head;
@@ -368,7 +370,7 @@ public class LinkedList {
     }
 
     /**
-     * [2.] More elegant solution :
+     * 82.2. More elegant solution :
      */
     public static ListNode deleteDuplicates_elegant(ListNode head) {
 
@@ -406,7 +408,7 @@ public class LinkedList {
      */
 
     /**
-     * 1. Not optimised
+     * 61.1. Not optimised :
      */
     public ListNode rotateRight(ListNode head, int k) {
         if (k == 0 || head == null || head.next == null) return head;
@@ -438,8 +440,9 @@ public class LinkedList {
     }
 
     /**
-     * 2. Optimised. Calculates size of list after first completed loop
-     * and then reduce 'k' in order to avoid additional loops.
+     * 61.2. Optimised :
+     *
+     * Calculates size of list after first completed loop and then reduce 'k' in order to avoid additional loops.
      */
     public ListNode rotateRight_optimized(ListNode head, int k) {
         if (k == 0 || head == null || head.next == null) return head;
@@ -479,4 +482,41 @@ public class LinkedList {
 
         return head;
     }
+
+
+
+    /**
+     * 86. Partition List
+     *
+     * Given the head of a linked list and a value x, partition it such that all nodes less
+     * than x come before nodes greater than or equal to x.
+     *
+     * You should preserve the original relative order of the nodes in each of the two partitions.
+     */
+
+    public ListNode partition(ListNode head, int x) {
+
+        ListNode dummyBigHead = new ListNode(-1);
+        ListNode bigCurr = dummyBigHead;
+
+        ListNode dummySmallHead = new ListNode(-1);
+        ListNode smallCurr = dummySmallHead;
+
+        while (head != null) {
+            if (head.val < x) {
+                smallCurr.next = head;
+                smallCurr = smallCurr.next;
+            } else {
+                bigCurr.next = head;
+                bigCurr = bigCurr.next;
+            }
+            ListNode nextNode = head.next;
+            head.next = null;
+            head = nextNode;
+        }
+
+        smallCurr.next = dummyBigHead.next;
+        return dummySmallHead.next;
+    }
+
 }
