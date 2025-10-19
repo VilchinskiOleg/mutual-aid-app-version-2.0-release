@@ -232,6 +232,52 @@ public class Stack {
 
 
   /**
+   * 224. Basic Calculator
    *
+   * Given a string s representing a valid expression, implement a basic calculator to evaluate it,
+   * and return the result of the evaluation.
+   *
+   * Note: You are not allowed to use any built-in function which evaluates strings as mathematical
+   * expressions, such as eval().
    */
+
+  public int calculate(String s) {
+
+    Deque<Integer> stack = new LinkedList<>();
+
+    int result = 0;
+    int number = 0;
+    int sign = 1;
+
+    for (int i = 0; i < s.length(); i++) {
+      char curr = s.charAt(i);
+
+      if (Character.isDigit(curr)) {
+        number = (10 * number) + (curr - '0');
+      } else if (curr == '+') {
+        result += sign * number; // sign defined on previous iteration
+        sign = 1;
+        number = 0;
+      } else if (curr == '-') {
+        result += sign * number; // sign defined on previous iteration
+        sign = -1;
+        number = 0;
+      } else if (curr == '(') {
+        // store into stack "tmpRes" and "+/-" from "tmpRes +/- (...)" expr :
+        stack.push(result);
+        stack.push(sign);
+        sign = 1;
+        result = 0;
+      } else if (curr == ')') {
+        result += sign * number;
+        number = 0;
+        result *= stack.pop(); // update sign for 'b' (getting it from stack)
+        result = stack.pop() + result;
+      }
+    }
+
+    return (number == 0)
+        ? result
+        : result + sign * number;
+  }
 }
