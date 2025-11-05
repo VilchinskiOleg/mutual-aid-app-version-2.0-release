@@ -1,4 +1,4 @@
-package org.tms.common.auth.configuration.global.algorithms.let_code;
+package org.tms.common.auth.configuration.global.algorithms.model;
 
 import java.util.Map;
 import java.util.function.BiFunction;
