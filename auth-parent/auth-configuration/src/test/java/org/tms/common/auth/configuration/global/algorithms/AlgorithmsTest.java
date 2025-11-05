@@ -26,10 +26,11 @@ import org.tms.common.auth.configuration.global.algorithms.let_code.LetCodeUtils
 import org.tms.common.auth.configuration.global.algorithms.let_code.LinkedList;
 import org.tms.common.auth.configuration.global.algorithms.let_code.LinkedList.ListNode;
 import org.tms.common.auth.configuration.global.algorithms.let_code.Stack;
-import org.tms.common.auth.configuration.global.algorithms.let_code.StrCalculator;
+import org.tms.common.auth.configuration.global.algorithms.model.StrCalculator;
 import org.tms.common.auth.configuration.global.algorithms.let_code.TwoPointers;
-import org.tms.common.auth.configuration.global.algorithms.model.BubbleSortUtil;
-import org.tms.common.auth.configuration.global.algorithms.model.FastSortUtil;
+import org.tms.common.auth.configuration.global.algorithms.model.sorting.BubbleSortUtil;
+import org.tms.common.auth.configuration.global.algorithms.model.sorting.BucketSortUtil;
+import org.tms.common.auth.configuration.global.algorithms.model.sorting.QuickSortUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.FindPairToSumUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher;
 
@@ -61,8 +62,32 @@ public class AlgorithmsTest {
         List<Integer> array = Arrays.asList(2, 33, 5, 11, 5, 7, 23, 3, 45, 45);
         log.info("Before: " + array);
 
-        var sortedArray = FastSortUtil.sort(array);
+        var sortedArray = QuickSortUtil.sort(array);
         log.info("After: " + sortedArray);
+    }
+
+    @Test
+    void fastSortTest_forArray() {
+        Integer[] intArr = new Integer[] {2, 33, 5, 11, 5, 7, 23, 3, 45, 45};
+        log.info("Before: " + Arrays.toString(intArr));
+
+        QuickSortUtil.sort(intArr, Integer::compareTo);
+        log.info("After: " + Arrays.toString(intArr));
+
+        String[] strArr = new String[] {"Zoe", "Alice", "John", "Bob", "Charlie", "Eve"};
+        log.info("Before: " + Arrays.toString(strArr));
+
+        QuickSortUtil.sort(strArr, String::compareTo);
+        log.info("After: " + Arrays.toString(strArr));
+    }
+
+    @Test
+    void bucketSortTest() {
+        int[] arr = new int[] {9, 3, 5, 1, 4, 7, 2, 3, 5, 0};
+        log.info("Before: " + Arrays.toString(arr));
+
+        BucketSortUtil.sort(arr, 9);
+        log.info("After: " + Arrays.toString(arr));
     }
 
 
@@ -183,18 +208,18 @@ public class AlgorithmsTest {
     void testMergingSortedArray(){
         int[] result;
 
-        result = LetCodeUtils.mergeSortedArrays_IntoNewOne(new int[] {2,5,6}, 3, new int[] {1,2,3,0,0,0}, 3);
+        result = Array.mergeSortedArrays_IntoNewOne(new int[] {2,5,6}, 3, new int[] {1,2,3,0,0,0}, 3);
         System.out.println(Arrays.toString(result));
-        result = LetCodeUtils.mergeSortedArrays_IntoNewOne(new int[] {2,5,6}, 3, new int[] {1,2,3}, 3);
+        result = Array.mergeSortedArrays_IntoNewOne(new int[] {2,5,6}, 3, new int[] {1,2,3}, 3);
         System.out.println(Arrays.toString(result));
-        result = LetCodeUtils.mergeSortedArrays_IntoNewOne(new int[] {1,2,3,0,0,0}, 3, new int[] {2,5,6}, 3);
+        result = Array.mergeSortedArrays_IntoNewOne(new int[] {1,2,3,0,0,0}, 3, new int[] {2,5,6}, 3);
         System.out.println(Arrays.toString(result));
-        result = LetCodeUtils.mergeSortedArrays_IntoNewOne(new int[] {1,2,3,}, 3, new int[] {2,5,6}, 3);
+        result = Array.mergeSortedArrays_IntoNewOne(new int[] {1,2,3,}, 3, new int[] {2,5,6}, 3);
         System.out.println(Arrays.toString(result));
 
-        result = LetCodeUtils.mergeSortedArrays_IntoNewOne(new int[] {0}, 0, new int[] {1}, 1);
+        result = Array.mergeSortedArrays_IntoNewOne(new int[] {0}, 0, new int[] {1}, 1);
         System.out.println(Arrays.toString(result));
-        result = LetCodeUtils.mergeSortedArrays_IntoNewOne(new int[] {1}, 1, new int[] {}, 0);
+        result = Array.mergeSortedArrays_IntoNewOne(new int[] {1}, 1, new int[] {}, 0);
         System.out.println(Arrays.toString(result));
     }
 
@@ -202,7 +227,7 @@ public class AlgorithmsTest {
     void testMergingIntoFirst(){
         int[] num1 = {1,2,3,0,0,0};
 
-        LetCodeUtils.mergeSortedArrays_IntoFirstOne_NoExtraMemoryUsage(num1, 3, new int[] {2,5,6}, 3);
+        Array.mergeSortedArrays_IntoFirstOne_NoExtraMemoryUsage(num1, 3, new int[] {2,5,6}, 3);
         System.out.println(Arrays.toString(num1));
     }
 

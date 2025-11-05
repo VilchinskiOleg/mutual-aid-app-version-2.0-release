@@ -1,9 +1,12 @@
-package org.tms.common.auth.configuration.global.algorithms.model;
+package org.tms.common.auth.configuration.global.algorithms.model.sorting;
 
+/**
+ * Complexity time: O(n^2)
+ */
 public class BubbleSortUtil {
 
     /**
-     * Ascending sort.
+     * Ascending sort :
      */
     public static void sortAsc(int[] arr) {
 
@@ -19,7 +22,7 @@ public class BubbleSortUtil {
     }
 
     /**
-     * Descending sort.
+     * Descending sort :
      */
     public static void sortDesc(int[] arr) {
 

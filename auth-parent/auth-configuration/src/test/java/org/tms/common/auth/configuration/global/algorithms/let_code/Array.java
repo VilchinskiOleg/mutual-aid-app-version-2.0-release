@@ -8,6 +8,88 @@ import java.util.stream.IntStream;
 public class Array {
 
     /**
+     * 88. Merge Sorted Array
+     *
+     * You are given two integer arrays nums1 and nums2, sorted in non-decreasing order,
+     * and two integers m and n, representing the number of elements in nums1 and nums2 respectively.
+     *
+     * Merge nums1 and nums2 into a single array sorted in non-decreasing order.
+     *
+     * The final sorted array should not be returned by the function, but instead be stored inside
+     * the array nums1. To accommodate this, nums1 has a length of m + n, where the first m elements
+     * denote the elements that should be merged, and the last n elements are set to 0 and
+     * should be ignored. nums2 has a length of n.
+     */
+
+    /**
+     * Option #1. Speed -> O(m + n). But return new array (uses additional memory) :
+     */
+    public static int[] mergeSortedArrays_IntoNewOne(int[] nums1, int m, int[] nums2, int n){
+
+        int [] res = new int [m + n];
+
+        for (int mCur = m, nCur = n; !(mCur == 0 && nCur == 0);){
+
+            int index = (m + n) - (mCur + nCur);
+
+            if ( mCur != 0
+                && ( nCur == 0 || nums1[m - mCur] <= nums2[n - nCur] ) )
+            {
+                res[index] = nums1[m - mCur];
+                mCur--;
+            } else {
+                res[index] = nums2[n - nCur];
+                nCur--;
+            }
+        }
+
+        return res;
+    }
+
+    /**
+     * Option #2. Speed -> O(m + n), but uses additional memory subNum1 = num1/2 :
+     */
+    public static void mergeSortedArrays_IntoFirstOne(int[] nums1, int m, int[] nums2, int n){
+
+        int [] subNums1 = Arrays.copyOfRange(nums1, 0, m);
+
+        for (int mCur = m, nCur = n; !(mCur == 0 && nCur == 0);){
+
+            int index = (m + n) - (mCur + nCur);
+
+            if ( mCur != 0
+                && ( nCur == 0 || subNums1[m - mCur] <= nums2[n - nCur] ) )
+            {
+                nums1[index] = subNums1[m - mCur];
+                mCur--;
+            } else {
+                nums1[index] = nums2[n - nCur];
+                nCur--;
+            }
+        }
+    }
+
+    /**
+     * Option #3. Speed -> O(m + n), and without additional memory usage. The BEST Option :
+     */
+    public static void mergeSortedArrays_IntoFirstOne_NoExtraMemoryUsage(int[] nums1, int m, int[] nums2, int n) {
+
+        for (int mCur = m - 1, nCur = n - 1; !(mCur < 0 && nCur < 0); ) {
+
+            int index = mCur + nCur + 1;
+
+            if ( mCur >= 0 && (nCur < 0 || nums1[mCur] >= nums2[nCur]) ) {
+                nums1[index] = nums1[mCur];
+                mCur--;
+            } else {
+                nums1[index] = nums2[nCur];
+                nCur--;
+            }
+        }
+    }
+
+
+    /**
      * 189. Rotate Array
      *
      * Given an integer array nums, rotate the array to the right by k steps, where k is non-negative.
