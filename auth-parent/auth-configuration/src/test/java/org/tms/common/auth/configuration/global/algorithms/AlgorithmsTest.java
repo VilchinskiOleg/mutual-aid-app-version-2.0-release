@@ -2,6 +2,7 @@ package org.tms.common.auth.configuration.global.algorithms;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,6 +31,7 @@ import org.tms.common.auth.configuration.global.algorithms.model.StrCalculator;
 import org.tms.common.auth.configuration.global.algorithms.let_code.TwoPointers;
 import org.tms.common.auth.configuration.global.algorithms.model.sorting.BubbleSortUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.sorting.BucketSortUtil;
+import org.tms.common.auth.configuration.global.algorithms.model.sorting.MergeSortUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.sorting.QuickSortUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.FindPairToSumUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher;
@@ -56,9 +58,26 @@ public class AlgorithmsTest {
         System.out.println(Arrays.toString(array));
     }
 
+    @Test
+    void mergeSortTest() {
+        //Integer[] intArr = new Integer[] {2, 33, 5, 11, 5, 7, 23, 3, 45, 45};
+        int[] array = {2, 33, 5, 11, 5, 7, 23, 3, 45, 45};
+        log.info("Before: " + Arrays.toString(array));
+
+        MergeSortUtil.sort(array);
+        log.info("After: " + Arrays.toString(array));
+        assertArrayEquals(new int[]{2, 3, 5, 5, 11, 7, 23, 33, 45, 45}, array);
+
+//        String[] strArr = new String[] {"Zoe", "Alice", "John", "Bob", "Charlie", "Eve"};
+//        log.info("Before: " + Arrays.toString(strArr));
+//
+//        QuickSortUtil.sort(strArr, String::compareTo);
+//        log.info("After: " + Arrays.toString(strArr));
+    }
+
 
     @Test
-    void fastSortTest() {
+    void fastSortTest_I() {
         List<Integer> array = Arrays.asList(2, 33, 5, 11, 5, 7, 23, 3, 45, 45);
         log.info("Before: " + array);
 
@@ -67,7 +86,7 @@ public class AlgorithmsTest {
     }
 
     @Test
-    void fastSortTest_forArray() {
+    void fastSortTest_II() {
         Integer[] intArr = new Integer[] {2, 33, 5, 11, 5, 7, 23, 3, 45, 45};
         log.info("Before: " + Arrays.toString(intArr));
 

@@ -20,14 +20,14 @@ public class QuickSortUtil {
      * and swapping values positions in scope of the same array.
      *
      * @param array
-     * @param comp
+     * @param fun
      * @param <T>
      */
-    public static <T> void sort(T[] array, Comparator<T> comp) {
-        doSortInAscOrder(array, 0, array.length - 1, comp);
+    public static <T> void sort(T[] array, Comparator<T> fun) {
+        doSortInAscOrder(array, 0, array.length - 1, fun);
     }
 
-    private static <T> void doSortInAscOrder(T[] array, int startInd, int endInd, Comparator<T> comp) {
+    private static <T> void doSortInAscOrder(T[] array, int startInd, int endInd, Comparator<T> fun) {
         if (endInd - startInd > 0) {
             T pivotVal = array[endInd]; // can choose other position
             int curPosition = startInd;
@@ -36,7 +36,7 @@ public class QuickSortUtil {
             // Move all smaller (or equal) values to left part :
             while (curPosition <= endInd) {
                 // if array[curPosition] <= pivotVal :
-                if (comp.compare(array[curPosition], pivotVal) <= 0) {
+                if (fun.compare(array[curPosition], pivotVal) <= 0) {
                     // Swap values :
                     T tmp = array[nextSmallerValSlot];
                     array[nextSmallerValSlot] = array[curPosition];
@@ -49,8 +49,8 @@ public class QuickSortUtil {
 
             int middleInd = nextSmallerValSlot - 1; // because pivot val will be swapped last
             // Do next iteration (excluding pivot val) :
-            doSortInAscOrder(array, startInd, middleInd - 1, comp);
-            doSortInAscOrder(array, middleInd + 1, endInd, comp);
+            doSortInAscOrder(array, startInd, middleInd - 1, fun);
+            doSortInAscOrder(array, middleInd + 1, endInd, fun);
         }
     }
 
