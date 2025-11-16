@@ -646,10 +646,14 @@ public class LinkedList {
 
         private void resizeLruCacheIfNecessary() {
             if (++size > hashTable.length) { // size > capacity
+                // 1. remove from HashTable :
                 hashTable[(hashTable.length - 1) & hash(head.key)] = (head.next != null)
                     ? head.next : null;
+                // 2. update LRU links :
                 head = head.right;
                 head.left = null;
+                // 3. update size :
+                size--;
             }
         }
 
