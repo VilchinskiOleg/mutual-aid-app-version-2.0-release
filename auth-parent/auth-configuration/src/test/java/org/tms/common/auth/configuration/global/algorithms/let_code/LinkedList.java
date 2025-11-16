@@ -576,10 +576,18 @@ public class LinkedList {
                 updateNodeAsLastCalled(eqNodeData[1]);
             } else {
                 newNode = new EntryNode(tail, null, hash, key, value, null);
+                // 1. Update HashTable :
                 if (first == null) {
                     hashTable[(hashTable.length - 1) & hash] = newNode;
                 } else { // eqNodeData[1] == null
                     eqNodeData[0].next = newNode;
+                }
+                // 2. Update LRU links :
+                if (tail == null) {
+                    initLruPointers(newNode);
+                } else {
+                    tail.right = newNode;
+                    tail = newNode;
                 }
                 resizeLruCacheIfNecessary();
             }
@@ -613,6 +621,11 @@ public class LinkedList {
                 }
             }
             return new EntryNode[] {prev, node};
+        }
+
+        private void initLruPointers(EntryNode node) {
+            head = node;
+            tail = node;
         }
 
         private void updateNodeAsLastCalled(EntryNode node) {
