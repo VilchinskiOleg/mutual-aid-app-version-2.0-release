@@ -3,6 +3,7 @@ package org.tms.common.auth.configuration.global.algorithms.let_code;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.AllArgsConstructor;
 
 public class LinkedList {
 
@@ -28,12 +29,12 @@ public class LinkedList {
     /**
      * Definition for a Node :
      */
-    public static class Node {
+    public static class ReferencedListNode {
         int val;
-        public Node next;
-        public Node random;
+        public ReferencedListNode next;
+        public ReferencedListNode random;
 
-        public Node(int val) {
+        public ReferencedListNode(int val) {
             this.val = val;
             this.next = null;
             this.random = null;
@@ -182,16 +183,16 @@ public class LinkedList {
     /**
      * [1.] ... Works only if all values are unique ...:
      */
-    public static Node copyRandomList_partlySolution(Node head) {
-        Node replicaHead = new Node(0); // mock-node
-        Node replica = replicaHead;
+    public static ReferencedListNode copyRandomList_partlySolution(ReferencedListNode head) {
+        ReferencedListNode replicaHead = new ReferencedListNode(0); // mock-node
+        ReferencedListNode replica = replicaHead;
         // key to associate node position inside the list + node itself :
-        Map<Integer, Node> futureNodes = new HashMap<>();
-        Map<Integer, Node> visitedNodes = new HashMap<>();
+        Map<Integer, ReferencedListNode> futureNodes = new HashMap<>();
+        Map<Integer, ReferencedListNode> visitedNodes = new HashMap<>();
 
         while (head != null) {
             replica.next = futureNodes.containsKey(head.val)
-                    ? futureNodes.remove(head.val) : new Node(head.val);
+                    ? futureNodes.remove(head.val) : new ReferencedListNode(head.val);
             replica = replica.next;
 
             if (head.random != null) {
@@ -200,7 +201,7 @@ public class LinkedList {
                 } else if (visitedNodes.containsKey(head.random.val)) {
                     replica.random = visitedNodes.get(head.random.val);
                 } else {
-                    var random = new Node(head.random.val);
+                    var random = new ReferencedListNode(head.random.val);
                     replica.random = random;
                     futureNodes.put(random.val, random);
                 }
@@ -216,14 +217,14 @@ public class LinkedList {
     /**
      * [2.] ... The best solution ...:
      */
-    public static Node copyRandomList(Node head) {
+    public static ReferencedListNode copyRandomList(ReferencedListNode head) {
         if (head == null) return null;
 
         // 1. Create replica nodes and incorporate them into existed list (A -> A' -> B -> B') :
         var nodeCur = head;
         while (nodeCur != null) {
             // Create deap copy :
-            var nodeReplica = new Node(nodeCur.val);
+            var nodeReplica = new ReferencedListNode(nodeCur.val);
             nodeReplica.next = nodeCur.next;
             nodeReplica.random = nodeCur.random;
             // Do like so : A -> A' :
@@ -240,8 +241,8 @@ public class LinkedList {
         }
 
         // 3. Transform   A -> A' -> B -> B'   to   A' -> B'  and  A -> B :
-        Node headReplica = null;
-        Node nodeReplica = null;
+        ReferencedListNode headReplica = null;
+        ReferencedListNode nodeReplica = null;
         nodeCur = head;
         while (nodeCur != null) {
             if (nodeReplica != null) nodeReplica.next = nodeCur.next;
@@ -519,4 +520,137 @@ public class LinkedList {
         return dummySmallHead.next;
     }
 
+
+
+    /**
+     * 146. LRU Cache
+     *
+     * Design a data structure that follows the constraints of a Least Recently Used (LRU) cache.
+     *
+     * Implement the LRUCache class:
+     *
+     * LRUCache(int capacity) Initialize the LRU cache with positive size capacity.
+     * int get(int key) Return the value of the key if the key exists, otherwise return -1.
+     * void put(int key, int value) Update the value of the key if the key exists. Otherwise,
+     * add the key-value pair to the cache. If the number of keys exceeds the capacity from this operation,
+     * evict the least recently used key.
+     * The functions get and put must each run in O(1) average time complexity.
+     */
+
+    public static class LRUCache {
+
+        private EntryNode[] hashTable;
+
+        private EntryNode head;
+        private EntryNode tail;
+        private int size = 0;
+
+        public LRUCache(int capacity) {
+            hashTable = new EntryNode[capacity];
+        }
+
+        public int get(int key) {
+            int hash = hash(key);
+            EntryNode first;
+            EntryNode[] eqNodeData;
+
+            if ((first = hashTable[(hashTable.length - 1) & hash]) != null
+                && (eqNodeData = getEqualNodeOrPrevious(hash, key, first))[1] != null) {
+
+                updateNodeAsLastCalled(eqNodeData[1]);
+                return eqNodeData[1].value;
+            } else {
+                return -1; // not found
+            }
+        }
+
+        public void put(int key, int value) {
+            int hash = hash(key);
+            EntryNode first, newNode;
+            EntryNode[] eqNodeData = null;
+
+            if ((first = hashTable[(hashTable.length - 1) & hash]) != null
+                && (eqNodeData = getEqualNodeOrPrevious(hash, key, first))[1] != null) {
+
+                eqNodeData[1].value = value;
+                updateNodeAsLastCalled(eqNodeData[1]);
+            } else {
+                newNode = new EntryNode(tail, null, hash, key, value, null);
+                if (first == null) {
+                    hashTable[(hashTable.length - 1) & hash] = newNode;
+                } else { // eqNodeData[1] == null
+                    eqNodeData[0].next = newNode;
+                }
+                resizeLruCacheIfNecessary();
+            }
+        }
+
+        private int hash(int key) {
+            int h;
+            return (h = Integer.hashCode(key)) ^ (h >>> 16);
+        }
+
+        private EntryNode getNode(int hash, int key) {
+            EntryNode node = hashTable[(hashTable.length - 1) & hash];
+            while (node != null) {
+                if (hash == node.hash && key == node.key) {
+                    break;
+                } else {
+                    node = node.next;
+                }
+            }
+            return node;
+        }
+
+        private EntryNode[] getEqualNodeOrPrevious(int hash, int key, EntryNode first) { // !!
+            EntryNode prev = null, node = first;
+            while (node != null) {
+                if (hash == node.hash && key == node.key) {
+                    break;
+                } else {
+                    prev = node;
+                    node = node.next;
+                }
+            }
+            return new EntryNode[] {prev, node};
+        }
+
+        private void updateNodeAsLastCalled(EntryNode node) {
+            if (node.right != null) {
+                // 1. update left reference (remove node from the middle/head) :
+                if (node.left == null) {
+                    head = node.right;
+                } else {
+                    node.left.right = node.right;
+                }
+                // 2. move node to the end of list :
+                tail.right = node;
+                node.left = tail;
+                node.right = null;
+                tail = node;
+            }
+        }
+
+        private void resizeLruCacheIfNecessary() {
+            if (++size > hashTable.length) { // size > capacity
+                hashTable[(hashTable.length - 1) & hash(head.key)] = (head.next != null)
+                    ? head.next : null;
+                head = head.right;
+                head.left = null;
+            }
+        }
+
+        @AllArgsConstructor
+        private class EntryNode{
+
+            private EntryNode left;
+            private EntryNode right;
+
+            private int hash;
+            private Integer key;
+            private Integer value;
+
+            private EntryNode next;
+        }
+    }
 }
