@@ -3,7 +3,6 @@ package org.tms.common.auth.configuration.global.algorithms.let_code;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.AllArgsConstructor;
 
 public class LinkedList {
 
@@ -537,137 +536,186 @@ public class LinkedList {
      * The functions get and put must each run in O(1) average time complexity.
      */
 
-    public static class LRUCache {
+    public class LRUCache {
 
-        private EntryNode[] hashTable;
+        // HashTable (Array of linked list heads)
+        private final EntryNode[] hashTable;
+        private final int capacity;
 
+        // LRU Pointers (Doubly Linked List)
         private EntryNode head;
         private EntryNode tail;
         private int size = 0;
 
         public LRUCache(int capacity) {
-            hashTable = new EntryNode[capacity];
+            this.capacity = capacity;
+            this.hashTable = new EntryNode[capacity]; // Capacity used as array size
         }
+
+        // --- Core API Methods ---
 
         public int get(int key) {
             int hash = hash(key);
-            EntryNode first;
-            EntryNode[] eqNodeData;
+            int bucketIndex = getBucketIndex(hash);
 
-            if ((first = hashTable[(hashTable.length - 1) & hash]) != null
-                && (eqNodeData = getEqualNodeOrPrevious(hash, key, first))[1] != null) {
+            EntryNode first = hashTable[bucketIndex];
+            EntryNode foundNode = getNodeInChain(hash, key, first);
 
-                updateNodeAsLastCalled(eqNodeData[1]);
-                return eqNodeData[1].value;
-            } else {
-                return -1; // not found
+            if (foundNode != null) {
+                moveToTail(foundNode);
+                return foundNode.value;
             }
+            return -1; // Not found
         }
 
         public void put(int key, int value) {
             int hash = hash(key);
-            EntryNode first, newNode;
-            EntryNode[] eqNodeData = null;
+            int bucketIndex = getBucketIndex(hash);
+            EntryNode first = hashTable[bucketIndex];
 
-            if ((first = hashTable[(hashTable.length - 1) & hash]) != null
-                && (eqNodeData = getEqualNodeOrPrevious(hash, key, first))[1] != null) {
+            // Check if key already exists (Hit)
+            EntryNode foundNode = getNodeInChain(hash, key, first);
 
-                eqNodeData[1].value = value;
-                updateNodeAsLastCalled(eqNodeData[1]);
+            if (foundNode != null) {
+                // Update existing node (Hit)
+                foundNode.value = value;
+                moveToTail(foundNode);
             } else {
-                newNode = new EntryNode(tail, null, hash, key, value, null);
-                // 1. Update HashTable :
-                if (first == null) {
-                    hashTable[(hashTable.length - 1) & hash] = newNode;
-                } else { // eqNodeData[1] == null
-                    eqNodeData[0].next = newNode;
-                }
-                // 2. Update LRU links :
-                if (tail == null) {
-                    initLruPointers(newNode);
-                } else {
-                    tail.right = newNode;
-                    tail = newNode;
-                }
-                resizeLruCacheIfNecessary();
+                // New node insertion (Miss)
+                EntryNode newNode = new EntryNode(hash, key, value);
+
+                // Handle Eviction first to ensure space
+                ensureCapacity();
+
+                // 1. Add to Hash Chain (front of the list for simplicity)
+                newNode.next = hashTable[bucketIndex];
+                hashTable[bucketIndex] = newNode;
+
+                // 2. Add to LRU list (tail)
+                linkToTail(newNode);
+                size++;
             }
         }
 
-        private int hash(int key) {
-            int h;
-            return (h = Integer.hashCode(key)) ^ (h >>> 16);
-        }
+        // --- Helper Methods ---
 
-        private EntryNode getNode(int hash, int key) {
-            EntryNode node = hashTable[(hashTable.length - 1) & hash];
-            while (node != null) {
-                if (hash == node.hash && key == node.key) {
-                    break;
-                } else {
-                    node = node.next;
-                }
+        // Replaced initLruPointers and parts of put
+        private void linkToTail(EntryNode node) {
+            node.left = tail;
+            node.right = null; // Node is the new tail
+
+            if (tail != null) {
+                tail.right = node;
             }
-            return node;
-        }
 
-        private EntryNode[] getEqualNodeOrPrevious(int hash, int key, EntryNode first) { // !!
-            EntryNode prev = null, node = first;
-            while (node != null) {
-                if (hash == node.hash && key == node.key) {
-                    break;
-                } else {
-                    prev = node;
-                    node = node.next;
-                }
-            }
-            return new EntryNode[] {prev, node};
-        }
-
-        private void initLruPointers(EntryNode node) {
-            head = node;
             tail = node;
+
+            if (head == null) {
+                head = node;
+            }
         }
 
-        private void updateNodeAsLastCalled(EntryNode node) {
-            if (node.right != null) {
-                // 1. update left reference (remove node from the middle/head) :
-                if (node.left == null) {
+        // Replaced updateNodeAsLastCalled with a clearer name
+        private void moveToTail(EntryNode node) {
+            // Only proceed if it's not already the tail
+            if (node != tail) {
+                // 1. Unlink from its current position
+                if (node == head) {
                     head = node.right;
                 } else {
                     node.left.right = node.right;
                 }
-                // 2. move node to the end of list :
-                tail.right = node;
-                node.left = tail;
-                node.right = null;
-                tail = node;
+                node.right.left = node.left;
+
+                // 2. Link to the tail
+                linkToTail(node);
             }
         }
 
-        private void resizeLruCacheIfNecessary() {
-            if (++size > hashTable.length) { // size > capacity
-                // 1. remove from HashTable :
-                hashTable[(hashTable.length - 1) & hash(head.key)] = (head.next != null)
-                    ? head.next : null;
-                // 2. update LRU links :
-                head = head.right;
-                head.left = null;
-                // 3. update size :
-                size--;
+        // Replaced resizeLruCacheIfNecessary with a clearer name and fixed bug
+        private void ensureCapacity() {
+            if (size >= capacity) {
+                // 1. Evict the LRU node (head)
+                EntryNode evictedNode = head;
+
+                // 2. Remove from Hash Table (Fixes the original bug)
+                removeNodeFromChain(evictedNode);
+
+                // 3. Update LRU links
+                head = evictedNode.right;
+                if (head != null) {
+                    head.left = null;
+                } else {
+                    tail = null; // Cache is now empty
+                }
+
+                size--; // Size has decreased by one
             }
         }
 
-        @AllArgsConstructor
-        private class EntryNode{
+        // Helper to find node in the hash chain (replaces getEqualNodeOrPrevious logic)
+        private EntryNode getNodeInChain(int hash, int key, EntryNode first) {
+            EntryNode node = first;
+            while (node != null) {
+                if (hash == node.hash && key == node.key) {
+                    return node;
+                }
+                node = node.next;
+            }
+            return null;
+        }
 
-            private EntryNode left;
-            private EntryNode right;
+        // Helper to remove a node from its hash chain (used during eviction)
+        private void removeNodeFromChain(EntryNode nodeToRemove) {
+            int bucketIndex = getBucketIndex(nodeToRemove.hash);
+            EntryNode current = hashTable[bucketIndex];
+            EntryNode prev = null;
 
-            private int hash;
-            private Integer key;
-            private Integer value;
+            while (current != null && (current.hash != nodeToRemove.hash || current.key != nodeToRemove.key)) {
+                prev = current;
+                current = current.next;
+            }
 
-            private EntryNode next;
+            if (current == null) return; // Should not happen for head
+
+            if (prev == null) {
+                // Node is the first in the chain
+                hashTable[bucketIndex] = current.next;
+            } else {
+                // Node is in the middle or end
+                prev.next = current.next;
+            }
+        }
+
+        private int hash(int key) {
+            // Standard Java HashMap hash implementation
+            int h = Integer.hashCode(key);
+            return h ^ (h >>> 16);
+        }
+
+        private int getBucketIndex(int hash) {
+            return (hashTable.length - 1) & hash;
+        }
+
+        // --- EntryNode Class ---
+
+        private class EntryNode {
+            // Doubly Linked List Pointers (LRU order)
+            EntryNode left;
+            EntryNode right;
+
+            // Hash Chain Pointer
+            EntryNode next;
+
+            final int hash;
+            final int key;
+            int value;
+
+            public EntryNode(int hash, int key, int value) {
+                this.hash = hash;
+                this.key = key;
+                this.value = value;
+            }
         }
     }
 }
