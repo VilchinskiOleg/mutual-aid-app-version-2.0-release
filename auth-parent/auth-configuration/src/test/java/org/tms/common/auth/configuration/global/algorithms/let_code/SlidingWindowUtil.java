@@ -3,7 +3,7 @@ package org.tms.common.auth.configuration.global.algorithms.let_code;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SlidingWindow {
+public class SlidingWindowUtil {
 
   /**
    * 3. Longest Substring Without Repeating Characters

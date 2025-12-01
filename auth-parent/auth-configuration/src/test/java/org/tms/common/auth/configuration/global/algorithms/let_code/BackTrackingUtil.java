@@ -3,7 +3,7 @@ package org.tms.common.auth.configuration.global.algorithms.let_code;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BackTracking {
+public class BackTrackingUtil {
 
 
     /**
@@ -155,8 +155,8 @@ public class BackTracking {
     public static boolean exist(String[][] board, String word) {
         if (!(board.length > 0)) return false;
 
-        BackTracking.board = board;
-        BackTracking.word = word;
+        BackTrackingUtil.board = board;
+        BackTrackingUtil.word = word;
 
         Deque<CandidateInfo> stack = new LinkedList<>();
         Map<Map.Entry<Integer, Integer>, Integer> visitedCount =

@@ -22,12 +22,14 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-import org.tms.common.auth.configuration.global.algorithms.let_code.Array;
+import org.tms.common.auth.configuration.global.algorithms.let_code.ArrayUtil;
 import org.tms.common.auth.configuration.global.algorithms.let_code.LetCodeUtils;
-import org.tms.common.auth.configuration.global.algorithms.let_code.LinkedList;
-import org.tms.common.auth.configuration.global.algorithms.let_code.LinkedList.ListNode;
-import org.tms.common.auth.configuration.global.algorithms.let_code.Stack;
-import org.tms.common.auth.configuration.global.algorithms.let_code.TwoPointers;
+import org.tms.common.auth.configuration.global.algorithms.let_code.LinkedListUtil;
+import org.tms.common.auth.configuration.global.algorithms.let_code.LinkedListUtil.ListNode;
+import org.tms.common.auth.configuration.global.algorithms.let_code.StackUtil;
+import org.tms.common.auth.configuration.global.algorithms.let_code.TreeUtil.BSTIterator;
+import org.tms.common.auth.configuration.global.algorithms.let_code.TreeUtil.TreeNode;
+import org.tms.common.auth.configuration.global.algorithms.let_code.TwoPointersUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.FindPairToSumUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.StrCalculator;
 import org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher;
@@ -227,18 +229,18 @@ public class AlgorithmsTest {
     void testMergingSortedArray(){
         int[] result;
 
-        result = Array.mergeSortedArrays_IntoNewOne(new int[] {2,5,6}, 3, new int[] {1,2,3,0,0,0}, 3);
+        result = ArrayUtil.mergeSortedArrays_IntoNewOne(new int[] {2,5,6}, 3, new int[] {1,2,3,0,0,0}, 3);
         System.out.println(Arrays.toString(result));
-        result = Array.mergeSortedArrays_IntoNewOne(new int[] {2,5,6}, 3, new int[] {1,2,3}, 3);
+        result = ArrayUtil.mergeSortedArrays_IntoNewOne(new int[] {2,5,6}, 3, new int[] {1,2,3}, 3);
         System.out.println(Arrays.toString(result));
-        result = Array.mergeSortedArrays_IntoNewOne(new int[] {1,2,3,0,0,0}, 3, new int[] {2,5,6}, 3);
+        result = ArrayUtil.mergeSortedArrays_IntoNewOne(new int[] {1,2,3,0,0,0}, 3, new int[] {2,5,6}, 3);
         System.out.println(Arrays.toString(result));
-        result = Array.mergeSortedArrays_IntoNewOne(new int[] {1,2,3,}, 3, new int[] {2,5,6}, 3);
+        result = ArrayUtil.mergeSortedArrays_IntoNewOne(new int[] {1,2,3,}, 3, new int[] {2,5,6}, 3);
         System.out.println(Arrays.toString(result));
 
-        result = Array.mergeSortedArrays_IntoNewOne(new int[] {0}, 0, new int[] {1}, 1);
+        result = ArrayUtil.mergeSortedArrays_IntoNewOne(new int[] {0}, 0, new int[] {1}, 1);
         System.out.println(Arrays.toString(result));
-        result = Array.mergeSortedArrays_IntoNewOne(new int[] {1}, 1, new int[] {}, 0);
+        result = ArrayUtil.mergeSortedArrays_IntoNewOne(new int[] {1}, 1, new int[] {}, 0);
         System.out.println(Arrays.toString(result));
     }
 
@@ -246,7 +248,7 @@ public class AlgorithmsTest {
     void testMergingIntoFirst(){
         int[] num1 = {1,2,3,0,0,0};
 
-        Array.mergeSortedArrays_IntoFirstOne_NoExtraMemoryUsage(num1, 3, new int[] {2,5,6}, 3);
+        ArrayUtil.mergeSortedArrays_IntoFirstOne_NoExtraMemoryUsage(num1, 3, new int[] {2,5,6}, 3);
         System.out.println(Arrays.toString(num1));
     }
 
@@ -360,28 +362,28 @@ public class AlgorithmsTest {
         int [] arr1 = {1,2,3,4,5,6,7};
         int [] arr2 = {-1,-100,3,99};
 
-        Array.rotate(arr1,3);
-        Array.rotate(arr2,2);
+        ArrayUtil.rotate(arr1,3);
+        ArrayUtil.rotate(arr2,2);
         System.out.println("OK");
     }
 
     @Test
     void testMaxProfit() {
         int [] arr = {1,9,6,9,1,7,1,1,5,9,9,9};
-        assertEquals(25,  Array.maxProfit_II(arr));
+        assertEquals(25,  ArrayUtil.maxProfit_II(arr));
     }
 
     @Test
     void testCanCompleteCircuit() {
         int [] gas = {1,2,3,4,5};
         int [] cost = {3,4,5,1,2};
-        assertEquals(3,  Array.canCompleteCircuit_I(gas, cost));
+        assertEquals(3,  ArrayUtil.canCompleteCircuit_I(gas, cost));
     }
 
     @Test
     void testIsPalindrome() {
-        assertTrue(TwoPointers.isPalindrome("A man, a plan, a canal: Panama"));
-        assertFalse(TwoPointers.isPalindrome("race a car"));
+        assertTrue(TwoPointersUtil.isPalindrome("A man, a plan, a canal: Panama"));
+        assertFalse(TwoPointersUtil.isPalindrome("race a car"));
     }
 
     @Test
@@ -416,13 +418,13 @@ public class AlgorithmsTest {
 
     @Test
     void test_stack_simplifyPath() {
-        String res = new Stack().simplifyPath("/home/user/Documents/../Pictures");
+        String res = new StackUtil().simplifyPath("/home/user/Documents/../Pictures");
         assertEquals("/home/user/Pictures", res);
     }
 
     @Test
     void testEvalRPN() {
-        var rpnCalculator = new Stack();
+        var rpnCalculator = new StackUtil();
         assertEquals(9, rpnCalculator.evalRPN(new String [] {"2","1","+","3","*"}));
         assertEquals(6, rpnCalculator.evalRPN(new String [] {"4","13","5","/","+"}));
         assertEquals(22,
@@ -431,7 +433,7 @@ public class AlgorithmsTest {
 
     @Test
     void test_linkedList_rotateRight() {
-        var ll = new LinkedList();
+        var ll = new LinkedListUtil();
 
         var head1 = new ListNode(1, new ListNode(2, new ListNode(3, new ListNode(4, new ListNode(5)))));
         var res1 = ll.rotateRight_optimized(head1, 2);
@@ -440,5 +442,26 @@ public class AlgorithmsTest {
         var res2 = ll.rotateRight_optimized(head2, 4);
 
         System.out.println("OK");
+    }
+
+    @Test
+    void test_linkedList_BSTIterator() {
+        // 1. Create the leaf nodes first (3, 9, 20)
+        TreeNode node3 = new TreeNode(3);
+        TreeNode node9 = new TreeNode(9);
+        TreeNode node20 = new TreeNode(20);
+
+        // 2. Create node 15, assigning its left (9) and right (20) children
+        TreeNode node15 = new TreeNode(15, node9, node20);
+
+        // 3. Create the root node 7, assigning its left (3) and right (15) children
+        TreeNode headNode = new TreeNode(7, node3, node15);
+
+        var bstIterator = new BSTIterator(headNode);
+        while (bstIterator.hasNext()) {
+            System.out.println("Next val -> " + bstIterator.next());
+        }
+
+        System.out.println("Finished");
     }
 }

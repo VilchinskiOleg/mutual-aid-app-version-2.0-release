@@ -3,7 +3,7 @@ package org.tms.common.auth.configuration.global.algorithms.let_code;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TwoPointers {
+public class TwoPointersUtil {
 
     /**
      * 125. Valid Palindrome

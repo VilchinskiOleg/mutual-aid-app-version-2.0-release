@@ -3,7 +3,7 @@ package org.tms.common.auth.configuration.global.algorithms.let_code;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Matrix {
+public class MatrixUtil {
 
     /**
      * 54. Spiral Matrix

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-public class Stack {
+public class StackUtil {
 
   /**
    * 20. Valid Parentheses

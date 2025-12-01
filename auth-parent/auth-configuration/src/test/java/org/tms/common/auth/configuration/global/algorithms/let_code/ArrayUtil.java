@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class Array {
+public class ArrayUtil {
 
     /**
      * 88. Merge Sorted Array

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LinkedList {
+public class LinkedListUtil {
 
     /**
      * Definition for singly-linked list Node :

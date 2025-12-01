@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Tree {
+public class TreeUtil {
 
     /**
      * Definition for a binary Tree Node
@@ -615,23 +615,83 @@ public class Tree {
      * The "linked list" should be in the same order as a pre-order traversal of the binary tree.
      */
 
-    // WRONG! solution
     public static void flatten(TreeNode root) {
-        if (root != null) {
-           var leftChild = root.left;
-           var rightChild = root.right;
+        if (root == null || (root.left == null && root.right == null)) return;
 
-           if (leftChild != null) {
-               root.right = leftChild;
-               root = root.right;
-               flatten(root);
-           }
+        // 1.Init :
+        Deque<TreeNode> nodesToProcess = new LinkedList<>();
+        nodesToProcess.push(root);
 
-            if (rightChild != null) {
-                root.right = rightChild;
-                root = root.right;
-                flatten(root);
+        TreeNode dummyPrev = new TreeNode(-1);
+        TreeNode prev = dummyPrev;
+
+        // 2.Work cycle :
+        while (!nodesToProcess.isEmpty()) {
+            TreeNode curr = nodesToProcess.pop();
+
+            if (curr.right != null) nodesToProcess.push(curr.right);
+            if (curr.left != null) nodesToProcess.push(curr.left);
+
+            curr.left = null; curr.right = null;
+
+            prev.right = curr;
+            prev = prev.right;
+        }
+    }
+
+
+
+    /**
+     * 173. Binary Search Tree Iterator
+     *
+     * Implement the BSTIterator class that represents an iterator over the in-order traversal of
+     * a binary search tree (BST):
+     *
+     * - BSTIterator(TreeNode root) Initializes an object of the BSTIterator class.
+     *   The root of the BST is given as part of the constructor.
+     *   The pointer should be initialized to a non-existent number smaller than any element in the BST.
+     * - boolean hasNext() Returns true if there exists a number in the traversal to the right of
+     *   the pointer, otherwise returns false.
+     * - int next() Moves the pointer to the right, then returns the number at the pointer.
+     *
+     * Notice that by initializing the pointer to a non-existent smallest number, the first call
+     * to next() will return the smallest element in the BST.
+     *
+     * You may assume that next() calls will always be valid. That is, there will be at least
+     * a next number in the in-order traversal when next() is called.
+     */
+
+    public static class BSTIterator {
+
+        private Deque<TreeNode> data = new LinkedList<>();
+
+        public BSTIterator(TreeNode root) {
+           data.push(getReplica(root));
+        }
+
+        public int next() {
+            while (!data.isEmpty()) {
+                TreeNode curr = data.peek();
+
+                if (curr.left == null) {
+                    data.pop();
+                    if (curr.right != null) data.push(getReplica(curr.right));
+                    return curr.val;
+                } else {
+                    data.push(getReplica(curr.left));
+                    curr.left = null;
+                }
             }
+
+            throw new RuntimeException("Not found candidate");
+        }
+
+        public boolean hasNext() {
+            return !data.isEmpty();
+        }
+
+        private TreeNode getReplica(TreeNode originalNode) {
+            return new TreeNode(originalNode.val, originalNode.left, originalNode.right);
         }
     }
 }
