@@ -92,7 +92,23 @@ public class HashMapUtil {
    */
 
   public static boolean wordPattern(String pattern, String s) {
+    String[] words = s.split(" ");
+    if (words.length != pattern.length()) return false;
+    Map<Character, String> mapping = new HashMap<>();
 
+    for (int i = 0; i < pattern.length(); i++) {
+      String expectedWord = mapping.get(pattern.charAt(i));
+
+      if (expectedWord == null && !mapping.values().contains(words[i])) {
+        mapping.put(pattern.charAt(i), words[i]);
+      } else if (words[i].equals(expectedWord)) {
+        continue;
+      } else {
+        return false;
+      }
+    }
+
+    return true;
   }
 
 

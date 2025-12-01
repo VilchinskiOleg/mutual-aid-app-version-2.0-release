@@ -1,4 +1,4 @@
-package org.tms.common.auth.configuration.global.algorithms.let_code;
+package org.tms.common.auth.configuration.global.algorithms;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
