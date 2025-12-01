@@ -1,7 +1,5 @@
 package org.tms.common.auth.configuration.global.algorithms.let_code;
 
-import static java.util.Optional.ofNullable;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,107 +17,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class LetCodeUtils {
-
-    /**
-     * ----------------------------------- Task №2 ------------------------------------------
-     */
-
-    /**
-     * Speed -> O(n)
-     *
-     * @param nums
-     * @param val
-     * @return
-     */
-    public static int removeElement(int[] nums, int val) {
-        int limit = nums.length;
-
-        for ( int i = nums.length - 1; i >= 0; i-- ){
-
-            if ( nums[i] == val ){
-                if (i != limit - 1){
-                    nums[i] = nums[limit - 1];
-                }
-                limit--;
-            }
-
-        }
-        return limit;
-    }
-
-
-    /**
-     * ----------------------------------- Task №3 ------------------------------------------
-     */
-
-    /**
-     * Speed -> O(n)
-     *
-     * @param nums
-     * @return
-     */
-    public static int removeDuplicatesFromSortedArray(int[] nums){
-
-        int limit = nums.length;
-        int valueToCompareWith = nums[0];
-
-        for (int i = 1; i < nums.length; i++){
-
-            if (nums[i] == valueToCompareWith){
-                limit--;
-            }
-
-            int gap = nums.length - limit;
-            if (gap != 0){
-                nums[i - gap] = nums[i];
-            }
-
-            valueToCompareWith = nums[i];
-        }
-
-        return limit;
-    }
-
-
-    /**
-     * ----------------------------------- Task №4 ------------------------------------------
-     */
-
-    /**
-     * Speed -> O(n)
-     *
-     * @param nums
-     * @return
-     */
-    public static int removeDuplicatesFromSortedArrayII(int[] nums){
-
-        int limit = nums.length;
-        int valueToCompareWith = nums[0];
-        boolean alreadyHasDuplicate = false;
-
-        for (int i = 1; i < nums.length; i++){
-
-            if (nums[i] == valueToCompareWith && alreadyHasDuplicate){
-                limit--;
-            } else {
-                alreadyHasDuplicate = nums[i] == valueToCompareWith;
-            }
-
-            int gap = nums.length - limit;
-            if (gap != 0){
-                nums[i - gap] = nums[i];
-            }
-
-            valueToCompareWith = nums[i];
-        }
-
-        return limit;
-    }
 
 
     /**
@@ -986,70 +887,6 @@ public class LetCodeUtils {
         return true;
     }
 
-
-    /**
-     * 383. Ransom Note
-     */
-
-    public static boolean canConstruct(String ransomNote, String magazine) {
-        Map<Character, Integer> magazineMap = magazine.chars().mapToObj(c -> (char) c)
-                .collect(Collectors.toMap(Function.identity(), c -> 1, Integer::sum));
-        for (Character c : ransomNote.toCharArray()){
-            Integer counter = magazineMap.get(c);
-            if (counter != null && counter > 0){
-                magazineMap.put(c, --counter);
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
-
-
-    /**
-     * 205. Isomorphic Strings
-     */
-
-    public static boolean isIsomorphic(String s, String t) {
-
-        Map<Character, Integer> indexS = new HashMap<>();
-        Map<Character, Integer> indexT = new HashMap<>();
-
-        int len = s.length();
-
-        if(len != t.length()) {
-            return false;
-        }
-
-        for(int i = 0; i < len; i++) {
-            int sVal = ofNullable( indexS.get(s.charAt(i)) ).orElse(0);
-            int tVal = ofNullable( indexT.get(t.charAt(i)) ).orElse(0);
-
-            if(sVal != tVal) {
-                return false;
-            }
-            indexS.put(s.charAt(i), i + 1);
-            indexT.put(t.charAt(i), i + 1);
-        }
-
-        return true;
-    }
-
-
-    /**
-     * 242. Valid Anagram
-     */
-
-    public static boolean isAnagram(String s, String t) {
-        if (s.length() != t.length()) return false;
-
-        var sChars = s.toCharArray();
-        Arrays.sort(sChars);
-        var tChars = t.toCharArray();
-        Arrays.sort(tChars);
-
-        return new String(sChars).equals(new String(tChars));
-    }
 
 
     /**

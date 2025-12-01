@@ -89,6 +89,130 @@ public class ArrayUtil {
     }
 
 
+
+    /**
+     * 27. Remove Element
+     *
+     * Given an integer array nums and an integer val, remove all occurrences of val in nums in-place.
+     * The order of the elements may be changed. Then return the number of elements in nums which are not equal to val.
+     *
+     * Consider the number of elements in nums which are not equal to val be k, to get accepted,
+     * you need to do the following things:
+     *
+     * - Change the array nums such that the first k elements of nums contain the elements which are
+     * not equal to val. The remaining elements of nums are not important as well as the size of nums.
+     * - Return k.
+     *
+     *
+     * Speed -> O(n)
+     */
+
+    public static int removeElement(int[] nums, int val) {
+        int limit = nums.length;
+
+        for ( int i = nums.length - 1; i >= 0; i-- ){
+
+            if ( nums[i] == val ){
+                if (i != limit - 1){
+                    nums[i] = nums[limit - 1];
+                }
+                limit--;
+            }
+
+        }
+
+        return limit;
+    }
+
+
+
+    /**
+     * 26. Remove Duplicates from Sorted Array
+     *
+     * Given an integer array nums sorted in non-decreasing order, remove the duplicates in-place
+     * such that each unique element appears only once. The relative order of the elements should be kept the same.
+     *
+     * Consider the number of unique elements in nums to be k.
+     * After removing duplicates, return the number of unique elements k.
+     *
+     * The first k elements of nums should contain the unique numbers in sorted order.
+     * The remaining elements beyond index k - 1 can be ignored.
+     *
+     *
+     * Speed -> O(n)
+     */
+
+    public static int removeDuplicatesFromSortedArray(int[] nums){
+
+        int limit = nums.length;
+        int valueToCompareWith = nums[0];
+
+        for (int i = 1; i < nums.length; i++){
+
+            if (nums[i] == valueToCompareWith){
+                limit--;
+            }
+
+            int gap = nums.length - limit;
+            if (gap != 0){
+                nums[i - gap] = nums[i];
+            }
+
+            valueToCompareWith = nums[i];
+        }
+
+        return limit;
+    }
+
+
+
+    /**
+     * 80. Remove Duplicates from Sorted Array II
+     *
+     * Given an integer array nums sorted in non-decreasing order, remove some duplicates in-place
+     * such that each unique element appears at most twice. The relative order of the elements should be kept the same.
+     *
+     * Since it is impossible to change the length of the array in some languages, you must instead
+     * have the result be placed in the first part of the array nums. More formally, if there are k
+     * elements after removing the duplicates, then the first k elements of nums should hold the final result.
+     * It does not matter what you leave beyond the first k elements.
+     *
+     * Return k after placing the final result in the first k slots of nums.
+     *
+     * Do not allocate extra space for another array. You must do this by modifying the input array
+     * in-place with O(1) extra memory.
+     *
+     *
+     * Speed -> O(n)
+     */
+
+    public static int removeDuplicatesFromSortedArrayII(int[] nums){
+
+        int limit = nums.length;
+        int valueToCompareWith = nums[0];
+        boolean alreadyHasDuplicate = false;
+
+        for (int i = 1; i < nums.length; i++){
+
+            if (nums[i] == valueToCompareWith && alreadyHasDuplicate){
+                limit--;
+            } else {
+                alreadyHasDuplicate = nums[i] == valueToCompareWith;
+            }
+
+            int gap = nums.length - limit;
+            if (gap != 0){
+                nums[i - gap] = nums[i];
+            }
+
+            valueToCompareWith = nums[i];
+        }
+
+        return limit;
+    }
+
+
+
     /**
      * 189. Rotate Array
      *

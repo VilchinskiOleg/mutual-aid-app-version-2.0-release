@@ -258,16 +258,16 @@ public class AlgorithmsTest {
         int limit;
 
         nums = new int[] {3,2,2,3};
-        limit = LetCodeUtils.removeElement(nums, 3);
+        limit = ArrayUtil.removeElement(nums, 3);
 
         nums = new int[] {0,1,2,2,3,0,4,2};
-        limit = LetCodeUtils.removeElement(nums, 2);
+        limit = ArrayUtil.removeElement(nums, 2);
 
         nums = new int[] {1};
-        limit = LetCodeUtils.removeElement(nums, 1);
+        limit = ArrayUtil.removeElement(nums, 1);
 
         nums = new int[] {3,1,3,3,3};
-        limit = LetCodeUtils.removeElement(nums, 3);
+        limit = ArrayUtil.removeElement(nums, 3);
 
         System.out.println("OK");
     }
@@ -278,7 +278,7 @@ public class AlgorithmsTest {
         int limit;
 
         nums = new int[] {0,0,1,1,1,1,2,3,3};
-        limit = LetCodeUtils.removeDuplicatesFromSortedArrayII(nums);
+        limit = ArrayUtil.removeDuplicatesFromSortedArrayII(nums);
 
         System.out.println("OK");
     }
