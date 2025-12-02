@@ -2,9 +2,12 @@ package org.tms.common.auth.configuration.global.algorithms.let_code;
 
 import static java.util.Optional.ofNullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -128,5 +131,107 @@ public class HashMapUtil {
     Arrays.sort(tChars);
 
     return new String(sChars).equals(new String(tChars));
+  }
+
+  public static boolean isAnagram_usingMap(String s, String t) {
+    if (s.length() != t.length()) return false;
+
+    Map<Character, Integer> sCharsCounter = new HashMap<>();
+
+    for (char ch : s.toCharArray()) {
+      int currVal = sCharsCounter.computeIfAbsent(ch, k -> 0);
+      sCharsCounter.put(ch, currVal + 1);
+    }
+
+    for (char ch : t.toCharArray()) {
+      Integer expectedVal = sCharsCounter.get(ch);
+      if (expectedVal == null || expectedVal == 0) {
+        return false;
+      } else {
+        sCharsCounter.put(ch, expectedVal - 1);
+      }
+    }
+
+    return true;
+  }
+
+  public static boolean isAnagram_usingMapWithAtomicInt(String s, String t) {
+    if (s.length() != t.length()) return false;
+
+    Map<Character, AtomicInteger> sCharsCounter = new HashMap<>();
+
+    for (char ch : s.toCharArray()) {
+      sCharsCounter.computeIfAbsent(ch, k -> new AtomicInteger(0)).incrementAndGet();
+    }
+
+    for (char ch : t.toCharArray()) {
+      AtomicInteger counter = sCharsCounter.get(ch);
+      if (counter == null || counter.get() == 0) {
+        return false;
+      } else {
+        counter.decrementAndGet();
+      }
+    }
+
+    return true;
+  }
+
+
+
+  /**
+   * 49. Group Anagrams
+   *
+   * Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+   *
+   * Example 1:
+   *
+   * Input: strs = ["eat","tea","tan","ate","nat","bat"]
+   *
+   * Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+   *
+   * Explanation:
+   *
+   * There is no string in strs that can be rearranged to form "bat".
+   * The strings "nat" and "tan" are anagrams as they can be rearranged to form each other.
+   * The strings "ate", "eat", and "tea" are anagrams as they can be rearranged to form each other.
+   */
+
+  public static List<List<String>> groupAnagrams(String[] strs) {
+    Map<String, List<String>> groups = new HashMap<>();
+
+    for (String str : strs) {
+      var chars = str.toCharArray();
+      Arrays.sort(chars);
+      String key = String.valueOf(chars);
+
+      groups
+          .computeIfAbsent(key, k -> new ArrayList<>())
+          .add(str);
+    }
+
+    return new ArrayList<>(groups.values());
+  }
+
+  public static List<List<String>> groupAnagrams_usingBucketSort(String[] strs) {
+    Map<String, List<String>> groups = new HashMap<>();
+
+    for (String str : strs) {
+      int[] letterCounters = new int[26];  // [0,0,0,0,..]
+
+      for (char ch : str.toCharArray()) {
+        letterCounters[ch - 'a']++;        // increment counter for letter
+      }
+
+      var sb = new StringBuilder();
+      for (int counter : letterCounters) {
+        sb.append(counter).append("#");
+      }
+
+      groups
+          .computeIfAbsent(sb.toString(), k -> new ArrayList<>())
+          .add(str);
+    }
+
+    return new ArrayList<>(groups.values());
   }
 }
