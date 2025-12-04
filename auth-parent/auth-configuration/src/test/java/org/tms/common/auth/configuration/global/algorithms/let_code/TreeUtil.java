@@ -708,6 +708,7 @@ public class TreeUtil {
      */
 
     public static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-
+        // todo: .. implement
+        return null;
     }
 }

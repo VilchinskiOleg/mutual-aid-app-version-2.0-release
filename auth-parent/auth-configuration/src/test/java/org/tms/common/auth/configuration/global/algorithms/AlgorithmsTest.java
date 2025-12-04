@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import org.tms.common.auth.configuration.global.algorithms.let_code.ArrayUtil;
+import org.tms.common.auth.configuration.global.algorithms.let_code.HashMapUtil;
 import org.tms.common.auth.configuration.global.algorithms.let_code.LinkedListUtil;
 import org.tms.common.auth.configuration.global.algorithms.let_code.LinkedListUtil.ListNode;
 import org.tms.common.auth.configuration.global.algorithms.let_code.StackUtil;
@@ -464,5 +465,10 @@ public class AlgorithmsTest {
         }
 
         System.out.println("Finished");
+    }
+
+    @Test
+    void test() {
+        assertTrue(HashMapUtil.isHappy(19));
     }
 }
