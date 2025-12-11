@@ -718,4 +718,106 @@ public class TreeUtil {
         if (left != null && right != null) return root;
         return left == null ? right : left;
     }
+
+
+
+    /**
+     * 199. Binary Tree Right Side View
+     *
+     * Given the root of a binary tree, imagine yourself standing on the right side of it,
+     * return the values of the nodes you can see ordered from top to bottom.
+     */
+
+    public static List<Integer> rightSideView(TreeNode root) {
+        if (root == null) return List.of();
+
+        List<Integer> results = new ArrayList<>();
+        Deque<TreeNode> outsideNodes = new LinkedList<>();
+        outsideNodes.add(root);
+
+        while (!outsideNodes.isEmpty()) {
+            int nodeRangeInScopeOfCurrLayer = outsideNodes.size();
+
+            TreeNode curr = outsideNodes.removeFirst();
+            results.add(curr.val);
+            if (curr.right != null) outsideNodes.add(curr.right);
+            if (curr.left != null) outsideNodes.add(curr.left);
+
+            while (--nodeRangeInScopeOfCurrLayer > 0) {
+                curr = outsideNodes.removeFirst();
+                if (curr.right != null) outsideNodes.add(curr.right);
+                if (curr.left != null) outsideNodes.add(curr.left);
+            }
+        }
+
+        return results;
+    }
+
+
+
+    /**
+     * 637. Average of Levels in Binary Tree
+     *
+     * Given the root of a binary tree, return the average value of the nodes on each level
+     * in the form of an array. Answers within 10-5 of the actual answer will be accepted.
+     */
+
+    public static List<Double> averageOfLevels(TreeNode root) {
+        if (root == null) return List.of();
+
+        List<Double> results = new ArrayList<>();
+        Deque<TreeNode> outsideNodes = new LinkedList<>();
+        outsideNodes.add(root);
+
+        while (!outsideNodes.isEmpty()) {
+            int nodeRangeInScopeOfCurrLayer = outsideNodes.size();
+            double sum = 0;
+
+            for (int i = 0; i < nodeRangeInScopeOfCurrLayer; i++) {
+                TreeNode curr = outsideNodes.removeFirst();
+                sum += curr.val;
+
+                if (curr.left != null) outsideNodes.add(curr.left);
+                if (curr.right != null) outsideNodes.add(curr.right);
+            }
+
+            results.add(sum/nodeRangeInScopeOfCurrLayer);
+        }
+
+        return results;
+    }
+
+
+    
+    /**
+     * 102. Binary Tree Level Order Traversal
+     *
+     * Given the root of a binary tree, return the level order traversal of its nodes' values.
+     * (i.e., from left to right, level by level).
+     */
+
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if (root == null) return List.of();
+
+        List<List<Integer>> results = new ArrayList<>();
+        Deque<TreeNode> nodes = new LinkedList<>();
+        nodes.add(root);
+
+        while (!nodes.isEmpty()) {
+            int nodeRangeInScopeOfCurrLevel = nodes.size();
+            List<Integer> currLevelNodes = new ArrayList<>();
+
+            while (nodeRangeInScopeOfCurrLevel-- > 0) {
+                TreeNode curr = nodes.removeFirst();
+                currLevelNodes.add(curr.val);
+
+                if (curr.left != null) nodes.add(curr.left);
+                if (curr.right != null) nodes.add(curr.right);
+            }
+
+            results.add(currLevelNodes);
+        }
+
+        return results;
+    }
 }
