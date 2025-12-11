@@ -22,16 +22,14 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-
 import org.tms.common.auth.configuration.global.algorithms.let_code.ArrayUtil;
-import org.tms.common.auth.configuration.global.algorithms.let_code.HashMapUtil;
 import org.tms.common.auth.configuration.global.algorithms.let_code.LinkedListUtil;
 import org.tms.common.auth.configuration.global.algorithms.let_code.LinkedListUtil.ListNode;
 import org.tms.common.auth.configuration.global.algorithms.let_code.StackUtil;
+import org.tms.common.auth.configuration.global.algorithms.let_code.TreeUtil;
 import org.tms.common.auth.configuration.global.algorithms.let_code.TreeUtil.BSTIterator;
 import org.tms.common.auth.configuration.global.algorithms.let_code.TreeUtil.TreeNode;
 import org.tms.common.auth.configuration.global.algorithms.let_code.TwoPointersUtil;
-
 import org.tms.common.auth.configuration.global.algorithms.model.FindPairToSumUtil;
 import org.tms.common.auth.configuration.global.algorithms.model.StrCalculator;
 import org.tms.common.auth.configuration.global.algorithms.model.ValuableGraphSearcher;
@@ -468,7 +466,13 @@ public class AlgorithmsTest {
     }
 
     @Test
-    void test() {
-        assertTrue(HashMapUtil.isHappy(19));
+    void test_zigzagLevelOrder() {
+        TreeNode node2 = new TreeNode(2, new TreeNode(4), null);
+        TreeNode node3 = new TreeNode(3, null, new TreeNode(5));
+        TreeNode root = new TreeNode(1, node2, node3);
+
+        var res = TreeUtil.zigzagLevelOrder(root);
+
+        System.out.println("Ok");
     }
 }

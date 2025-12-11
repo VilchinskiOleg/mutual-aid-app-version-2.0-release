@@ -796,7 +796,7 @@ public class TreeUtil {
      * (i.e., from left to right, level by level).
      */
 
-    public List<List<Integer>> levelOrder(TreeNode root) {
+    public static List<List<Integer>> levelOrder(TreeNode root) {
         if (root == null) return List.of();
 
         List<List<Integer>> results = new ArrayList<>();
@@ -816,6 +816,47 @@ public class TreeUtil {
             }
 
             results.add(currLevelNodes);
+        }
+
+        return results;
+    }
+
+
+
+    /**
+     * 103. Binary Tree Zigzag Level Order Traversal
+     *
+     * Given the root of a binary tree, return the zigzag level order traversal of its nodes' values.
+     * (i.e., from left to right, then right to left for the next level and alternate between).
+     */
+
+    public static List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        if (root == null) return List.of();
+
+        List<List<Integer>> results = new ArrayList<>();
+        Deque<TreeNode> nodes = new LinkedList<>();
+        nodes.add(root);
+        int leftToRight = 1;
+
+        while (!nodes.isEmpty()) {
+            int nodeRangeInScopeOfCurrLevel = nodes.size();
+            Deque<Integer> currLevelNodes = new LinkedList<>();
+
+            while (nodeRangeInScopeOfCurrLevel-- > 0) {
+                TreeNode curr = nodes.removeFirst();
+
+                if (leftToRight > 0) {
+                    currLevelNodes.addLast(curr.val);
+                } else {
+                    currLevelNodes.addFirst(curr.val);
+                }
+
+                if (curr.left != null) nodes.add(curr.left);
+                if (curr.right != null) nodes.add(curr.right);
+            }
+
+            results.add((List<Integer>) currLevelNodes);
+            leftToRight *= -1;
         }
 
         return results;
