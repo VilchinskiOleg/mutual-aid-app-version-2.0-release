@@ -240,19 +240,18 @@ public class LinkedListUtil {
         }
 
         // 3. Transform   A -> A' -> B -> B'   to   A' -> B'  and  A -> B :
-        ReferencedListNode headReplica = null;
-        ReferencedListNode nodeReplica = null;
+        var dummyReplicaHead = new ReferencedListNode(0);
+        var replicaCur = dummyReplicaHead;
         nodeCur = head;
         while (nodeCur != null) {
-            if (nodeReplica != null) nodeReplica.next = nodeCur.next;
-            nodeReplica = nodeCur.next;
-            if (headReplica == null) headReplica = nodeReplica;
+            replicaCur.next = nodeCur.next;
+            replicaCur = replicaCur.next;
 
-            nodeCur.next = nodeReplica.next;
+            nodeCur.next = replicaCur.next;
             nodeCur = nodeCur.next;
         }
 
-        return headReplica;
+        return dummyReplicaHead.next;
     }
 
 
