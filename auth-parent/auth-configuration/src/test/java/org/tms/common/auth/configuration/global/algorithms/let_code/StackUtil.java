@@ -94,12 +94,7 @@ public class StackUtil {
       processCandidate(tmp.toString(), dirs);
     }
 
-    var newPath = new StringBuilder();
-    while (!dirs.isEmpty()) {
-      newPath.append("/").append(dirs.pollLast());
-    }
-
-    return newPath.length() > 0 ? newPath.toString() : "/";
+    return convertPathToStr(dirs);
   }
 
   private void processCandidate(String candidate, Deque<String> path) {
@@ -116,6 +111,15 @@ public class StackUtil {
         path.push(candidate); // Populate cur dir to path
     }
   }
+
+  private String convertPathToStr(Deque<String> path) {
+    var pathStr = new StringBuilder();
+    while (!path.isEmpty()) {
+      pathStr.append("/").append(path.pollLast());
+    }
+    return pathStr.length() > 0 ? pathStr.toString() : "/";
+  }
+
 
 
   /**
@@ -254,13 +258,9 @@ public class StackUtil {
 
       if (Character.isDigit(curr)) {
         number = (10 * number) + (curr - '0');
-      } else if (curr == '+') {
+      } else if (curr == '+' || curr == '-') {
         result += sign * number; // sign defined on previous iteration
-        sign = 1;
-        number = 0;
-      } else if (curr == '-') {
-        result += sign * number; // sign defined on previous iteration
-        sign = -1;
+        sign = (curr == '+') ? 1 : -1;
         number = 0;
       } else if (curr == '(') {
         // store into stack "tmpRes" and "+/-" from "tmpRes +/- (...)" expr :
