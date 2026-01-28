@@ -2,6 +2,8 @@ package org.tms.common.auth.configuration.global.algorithms.let_code;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -214,6 +216,52 @@ public class ArrayUtil {
 
 
     /**
+     * 169. Majority Element
+     *
+     *  Given an array nums of size n, return the majority element.
+     *
+     * The majority element is the element that appears more than ⌊n / 2⌋ times.
+     * You may assume that the majority element always exists in the array.
+     */
+
+    public static int majorityElement(int[] nums) {
+
+        int counter = 1;
+        int candidate = nums[0];
+
+        for(int i = 1; i < nums.length; i++ ){
+
+            counter += nums[i] == candidate ? 1 : - 1;
+
+            if (counter == 0){
+                candidate = nums[i];
+                counter = 1;
+            }
+        }
+
+        return candidate;
+    }
+
+    public static int majorityElement_almostTheSameImpl(int[] nums) {
+
+        int counter = 1;
+        Integer candidate = null;
+
+        for(int num : nums){
+
+            if (counter == 0){
+                candidate = num;
+            }
+
+            counter += (num == candidate) ? 1 : - 1;
+        }
+
+        return candidate;
+    }
+
+
+
+    /**
      * 189. Rotate Array
      *
      * Given an integer array nums, rotate the array to the right by k steps, where k is non-negative.
@@ -320,6 +368,257 @@ public class ArrayUtil {
     }
 
 
+
+    /**
+     * 55. Jump Game
+     *
+     * You are given an integer array nums. You are initially positioned at the array's first index,
+     * and each element in the array represents your maximum jump length at that position.
+     *
+     * Return true if you can reach the last index, or false otherwise.
+     */
+
+    /**
+     * Option #1:
+     */
+    public static boolean canJump_first(int[] nums) {
+
+        boolean isLastIndex = nums.length == 1;
+        Deque<Integer> stack = new LinkedList<>();
+        stack.push(0);
+
+        while (!isLastIndex && !stack.isEmpty()) {
+
+            int currentPosition = stack.pollFirst();
+            int options = nums[currentPosition];
+
+            if (options > 0){
+                for (int i = options, lim = 10; i >= 1 || lim > 0; i--, lim--){
+                    if (currentPosition + i >= nums.length - 1){
+                        return true;
+                    }
+                    stack.push(currentPosition + (options - i + 1));
+                }
+            }
+        }
+
+        return isLastIndex;
+    }
+
+
+    /**
+     * Option #2:
+     */
+    public static boolean canJump_second(int[] nums) {
+
+        return process_forSecond(nums, 0);
+    }
+
+    private static boolean process_forSecond(int[] nums, int currentPosition) {
+        if (currentPosition >= nums.length - 1){
+            return true;
+        }
+
+        int options = nums[currentPosition];
+
+        if (options > 0){
+            for (int i = options; i >= 1; i--){
+                if (process_forSecond(nums, currentPosition + i)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Option #3:
+     */
+    public static boolean canJump_third(int[] nums) {
+
+        return process_forThird(nums, 0);
+    }
+
+    private static boolean process_forThird(int[] nums, int currentPosition) {
+        int maxJump = nums[currentPosition];
+
+        if (currentPosition + maxJump >= nums.length - 1){
+            return true;
+        }
+
+        if (maxJump > 0){
+            Integer[] jumpOptions = IntStream.range(currentPosition + 1, currentPosition + maxJump + 1)
+                .boxed()
+                .toArray(Integer[]::new);
+            Arrays.sort(
+                jumpOptions,
+                (o1, o2) -> (o2 + nums[o2]) - (o1 + nums[o1])
+            );
+
+            for (Integer jumpOption : jumpOptions){
+                if (process_forThird(nums, jumpOption)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Option #4:
+     */
+    public static boolean canJump(int[] nums) {
+
+        return process(nums, 0);
+    }
+
+    private static boolean process(int[] nums, int currentPosition) {
+        int maxJump = nums[currentPosition];
+
+        if (currentPosition + maxJump >= nums.length - 1){
+            return true;
+        }
+
+        if (maxJump > 0){
+            int jumpOption = IntStream.range(currentPosition + 1, currentPosition + maxJump + 1)
+                .boxed()
+                .sorted((o1, o2) -> (o2 + nums[o2]) - (o1 + nums[o1]))
+                .findFirst().get();
+
+            return process(nums, jumpOption);
+        }
+
+        return false;
+    }
+
+
+
+    /**
+     * 45. Jump Game II
+     *
+     * You are given a 0-indexed array of integers nums of length n. You are initially positioned at index 0.
+     *
+     * Each element nums[i] represents the maximum length of a forward jump from index i. In other words,
+     * if you are at index i, you can jump to any index (i + j) where:
+     *
+     *      0 <= j <= nums[i] and
+     *      i + j < n
+     *
+     * Return the minimum number of jumps to reach index n - 1. The test cases are generated such
+     * that you can reach index n - 1.
+     */
+
+    public static int jump(int[] nums) {
+        return process(nums, 0, 0);
+    }
+
+    private static int process(int[] nums, int currentPosition, int counter) {
+        int maxJump = nums[currentPosition];
+
+        if (currentPosition == nums.length - 1){
+            return counter;
+        } else if (currentPosition + maxJump >= nums.length - 1){
+            counter++;
+            return counter;
+        }
+
+        int jumpOption = IntStream.range(currentPosition + 1, currentPosition + maxJump + 1)
+            .boxed()
+            .sorted((o1, o2) -> (o2 + nums[o2]) - (o1 + nums[o1]))
+            .findFirst().get();
+
+        counter++;
+
+        return process(nums, jumpOption, counter);
+    }
+
+    // Попробовать то же свмое реализовать через цикл (*) ?
+
+
+
+    /**
+     * 274. H-Index
+     *
+     * Given an array of integers citations where citations[i] is the number of citations a researcher
+     * received for their ith paper, return the researcher's h-index.
+     *
+     * According to the definition of h-index on Wikipedia: The h-index is defined as the maximum
+     * value of h such that the given researcher has published at least h papers that have each been
+     * cited at least h times.
+     */
+
+    /**
+     * Speed -> O(n^2); Memory -> O(1)
+     */
+    public static int hIndex_v1(int[] citations) {
+
+        for (int hIndex = citations.length; hIndex > 0 ; hIndex--){
+            int counter = 0;
+            for (int citation : citations){
+                if (citation >= hIndex) counter++;
+            }
+            if (counter >= hIndex) return hIndex;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Speed -> O(n log n); Memory -> O(1)
+     */
+    public static int hIndex_v2(int[] citations) {
+        int hIndex = 0;
+        Arrays.sort(citations); // Speed -> O(n log n)
+
+        for (int i = citations.length - 1; i >= 0; i--){
+            int hIndexToCheck = citations.length - i;
+            if(citations[i] >= hIndexToCheck){
+                hIndex = hIndexToCheck;
+            }else{
+                break;
+            }
+        }
+
+        return hIndex;
+    }
+
+    /**
+     * Speed -> O(n); Memory -> O(n)
+     */
+    public static int hIndex_v3(int[] citations) {
+        int hIndex = 0;
+
+        int[] hIndexCandidatesCounter = new int[citations.length + 1];
+        for (int i = 0; i < citations.length; i++){
+            int hIndexCandidate = Math.min(citations[i], citations.length);
+            hIndexCandidatesCounter[hIndexCandidate] += 1;
+        }
+
+        // Speed -> O(n)
+        int sortedCitIndex = 0;
+        for(int hIndexCandidate = 0; hIndexCandidate < hIndexCandidatesCounter.length; hIndexCandidate++){
+            for (int count = hIndexCandidatesCounter[hIndexCandidate]; count > 0; count--){
+                citations[sortedCitIndex] = hIndexCandidate;
+                sortedCitIndex++;
+            }
+        }
+
+        for (int i = citations.length - 1; i >= 0; i--){
+            int hIndexToCheck = citations.length - i;
+            if(citations[i] >= hIndexToCheck){
+                hIndex = hIndexToCheck;
+            }else{
+                break;
+            }
+        }
+
+        return hIndex;
+    }
+
+
+
     /**
      * 134. Gas Station
      *
@@ -395,4 +694,11 @@ public class ArrayUtil {
 
         return -1;
     }
+
+
+
+
+
+
+
 }
