@@ -1,4 +1,4 @@
-package org.tms.common.auth.configuration.global.algorithms.model;
+package org.tms.common.auth.configuration.global.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

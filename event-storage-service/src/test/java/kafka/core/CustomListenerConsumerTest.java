@@ -1,13 +1,6 @@
 package kafka.core;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.errors.WakeupException;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import static org.awaitility.Awaitility.await;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -18,14 +11,21 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static org.awaitility.Awaitility.await;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.errors.WakeupException;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
- * Tests for custom ListenerConsumer impl witch uses org.apache.kafka.clients.consumer.KafkaConsumer inside.
- *
- * Expects that you run docker container with Kafka and send events by CLI.
- * So we ignore its in runtime by @Disabled.
+ * Tests for custom ListenerConsumer impl witch uses org.apache.kafka.clients.consumer.KafkaConsumer
+ * inside.
+ * <p>
+ * Expects that you run docker container with Kafka and send events by CLI. So we ignore its in
+ * runtime by @Disabled.
  */
 
 @Slf4j
@@ -96,13 +96,15 @@ public class CustomListenerConsumerTest {
   }
 
   private class ListenerConsumerStopByFlag implements Runnable {
+
     private final KafkaConsumer<String, String> consumer;
     private final List<String> topics;
     private final AtomicBoolean shutdown;
     private final CountDownLatch shutdownLatch;
 
     public ListenerConsumerStopByFlag(Properties config, List<String> topics) {
-      this.consumer = new KafkaConsumer<>(config, new StringDeserializer(), new StringDeserializer());
+      this.consumer = new KafkaConsumer<>(config, new StringDeserializer(),
+          new StringDeserializer());
       this.topics = topics;
       this.shutdown = new AtomicBoolean(false);
       this.shutdownLatch = new CountDownLatch(1);
@@ -146,11 +148,14 @@ public class CustomListenerConsumerTest {
   }
 
   private class ListenerConsumerStopByMethod implements Runnable {
+
     private final KafkaConsumer<String, String> consumer;
     private final List<String> topics;
     private final CountDownLatch shutdownLatch;
+
     public ListenerConsumerStopByMethod(Properties config, List<String> topics) {
-      this.consumer = new KafkaConsumer<>(config, new StringDeserializer(), new StringDeserializer());
+      this.consumer = new KafkaConsumer<>(config, new StringDeserializer(),
+          new StringDeserializer());
       this.topics = topics;
       this.shutdownLatch = new CountDownLatch(1);
     }
