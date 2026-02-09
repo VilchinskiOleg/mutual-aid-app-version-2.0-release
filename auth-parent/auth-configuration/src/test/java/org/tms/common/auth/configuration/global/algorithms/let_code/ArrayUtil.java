@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 public class ArrayUtil {
@@ -755,23 +754,24 @@ public class ArrayUtil {
      * [Also works with negative numbers]
      */
     public static int subarraySum_withPrefixSum(int[] nums, int k) {
-        Map<Integer, AtomicInteger> sumCache = new HashMap<>();
+        Map<Integer, Integer> sumCache = new HashMap<>();
         int totalSum = 0;
         int kCounter = 0;
 
         for (int num : nums) {
             totalSum += num;
 
+            // 1. Check if total sum equals k :
             if (totalSum == k) kCounter++;
+            // 2. Check if any sub-array sum equals k :
             if (!sumCache.isEmpty()) {
                 for (int subArraySum : sumCache.keySet()) {
-                    if (totalSum - subArraySum == k) kCounter += sumCache.get(subArraySum).get();
+                    if (totalSum - subArraySum == k) kCounter += sumCache.get(subArraySum);
                 }
             }
 
-            sumCache
-                .computeIfAbsent(totalSum, key -> new AtomicInteger(0))
-                .incrementAndGet();
+            int curCount = sumCache.computeIfAbsent(totalSum, key -> 0);
+            sumCache.put(totalSum, curCount + 1);
         }
 
         return kCounter;
