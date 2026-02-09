@@ -3,8 +3,11 @@ package org.tms.common.auth.configuration.global.algorithms.let_code;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 public class ArrayUtil {
@@ -697,8 +700,80 @@ public class ArrayUtil {
 
 
 
+    /**
+     * 560. Subarray Sum Equals K
+     *
+     * Given an array of integers nums and an integer k, return the total number of subarrays whose sum equals to k.
+     *
+     * A subarray is a contiguous non-empty sequence of elements within an array.
+     *
+     * Example 1:
+     *
+     *      Input: nums = [1,1,1], k = 2
+     *      Output: 2
+     *
+     * Example 2:
+     *
+     *      Input: nums = [1,2,3], k = 3
+     *      Output: 2
+     */
+
+    /**
+     * Approach #1 :
+     *
+     * Time complexity - O(n)
+     * [You can use this approach only for positive numbers (!) ]
+     */
+    public static int subarraySum_withSlightWindow(int[] nums, int k) {
+        int counter = 0, sum = nums[0];
+        int leftP = 0, rightP = 0;
+        int lastNumsP = nums.length - 1;
 
 
+        while (leftP < lastNumsP || rightP < lastNumsP) {
 
+            if (sum == k) counter++;
 
+            if (sum < k && rightP < lastNumsP) {
+                rightP++;
+                sum += nums[rightP];
+            } else {
+                sum -= nums[leftP];
+                leftP++;
+            }
+        }
+
+        if (sum == k) counter++;
+
+        return counter;
+    }
+
+    /**
+     * Approach #2 :
+     *
+     * Time complexity - O(n)
+     * [Also works with negative numbers]
+     */
+    public static int subarraySum_withPrefixSum(int[] nums, int k) {
+        Map<Integer, AtomicInteger> sumCache = new HashMap<>();
+        int totalSum = 0;
+        int kCounter = 0;
+
+        for (int num : nums) {
+            totalSum += num;
+
+            if (totalSum == k) kCounter++;
+            if (!sumCache.isEmpty()) {
+                for (int subArraySum : sumCache.keySet()) {
+                    if (totalSum - subArraySum == k) kCounter += sumCache.get(subArraySum).get();
+                }
+            }
+
+            sumCache
+                .computeIfAbsent(totalSum, key -> new AtomicInteger(0))
+                .incrementAndGet();
+        }
+
+        return kCounter;
+    }
 }
