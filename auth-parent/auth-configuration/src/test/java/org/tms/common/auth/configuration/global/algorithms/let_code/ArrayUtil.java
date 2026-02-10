@@ -296,6 +296,9 @@ public class ArrayUtil {
      * Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
      */
 
+    /**
+     * Option #1 :
+     */
     public static int maxProfit_I(int[] prices) {
 
         Integer priceToBuy = null;
@@ -316,6 +319,23 @@ public class ArrayUtil {
         return delta;
     }
 
+    /**
+     * Option #2 [in general the same approach, just a bit optimized] :
+     */
+    public int maxProfit_I_optimized(int[] prices) {
+
+        int maxProfit = 0;
+        int minPrice = prices[0];
+
+        for (int i = 1; i < prices.length; i++) {
+            minPrice = Math.min(minPrice, prices[i - 1]);
+            maxProfit = Math.max(maxProfit, prices[i] - minPrice);
+        }
+
+        return maxProfit;
+    }
+
+
 
     /**
      * 122. Best Time to Buy and Sell Stock II
@@ -326,6 +346,10 @@ public class ArrayUtil {
      * However, you can buy it then immediately sell it on the same day.
      *
      * Find and return the maximum profit you can achieve.
+     */
+
+    /**
+     * Option #1 :
      */
 
     private static List<Integer> minVals;
@@ -367,6 +391,19 @@ public class ArrayUtil {
                     maxVals.get(indexes[indexes.length - 1]) - minVals.get(indexes[0])
             );
         }
+    }
+
+    /**
+     * Option #2 [the best one] :
+     */
+    public int maxProfit_II_optimized_and_simple(int[] prices) {
+        int profit = 0;
+
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i - 1] < prices[i]) profit += prices[i] - prices[i - 1];
+        }
+
+        return profit;
     }
 
 
@@ -471,7 +508,7 @@ public class ArrayUtil {
     /**
      * Option #4:
      */
-    public static boolean canJump(int[] nums) {
+    public static boolean canJump_recursive(int[] nums) {
 
         return process(nums, 0);
     }
@@ -495,6 +532,19 @@ public class ArrayUtil {
         return false;
     }
 
+    /**
+     * Option #5 [the best one]:
+     */
+    public static boolean canJump_cycle(int[] nums) {
+        int targetPosition = nums.length - 1;
+
+        for (int i = targetPosition - 1; i >= 0; i--) {
+            if (i + nums[i] >= targetPosition) targetPosition = i;
+        }
+
+        return targetPosition == 0;
+    }
+
 
 
     /**
@@ -512,7 +562,10 @@ public class ArrayUtil {
      * that you can reach index n - 1.
      */
 
-    public static int jump(int[] nums) {
+    /**
+     * Option #1 :
+     */
+    public static int jump_recursive(int[] nums) {
         return process(nums, 0, 0);
     }
 
@@ -536,7 +589,26 @@ public class ArrayUtil {
         return process(nums, jumpOption, counter);
     }
 
-    // Попробовать то же свмое реализовать через цикл (*) ?
+    /**
+     * Option #2 [the best one]:
+     */
+    public int jump_cycle(int[] nums) {
+        int targetPosition = nums.length - 1;
+        int jumpCounter = 0;
+
+        while (targetPosition != 0) {
+            Integer earliestStartPosition = null;
+
+            for (int i = targetPosition - 1; i >= 0; i--) {
+                if (i + nums[i] >= targetPosition) earliestStartPosition = i;
+            }
+
+            targetPosition = earliestStartPosition;
+            jumpCounter++;
+        }
+
+        return jumpCounter;
+    }
 
 
 
