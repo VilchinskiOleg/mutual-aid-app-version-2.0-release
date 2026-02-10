@@ -622,6 +622,49 @@ public class ArrayUtil {
 
 
     /**
+     * 238. Product of Array Except Self
+     *
+     * Given an integer array nums, return an array answer such that answer[i] is equal to the product
+     * of all the elements of nums except nums[i].
+     *
+     * The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
+     *
+     * You must write an algorithm that runs in O(n) time and without using the division operation.
+     */
+
+    /**
+     * Speed -> O(n); Memory -> O(n)
+     */
+    public static int[] productExceptSelf(int[] nums) {
+        int[] prefix = new int[nums.length];
+        int[] postfix = new int[nums.length];
+
+        int leftTotalProduct = 1;
+        int rightTotalProduct = 1;
+
+        // 1. Populate prefix and postfix arrays:
+        for (int i = 0; i < nums.length; i++) {
+
+            // Populate arrays:
+            prefix[i] = leftTotalProduct;
+            postfix[nums.length - 1 - i] = rightTotalProduct;
+
+            // Re-calc totalProducts:
+            leftTotalProduct *= nums[i];
+            rightTotalProduct *= nums[nums.length - 1 - i];
+        }
+
+        // 2. Re-calculate nums:
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = prefix[i] * postfix[i];
+        }
+
+        return nums;
+    }
+
+
+
+    /**
      * 134. Gas Station
      *
      * There are n gas stations along a circular route, where the amount of gas at the ith station is gas[i].
