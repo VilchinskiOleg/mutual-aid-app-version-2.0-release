@@ -812,6 +812,26 @@ public class ArrayUtil {
         return -1;
     }
 
+    public static int canCompleteCircuit_III(int[] gas, int[] cost) {
+
+        int startInd = 0;
+        int gasTank = 0;
+
+        for (int i = 0; i < gas.length * 2; i++) {
+            if (i >= gas.length && i % gas.length == startInd) return startInd;
+
+            gasTank += gas[i % gas.length] - cost[i % gas.length];
+            if (gasTank < 0) {
+                startInd = i + 1;
+                gasTank = 0;
+            }
+
+            if (startInd >= gas.length) break;
+        }
+
+        return -1;
+    }
+
 
 
     /**
