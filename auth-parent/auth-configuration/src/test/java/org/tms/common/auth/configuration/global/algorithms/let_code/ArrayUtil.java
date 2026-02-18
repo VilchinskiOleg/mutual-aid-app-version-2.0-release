@@ -3,7 +3,9 @@ package org.tms.common.auth.configuration.global.algorithms.let_code;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.NavigableMap;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -830,6 +832,372 @@ public class ArrayUtil {
         }
 
         return -1;
+    }
+
+
+
+   /**
+     * 135. Candy
+     *
+     * There are n children standing in a line. Each child is assigned a rating value given in the integer array ratings.
+     *
+     * You are giving candies to these children subjected to the following requirements:
+     *
+     * Each child must have at least one candy.
+     * Children with a higher rating get more candies than their neighbors.
+     * Return the minimum number of candies you need to have to distribute the candies to the children.
+     */
+
+    public static int candy(int[] ratings) {
+        int n = ratings.length;
+        int[] candies = new int[n];
+        // 0. Default candies propagation, if all would have the same rating :
+        Arrays.fill(candies, 1); // fill whole array with val
+
+        // 1. Adjust candies propagation in -> direction :
+        for (int i = 1; i < n; i++) {
+            if (ratings[i] > ratings[i - 1]) {
+                candies[i] = candies[i - 1] + 1;
+            }
+        }
+
+        // 2. Adjust candies propagation in <- direction :
+        for (int i = n - 2; i >= 0; i--) {
+            if (ratings[i] > ratings[i + 1]) {
+                candies[i] = Math.max(candies[i], candies[i + 1] + 1);
+            }
+        }
+
+        // 3. Calculate the result :
+        int totalCandies = 0;
+        for (int candy : candies) {
+            totalCandies += candy;
+        }
+
+        return totalCandies;
+    }
+
+    /**
+     * NOTE:
+     * --- Be open to calculate and save the part of work instead of performing whole work in a single iteration ! ---
+     */
+
+
+
+    /**
+     * 42. Trapping Rain Water
+     *
+     * Given n non-negative integers representing an elevation map where the width of each bar is 1,
+     * compute how much water it can trap after raining.
+     */
+
+    /**
+     * Second approach ( Speed -> O(n); Memory -> O(n) ) :
+     */
+
+    public static int trapI(int[] height) {
+
+        int water, maxH;
+        int [] maxLeftH = new int [height.length];
+        int [] maxRightH = new int [height.length];
+
+        // Calculate max Left Height for [i] element :
+        maxH = 0;
+        for (int i = 0; i < maxLeftH.length; i++){
+            maxLeftH[i] = maxH;
+            maxH = Math.max(maxH, height[i]);
+        }
+
+        // Calculate max Right Height for [i] element :
+        maxH = 0;
+        for (int i = maxRightH.length - 1; i >= 0; i--){
+            maxRightH[i] = maxH;
+            maxH = Math.max(maxH, height[i]);
+        }
+
+        // Calculate water spreading :
+        water = 0;
+        for (int i = 0; i < height.length; i++){
+            water += Math.max(Math.min(maxLeftH[i], maxRightH[i]) - height[i], 0);
+        }
+
+        return water;
+    }
+
+    /**
+     * Third approach ( Speed -> O(n); Memory -> O(1) ) :
+     */
+
+    public static int trapII(int[] height) {
+
+        int water = 0;
+
+        int maxLeftH = height[0];
+        int maxRightH = height[height.length - 1];
+
+        for (int l = 1, r = height.length - 2; l <= r; ){
+            if (maxLeftH <= maxRightH){
+                water += Math.max(maxLeftH - height[l], 0);
+                maxLeftH = Math.max(maxLeftH, height[l]);
+                l++;
+            } else {
+                water += Math.max(maxRightH - height[r], 0);
+                maxRightH = Math.max(maxRightH, height[r]);
+                r--;
+            }
+        }
+
+        return water;
+    }
+
+
+
+    /**
+     * 13. Roman to Integer
+     * 
+     * Roman numerals are represented by seven different symbols: I, V, X, L, C, D and M.
+     * 
+     *   Symbol       Value
+     *   I             1
+     *   V             5
+     *   X             10
+     *   L             50
+     *   C             100
+     *   D             500
+     *   M             1000
+     * 
+     * For example, 2 is written as II in Roman numeral, just two ones added together. 
+     * 12 is written as XII, which is simply X + II. The number 27 is written as XXVII, which is XX + V + II.
+     * 
+     * Roman numerals are usually written largest to smallest from left to right. However, 
+     * the numeral for four is not IIII. Instead, the number four is written as IV. 
+     * Because the one is before the five we subtract it making four. The same principle applies to the number nine,
+     * which is written as IX. There are six instances where subtraction is used:
+     * 
+     * - I can be placed before V (5) and X (10) to make 4 and 9. 
+     * - X can be placed before L (50) and C (100) to make 40 and 90. 
+     * - C can be placed before D (500) and M (1000) to make 400 and 900.
+     * 
+     * Given a roman numeral, convert it to an integer.
+     */
+
+    public static int romanToInt(String s) {
+        Map<Character, Integer> romanMap = Map.of(
+            'I', 1, 'V', 5, 'X', 10, 'L', 50, 
+            'C', 100, 'D', 500, 'M', 1000);
+    
+        Map<Character, List<Character>> romanPrefixMap = Map.of(
+            'I', List.of('V', 'X'), 
+            'X', List.of('L', 'C'), 
+            'C', List.of('D', 'M'));
+        
+        int res = 0;
+    
+        for (int i = 0; i < s.length(); i++) {
+            char current = s.charAt(i);
+            if (i + 1 < s.length() 
+                        && romanPrefixMap.containsKey(current) 
+                        && romanPrefixMap.get(current).contains(s.charAt(i + 1))) {
+                res -= romanMap.get(current);
+            } else {
+                res += romanMap.get(current);
+            }
+        }
+        
+        return res;   
+    }
+
+
+
+    /**
+     * 12. Integer to Roman
+     * 
+     * Roman numerals are formed by appending the conversions of decimal place values from highest to lowest. 
+     * Converting a decimal place value into a Roman numeral has the following rules:
+     * 
+     * - If the value does not start with 4 or 9, select the symbol of the maximal value that can be subtracted from the input, 
+     * append that symbol to the result, subtract its value, and convert the remainder to a Roman numeral.
+     * 
+     * - If the value starts with 4 or 9 use the subtractive form representing one symbol subtracted from 
+     * the following symbol, for example, 4 is 1 (I) less than 5 (V): IV and 9 is 1 (I) less than 10 (X): IX. 
+     * Only the following subtractive forms are used: 4 (IV), 9 (IX), 40 (XL), 90 (XC), 400 (CD) and 900 (CM).    
+     * 
+     * - Only powers of 10 (I, X, C, M) can be appended consecutively at most 3 times to represent multiples of 10. 
+     * You cannot append 5 (V), 50 (L), or 500 (D) multiple times. If you need to append a symbol 4 times use 
+     * the subtractive form.
+     * 
+     * Given an integer, convert it to a Roman numeral.
+     */
+
+    private static NavigableMap<Integer, Character> romanMap = new TreeMap<>();
+
+    static {
+        romanMap.put(1, 'I');
+        romanMap.put(5, 'V');
+        romanMap.put(10, 'X');
+        romanMap.put(50, 'L');
+        romanMap.put(100, 'C');
+        romanMap.put(500, 'D');
+        romanMap.put(1000, 'M');
+    }
+
+    public static String intToRoman(int num) {
+            
+        Deque<Character> payload = new LinkedList<>();
+        int divider = 10;
+        int convertedPart = 0;
+
+        while (num != convertedPart) {
+            // 1. Calculate number (postfix) for processing :
+            int numToProcess = num % divider - convertedPart;
+            if (numToProcess == 0) {
+                divider *= 10;
+                continue;
+            } 
+
+            // 2. Processing number (postfix) :
+            var rangeFrom = romanMap.floorEntry(numToProcess);
+            int rangeFromInt = rangeFrom.getKey();
+
+            if (rangeFrom.getKey() == numToProcess) {
+                payload.push(rangeFrom.getValue());
+            } else {
+                // calculate rangeMinUnit depending on rangeFromInt = 1XX.. or rangeFromInt = 5XX.. :
+                int rangeMinUnit = numToProcess - rangeFromInt >= rangeFromInt ? rangeFromInt : rangeFromInt / 5;
+                int rangeMinUnitCounter = (numToProcess - rangeFrom.getKey()) / rangeMinUnit;
+
+                if ((rangeMinUnit != rangeFromInt && rangeMinUnitCounter <= 3) 
+                        || (rangeMinUnit == rangeFromInt && rangeMinUnitCounter <= 2)) {
+                    while (rangeMinUnitCounter-- > 0) {
+                        payload.push(romanMap.get(rangeMinUnit));
+                    }
+                    payload.push(rangeFrom.getValue());
+                } else {
+                    var rangeTo = romanMap.ceilingEntry(numToProcess);
+                    payload.push(rangeTo.getValue());
+                    payload.push(romanMap.get(rangeMinUnit));
+                }
+            }
+
+            // 3. Update data (pointers) :
+            divider *= 10;
+            convertedPart += numToProcess;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        payload.forEach(ch -> sb.append(ch));
+        return sb.toString();
+    }
+    
+
+
+    /**
+     * 58. Length of Last Word
+     * 
+     * Given a string s consisting of words and spaces, return the length of the last word in the string.
+     * 
+     * A word is a maximal substring consisting of non-space characters only.
+     */
+
+    public int lengthOfLastWord(String s) {
+        int count = 0;
+        
+        for (int i = s.length() - 1; i >= 0; i--) {
+            if (s.charAt(i) == ' ') {
+                if (count > 0) break; 
+            } else {
+                count++;
+            }
+        }  
+
+        return count;
+    }
+
+
+
+    /**
+     * 14. Longest Common Prefix
+     * 
+     * Write a function to find the longest common prefix string amongst an array of strings.
+     * 
+     * If there is no common prefix, return an empty string "".
+     */
+
+    public static String longestCommonPrefix(String[] strs) {
+
+        StringBuilder res = new StringBuilder();
+        Arrays.sort(strs); // After, first and last strs will differ the most.
+
+        String first = strs[0];
+        String last = strs[strs.length-1];
+
+        // Here just compare first and last, and build common subStr :
+        for (int i = 0; i < Math.min(first.length(), last.length()); i++) {
+            if (first.charAt(i) != last.charAt(i)) {
+                return res.toString();
+            }
+            res.append(first.charAt(i));
+        }
+
+        return res.toString();
+    }
+
+
+
+    /**
+     * 151. Reverse Words in a String
+     * 
+     * Given an input string s, reverse the order of the words.
+     * 
+     * A word is defined as a sequence of non-space characters. The words in s will be separated by at least one space.
+     * 
+     * Return a string of the words in reverse order concatenated by a single space.
+     * 
+     * Note that s may contain leading or trailing spaces or multiple spaces between two words. 
+     * The returned string should only have a single space separating the words. Do not include any extra spaces.
+     */
+
+    /**
+     * Speed -> O(n); Memory -> O(n)
+     */
+    public static String reverseWordsI(String s) {
+
+        String[] words = s.trim().split("\\s+");
+
+        int l = 0;
+        int r = words.length - 1;
+
+        while (l <= r){
+            if (l != r){
+                String tmp = words[r];
+                words[r] = words[l];
+                words[l] = tmp;
+            }
+            l++;
+            r--;
+        }
+
+        return String.join(" ", words);
+    }
+
+    /**
+     * Speed -> O(n); Memory -> O(n)
+     */
+    public static String reverseWordsII(String s) {
+
+        String[] str = s.trim().split("\\s+");
+
+        // Initialize the output string
+        String out = "";
+
+        // Iterate through the words in reverse order
+        for (int i = str.length - 1; i > 0; i--) {
+            // Append the current word and a space to the output
+            out += str[i] + " ";
+        }
+
+        // Append the first word to the output (without trailing space)
+        return out + str[0];
     }
 
 
