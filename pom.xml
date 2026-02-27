@@ -39,7 +39,7 @@
 
         <module>auth-parent</module>
         <module>profile-service-parent</module>
-        <module>task-executor-service</module>
+<!--        <module>task-executor-service</module>-->
         <module>order-service</module>
         <module>event-storage-service</module>
         <module>message-chat-service</module>

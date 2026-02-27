@@ -1,6 +1,8 @@
 include:
   # import Kafka internal :
-  - ./kafka-ssl/docker-compose.yml
+  - ./kafka-ssl/docker-compose-qa.yml
+  # import Kafka external :
+  - ./kafka-avro/docker-compose.yml
 services:
   postgres:
     image: postgres:17.8-alpine
@@ -66,21 +68,21 @@ services:
       - AUTH_SERVICE_HOST=auth-service
       - KAFKA_BROKER_HOST=${EXTERNAL_KAFKA_BROKER_HOST}
       - KAFKA_SCHEMA_REGISTRY_HOST=${EXTERNAL_KAFKA_SCHEMA_REGISTRY_HOST}
-  profile-soap-service:
-    image: '"${DOCKER_ID}"/profile-soap-service-boot'
-    container_name: 'profile-soap-service'
-    ports:
-      - '8250:8250'
-      - '5225:5005'
-    depends_on:
-      - 'auth-service'
-      - 'kafka-external'
-      - 'schema-registry'
-    environment:
-      - MONGO_DB_PASSWORD
-      - AUTH_SERVICE_HOST=auth-service
-      - KAFKA_BROKER_HOST=${EXTERNAL_KAFKA_BROKER_HOST}
-      - KAFKA_SCHEMA_REGISTRY_HOST=${EXTERNAL_KAFKA_SCHEMA_REGISTRY_HOST}
+#  profile-soap-service:
+#    image: '"${DOCKER_ID}"/profile-soap-service-boot'
+#    container_name: 'profile-soap-service'
+#    ports:
+#      - '8250:8250'
+#      - '5225:5005'
+#    depends_on:
+#      - 'auth-service'
+#      - 'kafka-external'
+#      - 'schema-registry'
+#    environment:
+#      - MONGO_DB_PASSWORD
+#      - AUTH_SERVICE_HOST=auth-service
+#      - KAFKA_BROKER_HOST=${EXTERNAL_KAFKA_BROKER_HOST}
+#      - KAFKA_SCHEMA_REGISTRY_HOST=${EXTERNAL_KAFKA_SCHEMA_REGISTRY_HOST}
   order-service:
     image: '"${DOCKER_ID}"/order-service-boot'
     container_name: 'order-service'
@@ -156,27 +158,27 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./http-gateway/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - 'auth-service'
       - 'profile-service'
       - 'order-service'
       - 'event-storage-service'
       - 'message-chat-service'
-  task-executor-service:
-    image: '"${DOCKER_ID}"/task-executor-service-boot'
-    container_name: 'task-executor-service'
-    ports:
-      - '8600:8600'
-      - '5065:5005'
-    depends_on:
-      - 'auth-service'
-      - 'profile-service'
-      - 'kafka-external'
-      - 'schema-registry'
-    environment:
-      - SPRING_PROFILES_ACTIVE=qa
-      - MONGO_DB_PASSWORD
-      - PROFILE_SERVICE_HOST=profile-service
-      - KAFKA_BROKER_HOST=${EXTERNAL_KAFKA_BROKER_HOST}
-      - KAFKA_SCHEMA_REGISTRY_HOST=${EXTERNAL_KAFKA_SCHEMA_REGISTRY_HOST}
+#  task-executor-service:
+#    image: '"${DOCKER_ID}"/task-executor-service-boot'
+#    container_name: 'task-executor-service'
+#    ports:
+#      - '8600:8600'
+#      - '5065:5005'
+#    depends_on:
+#      - 'auth-service'
+#      - 'profile-service'
+#      - 'kafka-external'
+#      - 'schema-registry'
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=qa
+#      - MONGO_DB_PASSWORD
+#      - PROFILE_SERVICE_HOST=profile-service
+#      - KAFKA_BROKER_HOST=${EXTERNAL_KAFKA_BROKER_HOST}
+#      - KAFKA_SCHEMA_REGISTRY_HOST=${EXTERNAL_KAFKA_SCHEMA_REGISTRY_HOST}

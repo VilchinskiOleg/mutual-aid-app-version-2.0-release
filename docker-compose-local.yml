@@ -183,22 +183,22 @@ services:
       - 'order-service'
       - 'event-storage-service'
       - 'message-chat-service'
-  task-executor-service:
-    build:
-      dockerfile: Dockerfile
-      context: ./task-executor-service
-    container_name: 'task-executor-service'
-    ports:
-      - '8600:8600'
-      - '5065:5005'
-    depends_on:
-      - 'auth-service'
-      - 'profile-service'
-      - 'kafka-external'
-      - 'schema-registry'
-    environment:
-      - SPRING_PROFILES_ACTIVE=local
-      - MONGO_DB_PASSWORD
-      - PROFILE_SERVICE_HOST=profile-service
-      - KAFKA_BROKER_HOST=${EXTERNAL_KAFKA_BROKER_HOST}
-      - KAFKA_SCHEMA_REGISTRY_HOST=${EXTERNAL_KAFKA_SCHEMA_REGISTRY_HOST}
+#  task-executor-service:
+#    build:
+#      dockerfile: Dockerfile
+#      context: ./task-executor-service
+#    container_name: 'task-executor-service'
+#    ports:
+#      - '8600:8600'
+#      - '5065:5005'
+#    depends_on:
+#      - 'auth-service'
+#      - 'profile-service'
+#      - 'kafka-external'
+#      - 'schema-registry'
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=local
+#      - MONGO_DB_PASSWORD
+#      - PROFILE_SERVICE_HOST=profile-service
+#      - KAFKA_BROKER_HOST=${EXTERNAL_KAFKA_BROKER_HOST}
+#      - KAFKA_SCHEMA_REGISTRY_HOST=${EXTERNAL_KAFKA_SCHEMA_REGISTRY_HOST}
