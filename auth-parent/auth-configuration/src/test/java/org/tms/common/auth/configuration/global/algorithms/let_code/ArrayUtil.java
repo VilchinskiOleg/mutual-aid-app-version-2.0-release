@@ -1299,7 +1299,7 @@ public class ArrayUtil {
      */
 
     public static String convert(String s, int numRows) {
-        if (s.length() <= numRows) return s;
+        if (numRows <= 1 || s.length() <= numRows) return s;
 
         StringBuilder sb = new StringBuilder();
 
@@ -1325,5 +1325,30 @@ public class ArrayUtil {
         }
 
         return sb.toString();
+    }
+
+
+
+    /**
+     * 28. Find the Index of the First Occurrence in a String
+     *
+     * Given two strings needle and haystack, return the index of the first occurrence of needle in
+     * haystack, or -1 if needle is not part of haystack.
+     */
+
+    public static int strStr(String haystack, String needle) {
+        int ind = -1;
+
+        root :for (int i = 0; i <= haystack.length() - needle.length(); i++){
+            if (haystack.charAt(i) == needle.charAt(0)){
+                ind = i;
+                for (int n = 1; n < needle.length(); n++){
+                    if (haystack.charAt(n + i) != needle.charAt(n)) continue root;
+                }
+                return ind;
+            }
+        }
+
+        return -1;
     }
 }

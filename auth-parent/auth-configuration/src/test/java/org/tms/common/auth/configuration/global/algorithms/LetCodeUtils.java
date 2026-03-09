@@ -22,31 +22,6 @@ import java.util.stream.IntStream;
 
 public class LetCodeUtils {
 
-
-    /**
-     * ----------------------------------- Task №? ------------------------------------------
-     *
-     * 28. Find the Index of the First Occurrence in a String
-     *
-     */
-
-    public static int strStr(String haystack, String needle) {
-        int ind = -1;
-
-        root :for (int i = 0; i <= haystack.length() - needle.length(); i++){
-            if (haystack.charAt(i) == needle.charAt(0)){
-                ind = i;
-                for (int n = 1; n < needle.length(); n++){
-                    if (haystack.charAt(n + i) != needle.charAt(n)) continue root;
-                }
-                return ind;
-            }
-        }
-
-        return -1;
-    }
-
-
     /**
      * ----------------------------------- Task №? ------------------------------------------
      *
