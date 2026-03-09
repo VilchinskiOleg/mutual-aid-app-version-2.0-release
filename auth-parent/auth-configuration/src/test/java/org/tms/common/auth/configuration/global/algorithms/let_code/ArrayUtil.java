@@ -1085,7 +1085,7 @@ public class ArrayUtil {
         }
 
         StringBuilder sb = new StringBuilder();
-        payload.forEach(ch -> sb.append(ch));
+        payload.forEach(sb::append);
         return sb.toString();
     }
     
@@ -1278,5 +1278,52 @@ public class ArrayUtil {
         }
 
         return kCounter;
+    }
+
+
+
+    /**
+     * 6. Zigzag Conversion
+     *
+     * The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this
+     * (you may want to display this pattern in a fixed font for better legibility) :
+     *
+     * P   A   H   N
+     * A P L S I I G
+     * Y   I   R
+     * And then read line by line: "PAHNAPLSIIGYIR"
+     *
+     * Write the code that will take a string and make this conversion given a number of rows:
+     *
+     * string convert(string s, int numRows);
+     */
+
+    public static String convert(String s, int numRows) {
+        if (s.length() <= numRows) return s;
+
+        StringBuilder sb = new StringBuilder();
+
+        // 1. Figure out increment val:
+        int increment = 2 * (numRows - 1);
+
+        // 2. For each row calculate sequence of chars. For example ("PAYPALISHIRING", 3):
+        //      0 row -> P   A   H   N
+        //      1 row -> A P L S I I G
+        //      2 row -> Y   I   R
+        for(int i = 0; i < numRows; i++) {
+            for(int j = i; j < s.length(); j += increment) {
+                // Default condition:
+                sb.append(s.charAt(j));
+
+                // Specific condition. For Middle Rows:
+                int middlePosInd; // middlePosInd = j + increment - (2 * i)
+                if (i > 0 && i < numRows - 1 // ensure it's Middle Row
+                    && (middlePosInd = j + increment - 2 * i) < s.length()) {
+                    sb.append(s.charAt(middlePosInd));
+                }
+            }
+        }
+
+        return sb.toString();
     }
 }
