@@ -1,7 +1,12 @@
 package org.tms.common.auth.configuration.global.algorithms.let_code;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class TwoPointersUtil {
 
@@ -90,5 +95,77 @@ public class TwoPointersUtil {
             }
         }
         return new int[2];
+    }
+
+
+
+    /**
+     * 11. Container With Most Water
+     *
+     * You are given an integer array height of length n.
+     * There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]).
+     *
+     * Find two lines that together with the x-axis form a container, such that the container contains the most water.
+     *
+     * Return the maximum amount of water a container can store.
+     *
+     * Notice that you may not slant the container.
+     */
+
+    public int maxArea(int[] height) {
+        int waterSum = 0;
+        int leftP = 0;
+        int rightP = height.length - 1;
+
+        while (leftP <= rightP) {
+            int waterSumCandidate = Math.min(height[leftP], height[rightP]) * (rightP - leftP);
+            waterSum = Math.max(waterSumCandidate, waterSum);
+
+            if (height[leftP] <= height[rightP]) {
+                leftP++;
+            } else {
+                rightP--;
+            }
+        }
+
+        return waterSum;
+    }
+
+
+
+    /**
+     * 15. 3Sum
+     *
+     * Given an integer array nums,
+     * return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k,
+     * and nums[i] + nums[j] + nums[k] == 0.
+     *
+     * Notice that the solution set must not contain duplicate triplets.
+     */
+
+    public static List<List<Integer>> threeSum(int[] nums) {
+
+        Set<List<Integer>> res = new HashSet<>();
+        Arrays.sort(nums);
+
+        for (int p1 = 0; p1 + 2 < nums.length && nums[p1] <= 0; p1++) {
+            int lp = p1 + 1;
+            int rp = nums.length - 1;
+
+            while (lp < rp) {
+                int sum = nums[p1] + nums[lp] + nums[rp];
+
+                if (sum < 0) {
+                    lp++;
+                } else if (sum > 0) {
+                    rp--;
+                } else {
+                    res.add(List.of(nums[p1], nums[lp], nums[rp]));
+                    lp++;
+                }
+            }
+        }
+
+        return new ArrayList<>(res);
     }
 }
