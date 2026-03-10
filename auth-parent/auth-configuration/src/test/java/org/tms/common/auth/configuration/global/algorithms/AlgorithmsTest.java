@@ -25,6 +25,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.tms.common.auth.configuration.global.algorithms.let_code.ArrayUtil;
 import org.tms.common.auth.configuration.global.algorithms.let_code.LinkedListUtil;
 import org.tms.common.auth.configuration.global.algorithms.let_code.LinkedListUtil.ListNode;
+import org.tms.common.auth.configuration.global.algorithms.let_code.MatrixUtil;
 import org.tms.common.auth.configuration.global.algorithms.let_code.StackUtil;
 import org.tms.common.auth.configuration.global.algorithms.let_code.TreeUtil;
 import org.tms.common.auth.configuration.global.algorithms.let_code.TreeUtil.BSTIterator;
@@ -286,15 +287,12 @@ public class AlgorithmsTest {
     @Test
     void testMajorityElement(){
         int[] nums;
-        int res;
 
         nums = new int[] {2,2,1,1,1,2,2};
-        res = LetCodeUtils.majorityElement(nums);
+        assertEquals(2, ArrayUtil.majorityElement(nums));
 
         nums = new int[] {2,2,1,3,1,1,4,1,1,5,1,1,6};
-        res = LetCodeUtils.majorityElement(nums);
-
-        System.out.println("OK");
+        assertEquals(1, ArrayUtil.majorityElement(nums));
     }
 
     @Test
@@ -307,9 +305,9 @@ public class AlgorithmsTest {
     }
 
     @Test
-    void testTrap(){
-        System.out.println(LetCodeUtils.trapIV(new int[] {0,1,0,2,1,0,1,3,2,1,2,1}));
-        System.out.println(LetCodeUtils.trapIV(new int[] {4,2,0,3,2,5}));
+    void test_trappingRainWater(){
+        assertEquals(6 ,ArrayUtil.trapI(new int[] {0,1,0,2,1,0,1,3,2,1,2,1}));
+        assertEquals(9, ArrayUtil.trapII(new int[] {4,2,0,3,2,5}));
     }
 
     @Test
@@ -474,5 +472,46 @@ public class AlgorithmsTest {
         var res = TreeUtil.zigzagLevelOrder(root);
 
         System.out.println("Ok");
+    }
+
+    @Test
+    void test_kthSmallest() {
+        // 1. Create the leaf nodes (nodes with no children)
+        TreeNode node1 = new TreeNode(1);
+        TreeNode node4 = new TreeNode(4);
+        TreeNode node6 = new TreeNode(6);
+
+        // 2. Create the next level up
+        // Node 2 has left child 1, no right child
+        TreeNode node2 = new TreeNode(2, node1, null);
+
+        // 3. Create the nodes above them
+        // Node 3 has left child 2 and right child 4
+        TreeNode node3 = new TreeNode(3, node2, node4);
+
+        // Node 5 is the root of the entire tree
+        // Node 5 has left child 3 and right child 6
+        TreeNode root = new TreeNode(5, node3, node6);
+
+        //var res = TreeUtil.kthSmallest_without_treeModification(root, 3);
+
+        System.out.println("Ok");
+    }
+
+    @Test
+    void test_sudoku_validation() {
+        char[][] board = {
+            {'.','.','.','.','5','.','.','1','.'},
+            {'.','4','.','3','.','.','.','.','.'},
+            {'.','.','.','.','.','3','.','.','1'},
+            {'8','.','.','.','.','.','.','2','.'},
+            {'.','.','2','.','7','.','.','.','.'},
+            {'.','1','5','.','.','.','.','.','.'},
+            {'.','.','.','.','.','2','.','.','.'},
+            {'.','2','.','9','.','.','.','.','.'},
+            {'.','.','4','.','.','.','.','.','.'}
+        };
+
+        assertFalse(MatrixUtil.isValidSudoku(board));
     }
 }

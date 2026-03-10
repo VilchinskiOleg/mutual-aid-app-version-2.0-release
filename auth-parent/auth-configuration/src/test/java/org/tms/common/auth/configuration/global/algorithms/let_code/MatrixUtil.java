@@ -46,7 +46,7 @@ public class MatrixUtil {
 
                     // 3. Check and update Square Cache:
                     int[] squareValues = squareCache.computeIfAbsent(
-                        String.valueOf(i) + j,
+                        String.valueOf(i / 3) + j / 3,
                         k -> new int[10]);
                     if (squareValues[number] > 0) return false;
                     squareValues[number]++;
