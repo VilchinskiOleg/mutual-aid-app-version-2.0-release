@@ -13,7 +13,7 @@ services:
       - POSTGRES_USER=${PG_DB_USERNAME}
       - POSTGRES_PASSWORD=${PG_DB_PASSWORD}
     volumes:
-    # Use commands for Linux, because I'm gonna use Linux OS for AWS hosting
+    # I'm using Linux commands here, because I'm gonna use Linux OS for AWS hosting
     # Note: "$(pwd)/" and "./" - just two possible options to do the same things
     # 1. To back up the current data state :
       - $(pwd)/postgres/backup:/var/lib/postgresql/data
