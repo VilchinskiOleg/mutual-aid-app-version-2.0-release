@@ -47,8 +47,15 @@ jobs:
             ssh $SSH_USER@$SSH_HOST "rm docker-compose.yml"
             ssh $SSH_USER@$SSH_HOST "ls"
       - run:
+          name: Transfer env files
+          command: |
+            scp ./postgres/init-db.sh $SSH_USER@$SSH_HOST:~/postgres/init-db.sh
+            scp ./http-gateway/nginx.conf $SSH_USER@$SSH_HOST:~/nginx.conf
+      - run:
           name: Transfer launch file
-          command: scp docker-compose.yml $SSH_USER@$SSH_HOST:/home/ubuntu/docker-compose.yml
+          command: | 
+            scp docker-compose-qa.yml $SSH_USER@$SSH_HOST:/home/$SSH_USER/docker-compose.yml
+            scp .env $SSH_USER@$SSH_HOST:/home/$SSH_USER/
       - run:
           name: Deploy Over SSH
           command: |

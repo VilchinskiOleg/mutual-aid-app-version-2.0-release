@@ -1,0 +1,1 @@
+mkdir -p /home/ec2-user/postgres/backup

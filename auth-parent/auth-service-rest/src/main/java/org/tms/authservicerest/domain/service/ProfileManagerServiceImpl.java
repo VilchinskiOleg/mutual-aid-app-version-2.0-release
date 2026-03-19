@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.tms.authservicerest.domain.model.Profile;
 import org.tms.authservicerest.domain.model.profile.Ticket;
 import org.tms.authservicerest.domain.model.profile.Ticket.Type;
-import org.tms.authservicerest.domain.service.client.EmailSenderClientService;
 import org.tms.authservicerest.domain.service.jwt.JwtHandler;
 import org.tms.authservicerest.domain.service.ticket.TicketHandlerStrategy;
 import org.tms.authservicerest.persistent.service.ProfileRepository;
@@ -16,6 +15,7 @@ import org.tms.authservicerest.persistent.service.ProfileRepository;
 import javax.annotation.Resource;
 import java.util.List;
 
+import static com.example.notificationconfig.model.NotificationContextConfig.NotificationKey.RESET_WEEK_PASSWORD;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.tms.authservicerest.utils.Constant.Service.PASSWORD_LENGTH;
@@ -33,7 +33,7 @@ public class ProfileManagerServiceImpl implements ProfileManagerService {
   @Resource
   private IdGeneratorService idGeneratorService;
   @Resource
-  private EmailSenderClientService emailSenderClientService;
+  private NotificationPublisherService notificationPublisherService;
   @Resource
   private Mapper mapper;
 
@@ -85,6 +85,6 @@ public class ProfileManagerServiceImpl implements ProfileManagerService {
             .build();
     String temporaryPassword = generator.generatePassword();
     profile.setPassword(temporaryPassword);
-    emailSenderClientService.sendEmailForResetPassword(temporaryPassword);
+    notificationPublisherService.notify(RESET_WEEK_PASSWORD, profile);
   }
 }

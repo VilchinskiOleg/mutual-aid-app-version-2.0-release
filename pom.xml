@@ -18,6 +18,9 @@
 
     <properties>
         <java.version>11</java.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+
         <swagger.version>3.0.0</swagger.version>
         <swagger-annotations.version>1.5.21</swagger-annotations.version>
         <swagger-models.version>1.5.21</swagger-models.version>
@@ -32,10 +35,11 @@
         <module>exception-handling-autoconfiguration</module>
         <module>model-mapper-autoconfiguration</module>
         <module>thread-save</module>
+        <module>notification-gateway-parent</module>
 
         <module>auth-parent</module>
         <module>profile-service-parent</module>
-        <module>task-executor-service</module>
+<!--        <module>task-executor-service</module>-->
         <module>order-service</module>
         <module>event-storage-service</module>
         <module>message-chat-service</module>

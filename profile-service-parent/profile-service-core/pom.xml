@@ -101,6 +101,15 @@
             <artifactId>auth-configuration</artifactId>
         </dependency>
 
+
+
+        <!-- Just for Proxy test : -->
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.12.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

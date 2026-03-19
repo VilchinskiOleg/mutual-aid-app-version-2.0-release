@@ -111,7 +111,7 @@ public class DialogServiceImpl implements DialogService {
     void recoverDialogUpdating(Exception ex, Dialog dialogData, String authorId) {
         log.error("Max attempts for update Dialog with ID= {} by Dialog Data= {} was surpassed!",
                 dialogData.getInternalId(), dialogData, ex);
-        throw new ConflictException("Try one more little beat later.");
+        throw new ConflictException("Try one more time little bit later.");
     }
 
     private Dialog createNewDialog(@Nullable String consumerId, @Nullable String dialogName){

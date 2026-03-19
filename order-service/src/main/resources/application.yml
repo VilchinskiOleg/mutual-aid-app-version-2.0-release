@@ -36,6 +36,9 @@ feign:
 datasource:
   api:
     driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://${PG_HOST:localhost}:5432/apiDB
+    username: ${PG_USERNAME:postgres}
+    password: ${PG_PASSWORD:postgres}
 
 scheduler:
   remove-closed-orders-job:

@@ -50,15 +50,15 @@
             <groupId>org.tms.mapper</groupId>
             <artifactId>model-mapper-autoconfiguration</artifactId>
         </dependency>
-
-        <!-- FEIGN CLOUD CLIENT: -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <groupId>org.tms</groupId>
+            <artifactId>notification-config</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
         <dependency>
-            <groupId>io.github.openfeign</groupId>
-            <artifactId>feign-httpclient</artifactId>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
         </dependency>
 
     </dependencies>

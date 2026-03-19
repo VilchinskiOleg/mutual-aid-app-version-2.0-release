@@ -21,10 +21,11 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for custom ListenerConsumer impl witch uses org.apache.kafka.clients.consumer.KafkaConsumer inside.
- *
- * Expects that you run docker container with Kafka and send events by CLI.
- * So we ignore its in runtime by @Disabled.
+ * Tests for custom ListenerConsumer impl witch uses org.apache.kafka.clients.consumer.KafkaConsumer
+ * inside.
+ * <p>
+ * Expects that you run docker container with Kafka and send events by CLI. So we ignore its in
+ * runtime by @Disabled.
  */
 
 @Slf4j
@@ -95,13 +96,15 @@ public class CustomListenerConsumerTest {
   }
 
   private class ListenerConsumerStopByFlag implements Runnable {
+
     private final KafkaConsumer<String, String> consumer;
     private final List<String> topics;
     private final AtomicBoolean shutdown;
     private final CountDownLatch shutdownLatch;
 
     public ListenerConsumerStopByFlag(Properties config, List<String> topics) {
-      this.consumer = new KafkaConsumer<>(config, new StringDeserializer(), new StringDeserializer());
+      this.consumer = new KafkaConsumer<>(config, new StringDeserializer(),
+          new StringDeserializer());
       this.topics = topics;
       this.shutdown = new AtomicBoolean(false);
       this.shutdownLatch = new CountDownLatch(1);
@@ -134,7 +137,7 @@ public class CustomListenerConsumerTest {
 
     public void process(ConsumerRecords<String, String> records) {
       log.info("Got record: {}", records);
-      records.records("test").forEach(rec -> results.add(rec.value()));
+      records.forEach(rec -> results.add(rec.value()));
     }
 
     public void shutdown() throws InterruptedException {
@@ -145,11 +148,14 @@ public class CustomListenerConsumerTest {
   }
 
   private class ListenerConsumerStopByMethod implements Runnable {
+
     private final KafkaConsumer<String, String> consumer;
     private final List<String> topics;
     private final CountDownLatch shutdownLatch;
+
     public ListenerConsumerStopByMethod(Properties config, List<String> topics) {
-      this.consumer = new KafkaConsumer<>(config, new StringDeserializer(), new StringDeserializer());
+      this.consumer = new KafkaConsumer<>(config, new StringDeserializer(),
+          new StringDeserializer());
       this.topics = topics;
       this.shutdownLatch = new CountDownLatch(1);
     }

@@ -1,5 +1,12 @@
 package org.tms.profile_service_core.domain.service;
 
+import static java.time.LocalDateTime.now;
+import static java.util.Objects.nonNull;
+import static org.tms.profile_service_core.utils.Constant.Errors.FAIL_CREATING_NEW_PROFILE;
+import static org.tms.profile_service_core.utils.Constant.Errors.FAIL_CREATING_NEW_PROFILE_RETRYABLE;
+import static org.tms.profile_service_core.utils.Constant.Errors.PROFILE_NOT_FUND;
+
+import java.net.ConnectException;
 import lombok.extern.slf4j.Slf4j;
 import org.exception.handling.autoconfiguration.throwable.ConflictException;
 import org.mapper.autoconfiguration.mapper.Mapper;
@@ -10,12 +17,6 @@ import org.tms.profile_service_core.domain.service.client.AuthAdditionalClientSe
 import org.tms.profile_service_core.domain.service.kafka.producer.ProfileTaskForRetryingProducer;
 import org.tms.profile_service_core.domain.service.processor.IdGeneratorService;
 import org.tms.profile_service_core.persistent.repository.ProfileRepository;
-
-import java.net.ConnectException;
-
-import static java.time.LocalDateTime.now;
-import static java.util.Objects.nonNull;
-import static org.tms.profile_service_core.utils.Constant.Errors.*;
 
 @Component
 @Slf4j
@@ -86,6 +87,7 @@ public class ProfileServiceImpl implements ProfileService {
     private void notifyUser(String email) {
         if (nonNull(email)) {
             //TODO:.. have to think, if I need notification in Profile and Auth simultaneously?
+            //TODO: if so, use kafka to ping Notification Gateway
         }
     }
 }

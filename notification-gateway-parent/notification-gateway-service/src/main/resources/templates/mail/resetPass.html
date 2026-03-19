@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Password Reset Request</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; background-color: #f9f9f9; padding: 20px;">
+<div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1);">
+    <h2>Hello <span th:text="${userName}">User</span>,</h2>
+    <p>
+        We received a request to reset your password. If you made this request, please click the button below to set a new password.
+    </p>
+    <div style="text-align: center; margin: 30px 0;">
+        <a th:href="${resetPasswordLink}" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px;">
+            Reset Your Password
+        </a>
+    </div>
+    <p>
+        If you didn't request a password reset, you can safely ignore this email. Your current password will remain unchanged.
+    </p>
+    <p>Thanks,<br/>Your Support Team</p>
+</div>
+</body>
+</html>

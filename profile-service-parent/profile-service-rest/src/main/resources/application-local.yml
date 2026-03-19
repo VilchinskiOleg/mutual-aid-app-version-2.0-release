@@ -1,8 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://admin:${MONGO_DB_PASSWORD}@cluster0.lme5y.mongodb.net/mutual-aid-app?retryWrites=true&w=majority
+      uri: mongodb+srv://admin:${MONGO_DB_PASSWORD:test}@cluster0.lme5y.mongodb.net/mutual-aid-app?retryWrites=true&w=majority&appName=Cluster0
 
 auth-rest-client:
-  url: http://localhost:8100
   password: 423welcome!76

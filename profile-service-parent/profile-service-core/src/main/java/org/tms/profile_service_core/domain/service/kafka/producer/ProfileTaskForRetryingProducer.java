@@ -15,6 +15,7 @@ import org.tms.common.kafka.avro.TaskEvent;
 import org.tms.profile_service_core.domain.model.Profile;
 
 import javax.annotation.PostConstruct;
+import java.net.ConnectException;
 import java.util.concurrent.ExecutionException;
 
 @Component
@@ -24,24 +25,53 @@ public class ProfileTaskForRetryingProducer {
 
     private static final String TOPIC = "mutual-aid-retry-tasks-topic";
     private static final String KEY = "profile-retry-task-key";
+    private static final int MAX_RETRY = 7;
 
     private final SchemaRegistryClient schemaRegistryClient;
     private final KafkaTemplate<String, TaskEvent> kafkaTemplate;
     private final CommonData commonData;
 
+    private int attemptsCounter = MAX_RETRY;
+
+
+    /**
+     * Connection Exception {@link ConnectException} can occur here trying to get connection to Kafka during some time,
+     * because it can take some time before listener will be reade for connection.
+     *
+     * So that it's necessary to implement retry mechanism.
+     *
+     * It's necessary to wrap exception into unchecked exception, since {@link ConnectException} - is checked exception.
+     */
     @PostConstruct
     public void init() {
         try {
-            // reset schema:
-            this.schemaRegistryClient.reset();
-            for (String subject : this.schemaRegistryClient.getAllSubjects()) {
+
+            // Reset schema:
+            schemaRegistryClient.reset();
+            for (String subject : schemaRegistryClient.getAllSubjects()) {
                 this.schemaRegistryClient.deleteSubject(subject);
             }
-            // register schema:
+
+            // Register schema:
             ParsedSchema avroSchema = new AvroSchema(TaskEvent.getClassSchema().toString());
-            var res = this.schemaRegistryClient.register(TOPIC + "-value", avroSchema);
+            var res = schemaRegistryClient.register(TOPIC + "-value", avroSchema);
+
+            log.info("Registered avroSchema for topic= {} successfully", TOPIC);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.warn("Wasn't able to register avroSchema for topic= {}. Attempt= {}. Reason: {}",
+                    TOPIC, MAX_RETRY - --attemptsCounter, e.getMessage());
+            if (attemptsCounter > 0 ) {
+
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                init();
+            } else {
+                throw new RuntimeException(e);
+            }
         }
     }
 
