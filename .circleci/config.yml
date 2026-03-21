@@ -19,7 +19,7 @@ jobs:
       # Checkout the code as the first step. Fetching your code from the GitHub.
       - checkout
       # Set up Docker
-      - setup_remote_docker:
+      - setup_remote_docker
           # version: 20.10.14
       # Use mvn clean and install as the standard maven build phase
       - run:
