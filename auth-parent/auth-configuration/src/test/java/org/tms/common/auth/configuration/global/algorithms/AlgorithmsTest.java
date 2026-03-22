@@ -298,10 +298,10 @@ public class AlgorithmsTest {
     @Test
     void testRotate(){
         int[] nums = {1,2,3,4,5,6};
+        int[] expected = {4,5,6,1,2,3};
 
-        LetCodeUtils.rotate_solutionII(nums, 3);
-
-        System.out.println("OK");
+        ArrayUtil.rotate(nums, 3); // modify nums
+        assertArrayEquals(nums, expected);
     }
 
     @Test

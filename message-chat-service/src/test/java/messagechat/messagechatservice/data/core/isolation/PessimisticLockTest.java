@@ -1,5 +1,16 @@
 package messagechat.messagechatservice.data.core.isolation;
 
+import static org.hibernate.cfg.AvailableSettings.JPA_LOCK_TIMEOUT;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Map;
+import javax.annotation.Resource;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.LockModeType;
+import javax.persistence.LockTimeoutException;
+import javax.persistence.RollbackException;
 import lombok.Cleanup;
 import messagechat.messagechatservice.configuration.MessageChatConfigProps;
 import messagechat.messagechatservice.configuration.data.MessageChatJpaConfig;
