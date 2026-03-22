@@ -21,14 +21,6 @@
     <confluent.version>5.5.5</confluent.version>
   </properties>
 
-  <!-- For inclusion some other particular repositories, and to use not only maven central: -->
-  <repositories>
-    <repository>
-      <id>confluent</id>
-      <url>http://packages.confluent.io/maven/</url>
-    </repository>
-  </repositories>
-
   <dependencies>
 
     <dependency>

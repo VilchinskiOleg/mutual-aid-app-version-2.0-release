@@ -199,10 +199,17 @@
         </dependencies>
     </dependencyManagement>
 
+    <!-- For inclusion some other particular repositories, and to use not only maven central: -->
     <repositories>
         <repository>
             <id>confluent</id>
             <url>https://packages.confluent.io/maven/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
