@@ -26,7 +26,3 @@ docker push "${DOCKER_ID}"/event-storage-service-boot
 
 docker build -t "${DOCKER_ID}"/message-chat-service-boot ./message-chat-service
 docker push "${DOCKER_ID}"/message-chat-service-boot
-
-
-#docker build -t "${DOCKER_ID}"/task-executor-service-boot ./task-executor-service
-#docker push "${DOCKER_ID}"/task-executor-service-boot
