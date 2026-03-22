@@ -1,3 +1,6 @@
+# declare some arguments:
+ARG DOCKER_ID
+
 # only use as a container for CA:
 FROM ${DOCKER_ID}/kafka-ca-ssl as ssl_ca_container
 
@@ -7,7 +10,7 @@ COPY --from=ssl_ca_container /certs/ca-key.key .
 COPY --from=ssl_ca_container /certs/ca-cert.crt .
 COPY kafka-broker-SSL-script.sh ./script.sh
 # RUN cd etc/kafka/secret/certs
-RUN chmod 777 script.sh
+RUN chmod +x ./script.sh
 RUN ./script.sh
-# RUN cd /
+
 # don't declare 'CMD' abstractCommand, that abstractCommand will be provided by parent image, we don't want to override it.

@@ -6,7 +6,7 @@ echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_ID}" --password-stdin
 docker build -t "${DOCKER_ID}"/kafka-ca-ssl -f ./kafka-ssl/Dockerfile.CA.SSL ./kafka-ssl
 docker push "${DOCKER_ID}"/kafka-ca-ssl
 
-docker build -t "${DOCKER_ID}"/kafka-ssl-broker1 -f ./kafka-ssl/Dockerfile.Kafka.SSL ./kafka-ssl
+docker build --build-arg DOCKER_ID=${DOCKER_ID} -t "${DOCKER_ID}"/kafka-ssl-broker1 -f ./kafka-ssl/Dockerfile.Kafka.SSL ./kafka-ssl
 docker push "${DOCKER_ID}"/kafka-ssl-broker1
 
 docker build -t "${DOCKER_ID}"/notification-gateway-service-boot ./notification-gateway-parent/notification-gateway-service
