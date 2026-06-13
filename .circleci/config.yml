@@ -55,9 +55,7 @@ jobs:
           command: | 
             scp docker-compose-qa.yml $SSH_USER@$SSH_HOST:/home/$SSH_USER/docker-compose.yml
             scp .env $SSH_USER@$SSH_HOST:/home/$SSH_USER/
-            ssh $SSH_USER@$SSH_HOST "mkdir kafka-ssl"
             scp ./kafka-ssl/docker-compose-qa.yml $SSH_USER@$SSH_HOST:/home/$SSH_USER/kafka-ssl/docker-compose-qa.yml
-            ssh $SSH_USER@$SSH_HOST "mkdir kafka-avro"
             scp ./kafka-avro/docker-compose.yml $SSH_USER@$SSH_HOST:/home/$SSH_USER/kafka-avro/docker-compose.yml
       - run:
           name: Deploy Over SSH
