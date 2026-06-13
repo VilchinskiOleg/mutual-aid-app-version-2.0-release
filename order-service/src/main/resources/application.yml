@@ -36,7 +36,7 @@ feign:
 datasource:
   api:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://${PG_HOST:localhost}:5432/apiDB
+    jdbc-url: jdbc:postgresql://${PG_DB_HOST:localhost}:5432/${PG_BD-1:apiDB}
     username: ${PG_USERNAME:postgres}
     password: ${PG_PASSWORD:postgres}
 

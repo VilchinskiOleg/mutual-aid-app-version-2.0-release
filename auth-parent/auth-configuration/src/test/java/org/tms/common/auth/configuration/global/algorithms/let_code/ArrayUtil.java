@@ -1268,8 +1268,8 @@ public class ArrayUtil {
             if (totalSum == k) kCounter++;
             // 2. Check if any sub-array sum equals k :
             if (!sumCache.isEmpty()) {
-                for (int subArraySum : sumCache.keySet()) {
-                    if (totalSum - subArraySum == k) kCounter += sumCache.get(subArraySum);
+                if (sumCache.get(totalSum - k) != null) {
+                    kCounter += sumCache.get(totalSum - k);
                 }
             }
 
