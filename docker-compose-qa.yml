@@ -1,8 +1,8 @@
 include:
   # import Kafka internal :
-  - ./kafka-ssl/docker-compose-qa.yml
+  - ./docker-compose-kafka-ssl.yml
   # import Kafka external :
-  - ./kafka-avro/docker-compose.yml
+  - ./docker-compose-kafka-avro.yml
 services:
   postgres:
     image: postgres:17.8-alpine
@@ -109,7 +109,6 @@ services:
       - kafka.bootstrapServers=${INTERNAL_KAFKA_BROKER_HOST}:9092
       - kafka.ssl-keystore-location=/app/clientkeystore.jks
       - kafka.ssl-truststore-location=/app/clienttruststore.jks
-      - datasource.api.jdbc-url=jdbc:postgresql://postgres:5432/${PG_BD-1}
       - auth-rest-client.url=http://auth-service:8100
       - profile-rest-client.url=http://profile-service:8200
   event-storage-service:
