@@ -41,7 +41,7 @@ jobs:
       - run:
           name: Clean previous project version
           command: |
-            ssh $SSH_USER@$SSH_HOST "containers=$(sudo docker ps -q); [ -n "$containers" ] && sudo docker stop $containers"
+            ssh $SSH_USER@$SSH_HOST "sudo docker ps -q | xargs -r sudo docker stop"
             ssh $SSH_USER@$SSH_HOST "sudo docker system prune -a -f"
             ssh $SSH_USER@$SSH_HOST "rm -f docker-compose.yml"
             ssh $SSH_USER@$SSH_HOST "ls"
